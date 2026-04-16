@@ -1,4 +1,4 @@
-package com.dinoco.oficina.config;
+package com.dinoco.oficina.infra.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,12 +28,13 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-            // Libera APENAS o endpoint de login
-            .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-            // Exemplo: se já quiser liberar o Swagger no futuro, seria aqui:
-            // .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
-            // Todas as outras requisições (como o CRUD de Clientes) exigem autenticação
-            .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll().
+                    requestMatchers(
+                            "/v3/api-docs/**",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html"
+                    ).permitAll()
+                .anyRequest().authenticated()
         )// Adiciona o nosso filtro ANTES do filtro padrão do Spring
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 

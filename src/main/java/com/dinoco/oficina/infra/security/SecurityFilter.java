@@ -1,4 +1,4 @@
-package com.dinoco.oficina.config;
+package com.dinoco.oficina.infra.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

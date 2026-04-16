@@ -1,4 +1,4 @@
-package com.dinoco.oficina.config;
+package com.dinoco.oficina.infra.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
