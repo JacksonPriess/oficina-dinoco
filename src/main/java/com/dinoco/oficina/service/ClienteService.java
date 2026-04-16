@@ -71,6 +71,54 @@ public class ClienteService {
         return mapearParaResponse(cliente);
     }
 
+    @Transactional
+    public ClienteResponseDto atualizar(Long id, ClienteRequestDto dto) {
+        Cliente cliente = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado."));
+
+        if (!cliente.getDocumento().equals(dto.documento())) {
+            throw new IllegalArgumentException("Não é permitido alterar o documento (CPF/CNPJ) de um cliente já cadastrado.");
+        }
+        if (!cliente.getTipoPessoa().equals(dto.tipoPessoa())) {
+            throw new IllegalArgumentException("Não é permitido alterar o tipo de pessoa após o cadastro.");
+        }
+
+        cliente.setNome(dto.nome());
+        cliente.setEmail(dto.email());
+        cliente.setTelefone(dto.telefone());
+
+        cliente.getEnderecos().clear();
+
+        if (dto.enderecos() != null) {
+            dto.enderecos().forEach(endDto -> {
+                Endereco novoEndereco = new Endereco();
+                novoEndereco.setCep(endDto.cep());
+                novoEndereco.setLogradouro(endDto.logradouro());
+                novoEndereco.setNumero(endDto.numero());
+                novoEndereco.setBairro(endDto.bairro());
+                novoEndereco.setCidade(endDto.cidade());
+                novoEndereco.setUf(endDto.uf());
+
+                // Amarração bidirecional essencial
+                novoEndereco.setCliente(cliente);
+                cliente.getEnderecos().add(novoEndereco);
+            });
+        }
+
+        Cliente atualizado = repository.save(cliente);
+        return mapearParaResponse(atualizado);
+    }
+
+    @Transactional
+    public void desativar(Long id) {
+        Cliente cliente = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado."));
+
+        // Soft Delete: o cliente permanece no banco para histórico de OS, mas fica inativo
+        cliente.setAtivo(false);
+        repository.save(cliente);
+    }
+
     // Método privado para mapear Entidade -> Response DTO
     private ClienteResponseDto mapearParaResponse(Cliente cliente) {
         List<EnderecoDto> enderecosDto = cliente.getEnderecos().stream()
