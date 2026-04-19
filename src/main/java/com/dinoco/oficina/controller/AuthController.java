@@ -29,13 +29,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody LoginDto data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.username(), data.password());
-
-        // O Spring Security vai verificar se o usuário "admin" e senha "123456" batem
         var auth = this.authenticationManager.authenticate(usernamePassword);
-
-        // Se bateu, geramos o token
         var token = tokenService.gerarToken(auth.getName());
-
         return ResponseEntity.ok(new TokenDto(token));
     }
 }

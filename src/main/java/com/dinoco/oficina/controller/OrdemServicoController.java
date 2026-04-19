@@ -20,12 +20,11 @@ public class OrdemServicoController {
 
     private final OrdemServicoService service;
 
-    @Operation(summary = "Abrir cliente")
+    @Operation(summary = "Abrir ordem de serviço")
     @PostMapping
     public ResponseEntity<OrdemServicoResponseDto> abrirOS(@RequestBody @Valid OrdemServicoRequestDto dto) {
         OrdemServicoResponseDto response = service.abrirOs(dto);
 
-        // Retorna 201 Created com a URL do novo recurso no Header Location
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(response.id())
@@ -34,23 +33,73 @@ public class OrdemServicoController {
         return ResponseEntity.created(uri).body(response);
     }
 
+    @PostMapping("/iniciar-diagnostico")
+    public ResponseEntity<Void> iniciarDiagnostico(@PathVariable Long id) {
+        service.iniciarDiagnostico(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/concluir-diagnostico")
+    public ResponseEntity<Void> concluirDiagnostico(@PathVariable Long id, @RequestBody String laudo) {
+        service.concluirDiagnostico(id, laudo);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/enviar-orcamento")
+    public ResponseEntity<Void> enviarOrcamento(@PathVariable Long id) {
+        service.enviarOrcamento(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reprovar")
+    public ResponseEntity<Void> reprovar(@PathVariable Long id) {
+        service.reprovarOrcamento(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/aprovar")
+    public ResponseEntity<Void> aprovar(@PathVariable Long id) {
+        service.aprovarOrcamento(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/verificar-estoque")
+    public ResponseEntity<Void> verificarDisponibilidadePecas(@PathVariable Long id) {
+        service.verificarDisponibilidadePecas(id);
+        return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping("/iniciar-execucao")
+    public ResponseEntity<Void> iniciarExecucao(@PathVariable Long id) {
+        service.iniciarExecucaoOS(id);
+        return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping("/finalizar-execucao")
+    public ResponseEntity<Void> finalizarExecucao(@PathVariable Long id) {
+        service.finalizarExecucaoOS(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/concluir")
+    public ResponseEntity<Void> concluir(@PathVariable Long id) {
+        service.entregarVeiculo(id);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/{id}/produtos")
-    public ResponseEntity<Void> adicionarProduto(@PathVariable Long id, @RequestBody @Valid ItemProdutoAdicionarDto dto) {
-        service.adicionarProduto(id, dto);
+    public ResponseEntity<Void> adicionarItemProduto(@PathVariable Long id, @RequestBody @Valid ItemProdutoAdicionarDto dto) {
+        service.adicionarItemProduto(id, dto);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/servicos")
-    public ResponseEntity<Void> adicionarServico(@PathVariable Long id, @RequestBody @Valid ItemServicoAdicionarDto dto) {
-        service.adicionarServico(id, dto);
+    public ResponseEntity<Void> adicionarItemServico(@PathVariable Long id, @RequestBody @Valid ItemServicoAdicionarDto dto) {
+        service.adicionarItemServico(id, dto);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<Void> alterarStatus(@PathVariable Long id, @RequestBody @Valid AlterarStatusOsDto dto) {
-        service.alterarStatus(id, dto.novoStatus());
-        return ResponseEntity.noContent().build();
-    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<OrdemServico> buscar(@PathVariable Long id) {
