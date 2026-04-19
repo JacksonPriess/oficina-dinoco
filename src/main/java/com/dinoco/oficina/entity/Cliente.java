@@ -1,15 +1,18 @@
 package com.dinoco.oficina.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-
+import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Entity
 @Table(name = "cliente")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Cliente {
 
     @Id

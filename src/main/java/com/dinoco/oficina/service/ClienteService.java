@@ -7,19 +7,17 @@ import com.dinoco.oficina.entity.Cliente;
 import com.dinoco.oficina.entity.Endereco;
 import com.dinoco.oficina.repository.ClienteRepository;
 import com.dinoco.oficina.util.DocumentoUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ClienteService {
 
     private final ClienteRepository repository;
-
-    public ClienteService(ClienteRepository repository){
-        this.repository = repository;
-    }
 
     @Transactional
     public ClienteResponseDto criar(ClienteRequestDto dto) {
@@ -114,7 +112,6 @@ public class ClienteService {
         Cliente cliente = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado."));
 
-        // Soft Delete: o cliente permanece no banco para histórico de OS, mas fica inativo
         cliente.setAtivo(false);
         repository.save(cliente);
     }

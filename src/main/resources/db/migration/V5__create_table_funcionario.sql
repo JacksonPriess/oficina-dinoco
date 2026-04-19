@@ -1,0 +1,8 @@
+CREATE TABLE funcionario (
+    id BIGSERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    cpf VARCHAR(14) UNIQUE NOT NULL,
+    cargo VARCHAR(50) NOT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+    usuario_id BIGINT
+);

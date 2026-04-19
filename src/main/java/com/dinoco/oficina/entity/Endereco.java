@@ -1,11 +1,15 @@
 package com.dinoco.oficina.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
 @Entity
 @Table(name = "endereco")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Endereco {
 
     @Id

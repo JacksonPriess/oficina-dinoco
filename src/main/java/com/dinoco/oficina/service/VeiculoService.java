@@ -6,18 +6,16 @@ import com.dinoco.oficina.dto.VeiculoRequestDto;
 import com.dinoco.oficina.dto.VeiculoResponseDto;
 import com.dinoco.oficina.entity.Cliente;
 import com.dinoco.oficina.entity.Veiculo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class VeiculoService {
+
     private final VeiculoRepository veiculoRepository;
     private final ClienteRepository clienteRepository;
-
-    public VeiculoService(VeiculoRepository veiculoRepository, ClienteRepository clienteRepository) {
-        this.veiculoRepository = veiculoRepository;
-        this.clienteRepository = clienteRepository;
-    }
 
     @Transactional
     public VeiculoResponseDto criar(VeiculoRequestDto dto) {

@@ -1,13 +1,17 @@
 package com.dinoco.oficina.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "servico")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Servico {
 
     @Id

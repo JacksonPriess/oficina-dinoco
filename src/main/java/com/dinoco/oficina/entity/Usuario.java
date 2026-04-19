@@ -1,16 +1,20 @@
 package com.dinoco.oficina.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Data
 @Entity
 @Table(name = "usuario")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Usuario implements UserDetails {
 
     @Id
@@ -58,6 +62,6 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.ativo; // Usa o nosso campo 'ativo' para bloquear/desbloquear o usuário
+        return this.ativo;
     }
 }

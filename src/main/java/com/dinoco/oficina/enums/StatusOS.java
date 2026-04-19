@@ -1,0 +1,14 @@
+package com.dinoco.oficina.enums;
+
+public enum StatusOS {
+    RECEBIDA,
+    EM_DIAGNOSTICO,
+    AGUARDANDO_ORCAMENTO,
+    AGUARDANDO_APROVACAO,
+    AGUARDANDO_FORNECEDOR,
+    AGUARDANDO_EXECUCAO,
+    EM_EXECUCAO,
+    FINALIZADA,
+    ENTREGUE,
+    REPROVADA
+}

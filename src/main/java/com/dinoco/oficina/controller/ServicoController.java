@@ -6,6 +6,7 @@ import com.dinoco.oficina.service.ServicoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -14,13 +15,10 @@ import java.net.URI;
 @Tag(name = "Serviços", description = "Cadastro de serviço")
 @RestController
 @RequestMapping("/api/servicos")
+@RequiredArgsConstructor
 public class ServicoController {
 
     private final ServicoService service;
-
-    public ServicoController(ServicoService service) {
-        this.service = service;
-    }
 
     @Operation(summary = "Cadastrar serviço")
     @PostMapping

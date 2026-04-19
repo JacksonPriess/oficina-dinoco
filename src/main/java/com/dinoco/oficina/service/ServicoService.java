@@ -4,17 +4,15 @@ import com.dinoco.oficina.dto.ServicoRequestDto;
 import com.dinoco.oficina.dto.ServicoResponseDto;
 import com.dinoco.oficina.entity.Servico;
 import com.dinoco.oficina.repository.ServicoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class ServicoService {
 
     private final ServicoRepository repository;
-
-    public ServicoService(ServicoRepository repository) {
-        this.repository = repository;
-    }
 
     @Transactional
     public ServicoResponseDto criar(ServicoRequestDto dto) {

@@ -1,12 +1,16 @@
 package com.dinoco.oficina.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "veiculo")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Veiculo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
