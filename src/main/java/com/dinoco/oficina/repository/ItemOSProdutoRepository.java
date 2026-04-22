@@ -1,10 +1,10 @@
 package com.dinoco.oficina.repository;
 
-import com.dinoco.oficina.entity.ItemOsProduto;
+import com.dinoco.oficina.entity.ItemOSProduto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ItemOsProdutoRepository extends JpaRepository<ItemOsProduto, Long> {
+public interface ItemOSProdutoRepository extends JpaRepository<ItemOSProduto, Long> {
 
 }

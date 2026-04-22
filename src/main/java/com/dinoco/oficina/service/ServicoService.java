@@ -4,6 +4,7 @@ import com.dinoco.oficina.dto.ServicoRequestDto;
 import com.dinoco.oficina.dto.ServicoResponseDto;
 import com.dinoco.oficina.entity.Servico;
 import com.dinoco.oficina.repository.ServicoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,11 @@ public class ServicoService {
         Servico servico = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Serviço não encontrado."));
         return mapearParaResponse(servico);
+    }
+
+    public Servico buscarEntidadePorId(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado com ID: " + id));
     }
 
     @Transactional

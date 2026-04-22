@@ -32,15 +32,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroPadrao);
     }
 
-    // 2. Intercepta erros de Regra de Negócio (ex: IllegalArgumentException do Service)
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErroPadraoDto> handleBusinessErrors(IllegalArgumentException ex) {
+    // 2. Intercepta erros de Regra de Negócio (ex: IllegalArgumentException e IllegalStateExceptiondo Service)
+    @ExceptionHandler({ IllegalArgumentException.class, IllegalStateException.class })
+    public ResponseEntity<ErroPadraoDto> handleBusinessErrors(RuntimeException ex) {
 
         ErroPadraoDto erroPadrao = new ErroPadraoDto(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 "Regra de Negócio Violada",
-                List.of(ex.getMessage())
+                List.of(ex.getMessage()) // ex.getMessage() vai capturar o texto exato de qualquer uma das duas
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroPadrao);

@@ -1,0 +1,16 @@
+package com.dinoco.oficina.dto;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import java.math.BigDecimal;
+
+public record ItemProdutoAlterarDto(
+        @NotNull
+        @Positive(message = "A quantidade deve ser maior que zero")
+        BigDecimal quantidade,
+
+        @NotNull
+        @PositiveOrZero(message = "O valor não pode ser negativo")
+        BigDecimal valorUnitarioVenda
+) {}

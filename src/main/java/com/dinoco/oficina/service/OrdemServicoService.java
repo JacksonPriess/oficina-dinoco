@@ -17,63 +17,45 @@ import java.time.LocalDateTime;
 public class OrdemServicoService {
 
     private final OrdemServicoRepository osRepository;
-    private final ClienteRepository clienteRepository;
-    private final VeiculoRepository veiculoRepository;
+    private final ClienteService clienteService;
+    private final VeiculoService veiculoService;
     private final ProdutoRepository produtoRepository;
-    private final ItemOsProdutoRepository itemProdutoRepository;
-    private final ServicoRepository servicoRepository;
-    private final ItemOsServicoRepository itemServicoRepository;
-    private final FuncionarioRepository funcionarioRepository;
+    private final ItemOSServicoRepository itemServicoRepository;
     private final MovimentacaoEstoqueRepository movimentacaoRepository;
 
     @Transactional
-    public OrdemServicoResponseDto abrirOs(OrdemServicoRequestDto dto) {
-
-        if ( osRepository.existeOsAtivaParaVeiculo(dto.veiculoId()) ) {
-            throw new IllegalStateException("Já existe uma Ordem de Serviço aberta ou em execução para este veículo.");
-        }
-
-        OrdemServico os = new OrdemServico();
-        os.setCliente(clienteRepository.getReferenceById(dto.clienteId()));
-        os.setVeiculo(veiculoRepository.getReferenceById(dto.veiculoId()));
-        os.setQuilometragemEntrada(dto.quilometragemEntrada());
-        os.setReclamacaoCliente(dto.reclamacaoCliente());
-        os.setStatus(StatusOS.RECEBIDA);
-        OrdemServico osAberta = osRepository.save(os);
-        return mapearParaResponse(osAberta);
+    public OrdemServicoResponseDto abrirOs(OrdemServicoRequestDto osRequestDto) {
+        validarDados(osRequestDto);
+        var cliente = clienteService.buscarEntidadePorId(osRequestDto.clienteId());
+        var veiculo = veiculoService.buscarEntidadePorId(osRequestDto.veiculoId());
+        var ordemServico = new OrdemServico(cliente, veiculo, osRequestDto.quilometragemEntrada(), osRequestDto.reclamacaoCliente());
+        return mapearParaResponse(osRepository.save(ordemServico));
     }
 
-    /**
-     * iniciarDiagnostico() -> alterar para EM_DIAGNOSTICO
-     * concluirDiagnostico() -> alterar para AGUARDANDO_ORCAMENTO    ... obs precisa ter ao menos um item na os.
-     * enviarOrcamento() -> alterar para AGUARDANDO_APROVACAO        ... valor da os precisa ser maior que zero
-     * reprovarOrcamento() -> alterar para REPROVAR ... precisa informar data de da OS.
-     * aprovarOrcamento() ->  Logica mais complexa :
-     *  1° passo : Sistema vai reservar a peça no estoque para todos os itens da OS.
-     *  2° passo : Sistema verificará se existe quantidade real, ( getQuantidadeDisponivel > 0 ) para todos os itens de produto.
-     *         i - Se tiver saldo para todos os itens de produto, alterar status para AGUARDANDO_EXECUCAO.
-     *         ii - Se não, altera o status para AGUARDANDO_FORNECEDOR. e aqui o atendente precisa agir, e vai fazer movimento de entrada da peca no estoque
-     *  refreshNaOS -> aqui apenas será possível clicar, quando a OS estiver em AGUARDANDO_FORNECEDOR, pois o sistema vai calcular novamente apenas os itens ( getQuantidadeDisponivel > 0 ), e se a peça nova chegou no estoque, alterar status para AGUARDANDO_EXECUCAO
-     *
-     *  iniciarExecucaoOS() ->   Alterar status da OS para EM_EXECUCAO, precisa atualizar o estoque para dar baixa ba peca.
-     *  iniciarExecucaoItemServicoOS() -> Alterar status do item de servico para EM_ANDAMENTO
-     *  concluirItemServicoOS -> Alterar status do item de servico para CONCLUIDO
-     *
-     *  finalizarExecucaoOS() ->  Alterar status da OS para FINALIZADA, aqui quer dizer que todos os servicos foram realizados e o carro está pronto.
-     *  concluirOS -> Alterar status da OS para ENTREGUE
-     */
+    private void validarDados(OrdemServicoRequestDto osRequestDto) {
+        if (osRepository.existeOsAtivaParaVeiculo(osRequestDto.veiculoId())) {
+            throw new IllegalStateException("Já existe uma Ordem de Serviço aberta para este veículo.");
+        }
+    }
 
     @Transactional
     public void iniciarDiagnostico(Long osId) {
         OrdemServico os = buscarOuFalhar(osId);
-        validarStatus(os, StatusOS.RECEBIDA);
+        validarStatusDiagnostico(os);
         os.setStatus(StatusOS.EM_DIAGNOSTICO);
         osRepository.save(os);
+    }
+
+    private void validarStatusDiagnostico(OrdemServico os) {
+        if (os.getStatus() != StatusOS.RECEBIDA) {
+            throw new IllegalStateException("Para iniciar um diagnóstico a OS deve estar com status RECEBIDA. Status atual da OS: " + os.getStatus());
+        }
     }
 
     @Transactional
     public void concluirDiagnostico(Long osId, String laudoTecnico) {
         OrdemServico os = buscarOuFalhar(osId);
+        //TODO - Validar se há itens de servico/produto
         validarStatus(os, StatusOS.EM_DIAGNOSTICO);
         os.setLaudoTecnico(laudoTecnico);
         os.setStatus(StatusOS.AGUARDANDO_ORCAMENTO);
@@ -149,24 +131,6 @@ public class OrdemServicoService {
     }
 
     @Transactional
-    public void iniciarItemServico(Long itemServicoId) {
-        ItemOsServico item = itemServicoRepository.findById(itemServicoId)
-                .orElseThrow(() -> new RuntimeException("Item de serviço não encontrado"));
-        item.setStatusItem(StatusItemServico.EM_ANDAMENTO);
-        item.setDataInicio(LocalDateTime.now());
-        itemServicoRepository.save(item);
-    }
-
-    @Transactional
-    public void concluirItemServico(Long itemServicoId) {
-        ItemOsServico item = itemServicoRepository.findById(itemServicoId)
-                .orElseThrow(() -> new RuntimeException("Item de serviço não encontrado"));
-        item.setStatusItem(StatusItemServico.CONCLUIDO);
-        item.setDataFim(LocalDateTime.now());
-        itemServicoRepository.save(item);
-    }
-
-    @Transactional
     public void finalizarExecucaoOS(Long osId) {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.EM_EXECUCAO);
@@ -200,97 +164,26 @@ public class OrdemServicoService {
     }
 
     @Transactional
-    public void adicionarItemProduto(Long osId, ItemProdutoAdicionarDto dto) {
+    public void recalcularTotais(Long osId) {
         OrdemServico os = buscarOuFalhar(osId);
 
-        if ( !os.getStatus().equals(StatusOS.EM_DIAGNOSTICO) ) {
-            throw new IllegalArgumentException("Inicie o diagnóstico da OS antes de adicionar itens de produto.");
-        }
-
-        //TODO - Quando o produto ainda não existir ele deve ser incluido ( com dados básicos e tudo zerado, depois o atendente atualizará o item)
-        Produto produto = produtoRepository.findById(dto.produtoId())
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-
-        ItemOsProduto item = new ItemOsProduto();
-        item.setOrdemServico(os);
-        item.setProduto(produto);
-        item.setQuantidade(dto.quantidade());
-        item.setValorUnitarioVenda(dto.valorUnitarioVenda());
-        item.setValorTotal(dto.quantidade().multiply(dto.valorUnitarioVenda()));
-        os.getItensProduto().add(item);
-        itemProdutoRepository.save(item);
-        recalcularTotais(os);
-    }
-
-    //TODO - Implementar alteração do item do produto, para alterar o valor unitário de venda e recalcular totais(orcamento).
-    @Transactional
-    public void alterarItemProduto() {}
-
-    //TODO - Implementar remoção do item do produto -> recalcular totais(orcamento).
-    @Transactional
-    public void removerItemProduto() {}
-
-    @Transactional
-    public void adicionarItemServico(Long osId, ItemServicoAdicionarDto dto) {
-        OrdemServico os = buscarOuFalhar(osId);
-
-        if ( !os.getStatus().equals(StatusOS.EM_DIAGNOSTICO) ) {
-            throw new IllegalArgumentException("Inicie o diagnóstico da OS antes de adicionar itens de serviço.");
-        }
-
-        // Busca o serviço base no catálogo
-        Servico servico = servicoRepository.findById(dto.servicoId())
-                .orElseThrow(() -> new RuntimeException("Serviço não encontrado no catálogo"));
-
-        ItemOsServico item = new ItemOsServico();
-        item.setOrdemServico(os);
-        item.setServico(servico);
-        item.setValorCobrado(dto.valorCobrado());
-        item.setStatusItem(StatusItemServico.PENDENTE);
-
-        // Se o atendente já souber quem é o mecânico, já vincula aqui
-        if (dto.mecanicoId() != null) {
-            Funcionario mecanico = funcionarioRepository.findById(dto.mecanicoId())
-                    .orElseThrow(() -> new RuntimeException("Mecânico não encontrado"));
-            item.setMecanico(mecanico);
-        }
-        os.getItensServico().add(item);
-        itemServicoRepository.save(item);
-        recalcularTotais(os);
-    }
-
-    //TODO - Implementar alteração do item do servico, caso ocorra necessidade de alterar valor do servico e recalcular totais(orcamento).
-    @Transactional
-    public void alterarItemServico() {}
-
-    //TODO - Implementar remoção do item do servico -> recalcular totais(orcamento).
-    @Transactional
-    public void removerItemServico() {}
-
-    //TODO - IMPORTANT
-    @Transactional
-    public void alterarStatus(Long osId, StatusOS novoStatus) {
-
-    }
-
-    private void recalcularTotais(OrdemServico os) {
         BigDecimal totalProdutos = os.getItensProduto().stream()
-                .map(ItemOsProduto::getValorTotal)
+                .map(ItemOSProduto::getValorTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal totalServicos = os.getItensServico().stream()
-                .map(ItemOsServico::getValorCobrado)
+                .map(ItemOSServico::getValorCobrado)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         os.setValorTotalProdutos(totalProdutos);
         os.setValorTotalServicos(totalServicos);
-        // Valor do Orçamento
         os.setValorTotalOs(totalProdutos.add(totalServicos).subtract(os.getValorDesconto()).max(BigDecimal.ZERO));
+
         osRepository.save(os);
     }
 
     private void processarReservaEstoque(OrdemServico os) {
-        for (ItemOsProduto item : os.getItensProduto()) {
+        for (ItemOSProduto item : os.getItensProduto()) {
             Produto p = item.getProduto();
             p.setQuantidadeReservada(p.getQuantidadeReservada().add(item.getQuantidade()));
             produtoRepository.save(p);
@@ -299,7 +192,7 @@ public class OrdemServicoService {
     }
 
     private void efetivarBaixaEstoque(OrdemServico os) {
-        for (ItemOsProduto item : os.getItensProduto()) {
+        for (ItemOSProduto item : os.getItensProduto()) {
             Produto p = item.getProduto();
             p.setQuantidadeAtual(p.getQuantidadeAtual().subtract(item.getQuantidade()));
             p.setQuantidadeReservada(p.getQuantidadeReservada().subtract(item.getQuantidade()));
@@ -325,7 +218,8 @@ public class OrdemServicoService {
                 ordemServico.getCliente().getNome(),
                 ordemServico.getVeiculo().getId(),
                 ordemServico.getVeiculo().getPlaca(),
-                ordemServico.getReclamacaoCliente()
+                ordemServico.getReclamacaoCliente(),
+                ordemServico.getStatus().toString()
         );
     }
 }

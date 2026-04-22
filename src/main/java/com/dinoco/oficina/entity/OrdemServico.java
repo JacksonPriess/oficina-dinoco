@@ -65,16 +65,22 @@ public class OrdemServico {
     private LocalDateTime dataSaida;
 
     @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemOsServico> itensServico = new ArrayList<>();
+    private List<ItemOSServico> itensServico = new ArrayList<>();
 
     @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemOsProduto> itensProduto = new ArrayList<>();
+    private List<ItemOSProduto> itensProduto = new ArrayList<>();
 
-    // Método de pré-inserção para gerar o código de rastreio automático
     @PrePersist
     private void prePersist() {
         if (this.codigoRastreio == null) {
             this.codigoRastreio = "OS-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         }
+    }
+
+    public OrdemServico(Cliente cliente, Veiculo veiculo, Integer quilometragem, String reclamacao) {
+        this.cliente = cliente;
+        this.veiculo = veiculo;
+        this.quilometragemEntrada = quilometragem;
+        this.reclamacaoCliente = reclamacao;
     }
 }

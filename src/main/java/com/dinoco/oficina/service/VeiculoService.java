@@ -6,6 +6,8 @@ import com.dinoco.oficina.dto.VeiculoRequestDto;
 import com.dinoco.oficina.dto.VeiculoResponseDto;
 import com.dinoco.oficina.entity.Cliente;
 import com.dinoco.oficina.entity.Veiculo;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,13 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class VeiculoService {
 
-    private final VeiculoRepository veiculoRepository;
+    private final VeiculoRepository repository;
     private final ClienteRepository clienteRepository;
 
     @Transactional
     public VeiculoResponseDto criar(VeiculoRequestDto dto) {
 
-        if (veiculoRepository.existsByPlaca(dto.placa())) {
+        if (repository.existsByPlaca(dto.placa())) {
             throw new IllegalArgumentException("Veículo já cadastrado com esta placa.");
         }
 
@@ -37,23 +39,28 @@ public class VeiculoService {
         veiculo.setCor(dto.cor());
         veiculo.setChassi(dto.chassi());
         veiculo.setMotor(dto.motor());
-        Veiculo veiculoSalvo = veiculoRepository.save(veiculo);
+        Veiculo veiculoSalvo = repository.save(veiculo);
         return mapearParaResponse(veiculoSalvo);
     }
 
     public VeiculoResponseDto buscarPorId(Long id) {
-        Veiculo veiculo = veiculoRepository.findById(id)
+        Veiculo veiculo = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Veículo não encontrado."));
         return mapearParaResponse(veiculo);
     }
 
+    public Veiculo buscarEntidadePorId(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Veículo não encontrado com ID: " + id));
+    }
+
     @Transactional
     public VeiculoResponseDto atualizar(Long id, VeiculoRequestDto dto) {
-        Veiculo veiculo = veiculoRepository.findById(id)
+        Veiculo veiculo = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Veículo não encontrado."));
 
         // 1. Valida se a placa foi alterada e se a nova placa já pertence a outro carro
-        if (!veiculo.getPlaca().equalsIgnoreCase(dto.placa()) && veiculoRepository.existsByPlaca(dto.placa())) {
+        if (!veiculo.getPlaca().equalsIgnoreCase(dto.placa()) && repository.existsByPlaca(dto.placa())) {
             throw new IllegalArgumentException("Já existe outro veículo cadastrado com esta placa.");
         }
 
@@ -74,23 +81,23 @@ public class VeiculoService {
         veiculo.setChassi(dto.chassi());
         veiculo.setMotor(dto.motor());
 
-        Veiculo veiculoAtualizado = veiculoRepository.save(veiculo);
+        Veiculo veiculoAtualizado = repository.save(veiculo);
         return mapearParaResponse(veiculoAtualizado);
     }
 
     @Transactional
     public void desativar(Long id) {
-        Veiculo veiculo = veiculoRepository.findById(id)
+        Veiculo veiculo = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Veículo não encontrado."));
         veiculo.setAtivo(false);
-        veiculoRepository.save(veiculo);
+        repository.save(veiculo);
     }
 
     private VeiculoResponseDto mapearParaResponse(Veiculo veiculo) {
         return new VeiculoResponseDto(
                 veiculo.getId(),
                 veiculo.getCliente().getId(),
-                veiculo.getCliente().getNome(), // Pega o nome para o DTO
+                veiculo.getCliente().getNome(),
                 veiculo.getPlaca(),
                 veiculo.getMarca(),
                 veiculo.getModelo(),

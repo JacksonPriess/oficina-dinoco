@@ -7,5 +7,6 @@ public record OrdemServicoResponseDto(
         String nomeCliente,
         Long veiculoId,
         String placaVeiculo,
-        String reclamacaoCliente
+        String reclamacaoCliente,
+        String status
 ) {}

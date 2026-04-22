@@ -5,6 +5,7 @@ import com.dinoco.oficina.dto.ProdutoResponseDto;
 import com.dinoco.oficina.entity.Produto;
 import com.dinoco.oficina.enums.TipoMovimentacao;
 import com.dinoco.oficina.repository.ProdutoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +48,11 @@ public class ProdutoService {
                 : produtoRepository.findAll();
 
         return produtos.stream().map(this::mapearParaResponse).toList();
+    }
+
+    public Produto buscarEntidadePorId(Long id) {
+        return produtoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado com ID: " + id));
     }
 
     private ProdutoResponseDto mapearParaResponse(Produto p) {

@@ -7,10 +7,10 @@ import com.dinoco.oficina.entity.Cliente;
 import com.dinoco.oficina.entity.Endereco;
 import com.dinoco.oficina.repository.ClienteRepository;
 import com.dinoco.oficina.util.DocumentoUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -68,6 +68,12 @@ public class ClienteService {
                 .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado."));
         return mapearParaResponse(cliente);
     }
+
+    public Cliente buscarEntidadePorId(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + id));
+    }
+
 
     @Transactional
     public ClienteResponseDto atualizar(Long id, ClienteRequestDto dto) {

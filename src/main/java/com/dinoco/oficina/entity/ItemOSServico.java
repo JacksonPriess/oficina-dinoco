@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class ItemOsServico {
+public class ItemOSServico {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

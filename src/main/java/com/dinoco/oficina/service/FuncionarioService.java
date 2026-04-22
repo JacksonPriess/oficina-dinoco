@@ -6,6 +6,7 @@ import com.dinoco.oficina.entity.Funcionario;
 import com.dinoco.oficina.entity.Usuario;
 import com.dinoco.oficina.repository.FuncionarioRepository;
 import com.dinoco.oficina.util.DocumentoUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,11 @@ public class FuncionarioService {
         Funcionario funcionario = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Funcionário não encontrado."));
         return mapearParaResponse(funcionario);
+    }
+
+    public Funcionario buscarEntidadePorId(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Funcionário não encontrado com ID: " + id));
     }
 
     @Transactional
@@ -93,4 +99,6 @@ public class FuncionarioService {
                 funcionario.isAtivo()
         );
     }
+
+
 }

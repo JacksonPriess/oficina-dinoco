@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class ItemOsProduto {
+public class ItemOSProduto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

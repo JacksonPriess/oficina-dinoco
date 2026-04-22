@@ -33,73 +33,59 @@ public class OrdemServicoController {
         return ResponseEntity.created(uri).body(response);
     }
 
-    @PostMapping("/iniciar-diagnostico")
+    @PostMapping("/{id}/iniciar-diagnostico")
     public ResponseEntity<Void> iniciarDiagnostico(@PathVariable Long id) {
         service.iniciarDiagnostico(id);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/concluir-diagnostico")
+    @PostMapping("/{id}/concluir-diagnostico")
     public ResponseEntity<Void> concluirDiagnostico(@PathVariable Long id, @RequestBody String laudo) {
         service.concluirDiagnostico(id, laudo);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/enviar-orcamento")
+    @PostMapping("/{id}/enviar-orcamento")
     public ResponseEntity<Void> enviarOrcamento(@PathVariable Long id) {
         service.enviarOrcamento(id);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/reprovar")
+    @PostMapping("/{id}/reprovar")
     public ResponseEntity<Void> reprovar(@PathVariable Long id) {
         service.reprovarOrcamento(id);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/aprovar")
+    @PostMapping("/{id}/aprovar")
     public ResponseEntity<Void> aprovar(@PathVariable Long id) {
         service.aprovarOrcamento(id);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/verificar-estoque")
+    @PostMapping("/{id}/verificar-estoque")
     public ResponseEntity<Void> verificarDisponibilidadePecas(@PathVariable Long id) {
         service.verificarDisponibilidadePecas(id);
         return ResponseEntity.ok().build();
     }
     
-    @PostMapping("/iniciar-execucao")
+    @PostMapping("/{id}/iniciar-execucao")
     public ResponseEntity<Void> iniciarExecucao(@PathVariable Long id) {
         service.iniciarExecucaoOS(id);
         return ResponseEntity.ok().build();
     }
     
-    @PostMapping("/finalizar-execucao")
+    @PostMapping("/{id}/finalizar-execucao")
     public ResponseEntity<Void> finalizarExecucao(@PathVariable Long id) {
         service.finalizarExecucaoOS(id);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/concluir")
+    @PostMapping("/{id}/concluir")
     public ResponseEntity<Void> concluir(@PathVariable Long id) {
         service.entregarVeiculo(id);
         return ResponseEntity.ok().build();
     }
-
-    @PostMapping("/{id}/produtos")
-    public ResponseEntity<Void> adicionarItemProduto(@PathVariable Long id, @RequestBody @Valid ItemProdutoAdicionarDto dto) {
-        service.adicionarItemProduto(id, dto);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/{id}/servicos")
-    public ResponseEntity<Void> adicionarItemServico(@PathVariable Long id, @RequestBody @Valid ItemServicoAdicionarDto dto) {
-        service.adicionarItemServico(id, dto);
-        return ResponseEntity.ok().build();
-    }
-
-
 
     @GetMapping("/{id}")
     public ResponseEntity<OrdemServico> buscar(@PathVariable Long id) {
