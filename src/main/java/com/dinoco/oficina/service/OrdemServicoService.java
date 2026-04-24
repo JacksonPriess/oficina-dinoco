@@ -20,7 +20,6 @@ public class OrdemServicoService {
     private final ClienteService clienteService;
     private final VeiculoService veiculoService;
     private final ProdutoRepository produtoRepository;
-    private final ItemOSServicoRepository itemServicoRepository;
     private final MovimentacaoEstoqueRepository movimentacaoRepository;
 
     @Transactional
@@ -55,7 +54,6 @@ public class OrdemServicoService {
     @Transactional
     public void concluirDiagnostico(Long osId, String laudoTecnico) {
         OrdemServico os = buscarOuFalhar(osId);
-        //TODO - Validar se há itens de servico/produto
         validarStatus(os, StatusOS.EM_DIAGNOSTICO);
         os.setLaudoTecnico(laudoTecnico);
         os.setStatus(StatusOS.AGUARDANDO_ORCAMENTO);

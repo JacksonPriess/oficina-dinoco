@@ -13,9 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -36,7 +34,7 @@ class OrdemServicoServiceTest {
     private VeiculoService veiculoService;
 
     @Test
-    @DisplayName("Deve abrir uma OS com sucesso quando o veículo não tem OS ativa")
+    @DisplayName("Abrir OS com sucesso")
     void deveAbrirOsComSucesso() {
         // 1. Arrange (Preparação)
         Long clienteId = 1L;
@@ -46,7 +44,7 @@ class OrdemServicoServiceTest {
                 clienteId, veiculoId, 85000, "Barulho no motor"
         );
 
-        var clienteMock = new Cliente(); // Instancie com id se necessário
+        var clienteMock = new Cliente();
         var veiculoMock = new Veiculo();
         var osSalvaMock = new OrdemServico(clienteMock, veiculoMock, 85000, "Barulho no motor");
         osSalvaMock.setId(100L); // Simulando o ID gerado pelo banco
@@ -67,7 +65,7 @@ class OrdemServicoServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando tentar abrir OS para veículo com OS já ativa")
+    @DisplayName("Abrir OS com erro")
     void deveLancarExcecaoQuandoVeiculoJaPossuiOsAtiva() {
         // 1. Arrange
         Long veiculoId = 1L;
@@ -75,26 +73,18 @@ class OrdemServicoServiceTest {
                 1L, veiculoId, 85000, "Barulho no motor"
         );
 
-        // Aqui o Mock avisa: "Opa, já tem OS ativa!"
         when(osRepository.existeOsAtivaParaVeiculo(veiculoId)).thenReturn(true);
-
-        // 2. Act & Assert
-        // Verificamos se a exceção exata é lançada ao tentar executar o método
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
             osService.abrirOs(requestDto);
         });
-
-        // 3. Verificações adicionais de segurança
         assertEquals("Já existe uma Ordem de Serviço aberta para este veículo.", exception.getMessage());
-
-        // Garante que o banco de dados NUNCA foi chamado para salvar,
-        // e os outros services nem foram acionados.
         verify(osRepository, never()).save(any());
         verifyNoInteractions(clienteService);
         verifyNoInteractions(veiculoService);
     }
 
     @Test
+    @DisplayName("Iniciar diagnóstico com sucesso")
     void deveIniciarDiagnosticoComSucesso(){
         Long osId = 100L;
         var clienteMock = new Cliente();
@@ -109,6 +99,7 @@ class OrdemServicoServiceTest {
     }
 
     @Test
+    @DisplayName("Iniciar diagnóstico com erro")
     void deveLancarExcecaoQuandoOsNaoEstiverRecebida(){
         Long osId = 100L;
         var ordemServico = new OrdemServico(new Cliente(), new Veiculo(), 85000, "Barulho");
@@ -122,9 +113,39 @@ class OrdemServicoServiceTest {
         verify(osRepository, never()).save(any());
     }
 
+    @Test
+    @DisplayName("Concluir diagnóstico com sucesso")
+    void deveConcluirDiagnosticoComSucesso(){
+        Long osId = 100L;
+        var clienteMock = new Cliente();
+        var veiculoMock = new Veiculo();
+        var ordemServico = new OrdemServico(clienteMock, veiculoMock, 85000, "Barulho no motor");
+        ordemServico.setId(osId);
+        ordemServico.setStatus(StatusOS.EM_DIAGNOSTICO);
+        when(osRepository.findById(osId)).thenReturn(Optional.of(ordemServico));
+        when(osRepository.save(any(OrdemServico.class))).thenReturn(ordemServico);
+        osService.concluirDiagnostico(osId, "Laudo concluído");
+        assertEquals(StatusOS.AGUARDANDO_ORCAMENTO, ordemServico.getStatus());
+        assertEquals("Laudo concluído", ordemServico.getLaudoTecnico());
+        verify(osRepository, times(1)).save(any(OrdemServico.class));
+    }
+
+    @Test
+    @DisplayName("Concluir diagnóstico com erro")
+    void deveLancarExcecaoQuandoConcluirDiagnosticoEOSNaoEstiverEmDiagnostico(){
+        Long osId = 100L;
+        var ordemServico = new OrdemServico(new Cliente(), new Veiculo(), 85000, "Barulho");
+        ordemServico.setId(osId);
+        when(osRepository.findById(osId)).thenReturn(Optional.of(ordemServico));
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
+            osService.concluirDiagnostico(osId, "Laudo concluído");
+        });
+        assertTrue(exception.getMessage().contains("Operação inválida para o status atual da OS: RECEBIDA"));
+        verify(osRepository, never()).save(any());
+    }
+
     /**
-     * abrirOS
-     * iniciarDiagnostico() -> alterar para EM_DIAGNOSTICO
+     *
      * concluirDiagnostico() -> alterar para AGUARDANDO_ORCAMENTO    ... obs precisa ter ao menos um item na os.
      * enviarOrcamento() -> alterar para AGUARDANDO_APROVACAO        ... valor da os precisa ser maior que zero
      * reprovarOrcamento() -> alterar para REPROVAR ... precisa informar data de da OS.
