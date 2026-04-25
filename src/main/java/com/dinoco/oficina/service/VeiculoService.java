@@ -105,7 +105,8 @@ public class VeiculoService {
                 veiculo.getAnoModelo(),
                 veiculo.getCor(),
                 veiculo.getChassi(),
-                veiculo.getMotor()
+                veiculo.getMotor(),
+                veiculo.getAtivo()
         );
     }
 }
