@@ -1,6 +1,6 @@
 package com.dinoco.oficina.controller;
 
-import com.dinoco.oficina.dto.ItemProdutoAdicionarDto;
+import com.dinoco.oficina.dto.ItemOSProdutoAdicionarDto;
 import com.dinoco.oficina.dto.ItemProdutoAlterarDto;
 import com.dinoco.oficina.service.ItemOSProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +20,7 @@ public class ItemOSProdutoController {
 
     @Operation(summary = "Adicionar item")
     @PostMapping("/api/ordens-servico/{osId}/produtos")
-    public ResponseEntity<Void> adicionarProduto(@PathVariable Long osId, @Valid @RequestBody ItemProdutoAdicionarDto dto) {
+    public ResponseEntity<Void> adicionarProduto(@PathVariable Long osId, @Valid @RequestBody ItemOSProdutoAdicionarDto dto) {
         itemProdutoService.adicionarItemProduto(osId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

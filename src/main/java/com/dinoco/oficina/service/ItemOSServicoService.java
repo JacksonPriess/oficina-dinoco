@@ -1,6 +1,6 @@
 package com.dinoco.oficina.service;
 
-import com.dinoco.oficina.dto.ItemServicoAdicionarDto;
+import com.dinoco.oficina.dto.ItemOSServicoAdicionarDto;
 import com.dinoco.oficina.dto.ItemServicoAlterarDto;
 import com.dinoco.oficina.entity.Funcionario;
 import com.dinoco.oficina.entity.ItemOSServico;
@@ -24,7 +24,7 @@ public class ItemOSServicoService {
     private final FuncionarioService funcionarioService;
 
     @Transactional
-    public void adicionarItemServico(Long osId, ItemServicoAdicionarDto dto) {
+    public void adicionarItemServico(Long osId, ItemOSServicoAdicionarDto dto) {
         OrdemServico os = ordemServicoService.buscarOuFalhar(osId);
         if ( !os.getStatus().equals(StatusOS.EM_DIAGNOSTICO) ) {
             throw new IllegalArgumentException("Inicie o diagnóstico da OS antes de adicionar itens de serviço.");
@@ -33,9 +33,10 @@ public class ItemOSServicoService {
         ItemOSServico item = new ItemOSServico();
         item.setOrdemServico(os);
         item.setServico(servico);
-        item.setValorCobrado(dto.valorCobrado());
+        item.setValorCobrado(servico.getPrecoPadrao());
         item.setStatusItem(StatusItemServico.PENDENTE);
         if (dto.mecanicoId() != null) {
+            //TODO - Garantir que o funcionario é mecanico
             Funcionario mecanico = funcionarioService.buscarEntidadePorId(dto.mecanicoId());
             item.setMecanico(mecanico);
         }
@@ -51,6 +52,7 @@ public class ItemOSServicoService {
         validarStatusParaEdicao(os);
         item.setValorCobrado(dto.valorCobrado());
         if (dto.mecanicoId() != null) {
+            //TODO - Garantir que o funcionario é mecanico
             Funcionario mecanico = funcionarioService.buscarEntidadePorId(dto.mecanicoId());
             item.setMecanico(mecanico);
         } else {

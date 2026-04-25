@@ -1,6 +1,6 @@
 package com.dinoco.oficina.service;
 
-import com.dinoco.oficina.dto.ItemProdutoAdicionarDto;
+import com.dinoco.oficina.dto.ItemOSProdutoAdicionarDto;
 import com.dinoco.oficina.dto.ItemProdutoAlterarDto;
 import com.dinoco.oficina.entity.ItemOSProduto;
 import com.dinoco.oficina.entity.OrdemServico;
@@ -20,18 +20,16 @@ public class ItemOSProdutoService {
     private final ProdutoService produtoService;
 
     @Transactional
-    public void adicionarItemProduto(Long osId, ItemProdutoAdicionarDto dto) {
+    public void adicionarItemProduto(Long osId, ItemOSProdutoAdicionarDto dto) {
         OrdemServico os = ordemServicoService.buscarOuFalhar(osId);
-        if (os.getStatus() != StatusOS.EM_DIAGNOSTICO) {
-            throw new IllegalStateException("Inicie o diagnóstico da OS antes de adicionar itens de produto.");
-        }
+        validarSePodeModificarItens(os);
         Produto produto = produtoService.buscarEntidadePorId(dto.produtoId());
         ItemOSProduto item = new ItemOSProduto();
         item.setOrdemServico(os);
         item.setProduto(produto);
         item.setQuantidade(dto.quantidade());
-        item.setValorUnitarioVenda(dto.valorUnitarioVenda());
-        item.setValorTotal(dto.quantidade().multiply(dto.valorUnitarioVenda()));
+        item.setValorUnitarioVenda(produto.getPrecoVenda());
+        item.setValorTotal(dto.quantidade().multiply(produto.getPrecoVenda()));
         repository.save(item);
         ordemServicoService.recalcularTotais(osId);
     }
