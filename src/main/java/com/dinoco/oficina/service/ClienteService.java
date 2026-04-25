@@ -90,7 +90,6 @@ public class ClienteService {
         cliente.setNome(dto.nome());
         cliente.setEmail(dto.email());
         cliente.setTelefone(dto.telefone());
-
         cliente.getEnderecos().clear();
 
         if (dto.enderecos() != null) {
@@ -100,6 +99,7 @@ public class ClienteService {
                 novoEndereco.setLogradouro(endDto.logradouro());
                 novoEndereco.setNumero(endDto.numero());
                 novoEndereco.setBairro(endDto.bairro());
+                novoEndereco.setComplemento(endDto.complemento());
                 novoEndereco.setCidade(endDto.cidade());
                 novoEndereco.setUf(endDto.uf());
 
@@ -132,7 +132,7 @@ public class ClienteService {
 
         return new ClienteResponseDto(
                 cliente.getId(), cliente.getTipoPessoa(), cliente.getDocumento(), cliente.getInscricaoEstadual(),
-                cliente.getNome(), cliente.getNomeFantasia(), cliente.getEmail(), cliente.getTelefone(), enderecosDto
+                cliente.getNome(), cliente.getNomeFantasia(), cliente.getEmail(), cliente.getTelefone(), cliente.getAtivo(), enderecosDto
         );
     }
 }

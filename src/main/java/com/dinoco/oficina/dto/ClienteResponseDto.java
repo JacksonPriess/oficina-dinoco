@@ -11,5 +11,6 @@ public record ClienteResponseDto(
     String nomeFantasia,
     String email,
     String telefone,
+    Boolean ativo,
     List<EnderecoDto> enderecos
 ) {}
