@@ -24,7 +24,8 @@ public class OrdemServicoService {
 
     @Transactional
     public OrdemServicoResponseDto abrirOs(OrdemServicoRequestDto osRequestDto) {
-        validarDados(osRequestDto);
+        //TODO - Criar tratamento para não permitir ter mais de uma OS "aberta" para o mesmo veículo.
+        //validarDados(osRequestDto);
         var cliente = clienteService.buscarEntidadePorId(osRequestDto.clienteId());
         var veiculo = veiculoService.buscarEntidadePorId(osRequestDto.veiculoId());
         var ordemServico = new OrdemServico(cliente, veiculo, osRequestDto.quilometragemEntrada(), osRequestDto.reclamacaoCliente());

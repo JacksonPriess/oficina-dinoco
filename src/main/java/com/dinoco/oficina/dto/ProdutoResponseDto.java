@@ -12,7 +12,7 @@ public record ProdutoResponseDto(
     String aplicacao,
     BigDecimal quantidadeAtual,
     BigDecimal quantidadeReservada,
-    BigDecimal quantidadeDisponivel,
     BigDecimal precoVenda,
+    BigDecimal precoCusto,
     boolean ativo
 ) {}

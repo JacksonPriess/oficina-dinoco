@@ -4,7 +4,6 @@ import com.dinoco.oficina.enums.TipoProduto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-
 import java.math.BigDecimal;
 
 public record ProdutoRequestDto(
@@ -12,22 +11,29 @@ public record ProdutoRequestDto(
     @NotBlank(message = "O nome do produto é obrigatório.")
     String nome,
 
-    @NotNull
+    @NotNull(message = "O tipo do produto é obrigatório PECA/INSUMO.")
     TipoProduto tipo,
 
     String marca,
     String codigoFabricante,
     String aplicacao,
 
-    @NotNull
+    @PositiveOrZero
+    BigDecimal quantidadeAtual,
+
+    @PositiveOrZero
+    BigDecimal quantidadeReservada,
+
     @PositiveOrZero
     BigDecimal precoCusto,
 
-    @NotNull
     @PositiveOrZero
-    BigDecimal precoVenda,
-
-    @NotNull
-    @PositiveOrZero
-    BigDecimal quantidadeInicial
-) {}
+    BigDecimal precoVenda
+) {
+    public ProdutoRequestDto {
+        quantidadeAtual = quantidadeAtual != null ? quantidadeAtual : BigDecimal.ZERO;
+        quantidadeReservada = quantidadeReservada != null ? quantidadeReservada : BigDecimal.ZERO;
+        precoCusto = precoCusto != null ? precoCusto : BigDecimal.ZERO;
+        precoVenda = precoVenda != null ? precoVenda : BigDecimal.ZERO;
+    }
+}
