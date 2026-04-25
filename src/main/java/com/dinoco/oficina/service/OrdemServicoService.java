@@ -176,7 +176,7 @@ public class OrdemServicoService {
 
         os.setValorTotalProdutos(totalProdutos);
         os.setValorTotalServicos(totalServicos);
-        os.setValorTotalOs(totalProdutos.add(totalServicos).subtract(os.getValorDesconto()).max(BigDecimal.ZERO));
+        os.setValorTotalOS(totalProdutos.add(totalServicos).subtract(os.getValorDesconto()).max(BigDecimal.ZERO));
 
         osRepository.save(os);
     }
@@ -209,6 +209,17 @@ public class OrdemServicoService {
         return osRepository.findById(id).orElseThrow(() -> new RuntimeException("OS não encontrada"));
     }
 
+    public OrdemServicoResponseDto buscarPorId(Long id) {
+        OrdemServico ordemServico = osRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("OS não encontrada."));
+        return mapearParaResponse(ordemServico);
+    }
+
+    public OrdemServicoResponseDto buscarPorCodigoRastreio(String codigoRastreio) {
+        OrdemServico ordemServico = osRepository.findByCodigoRastreio(codigoRastreio).orElseThrow(() -> new IllegalArgumentException("OS não encontrada para o código de rastreio: " + codigoRastreio));
+        return mapearParaResponse(ordemServico);
+    }
+
     private OrdemServicoResponseDto mapearParaResponse(OrdemServico ordemServico) {
         return new OrdemServicoResponseDto(
                 ordemServico.getId(),
@@ -218,7 +229,15 @@ public class OrdemServicoService {
                 ordemServico.getVeiculo().getId(),
                 ordemServico.getVeiculo().getPlaca(),
                 ordemServico.getReclamacaoCliente(),
+                ordemServico.getQuilometragemEntrada(),
+                ordemServico.getLaudoTecnico(),
+                ordemServico.getValorTotalServicos(),
+                ordemServico.getValorTotalProdutos(),
+                ordemServico.getValorDesconto(),
+                ordemServico.getValorTotalOS(),
                 ordemServico.getStatus().toString()
         );
     }
+
+
 }

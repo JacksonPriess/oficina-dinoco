@@ -56,7 +56,7 @@ public class OrdemServico {
     private BigDecimal valorDesconto = BigDecimal.ZERO;
 
     @Column(name = "valor_total_os", nullable = false)
-    private BigDecimal valorTotalOs = BigDecimal.ZERO;
+    private BigDecimal valorTotalOS = BigDecimal.ZERO;
 
     @Column(name = "data_entrada", nullable = false)
     private LocalDateTime dataEntrada = LocalDateTime.now();

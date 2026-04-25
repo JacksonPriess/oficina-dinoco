@@ -33,10 +33,23 @@ public class OrdemServicoController {
         return ResponseEntity.created(uri).body(response);
     }
 
+    @Operation(summary = "Buscar OS por código")
+    @GetMapping("/{id}")
+    public ResponseEntity<OrdemServicoResponseDto> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    @Operation(summary = "Buscar OS por número de rastreio")
+    @GetMapping("/rastreio/{codigoRastreio}")
+    public ResponseEntity<OrdemServicoResponseDto> buscarPorCodigoRastreio(@PathVariable String codigoRastreio) {
+        //TODO - Simplificar retorno da OS quando for por código de rastreio.
+        return ResponseEntity.ok(service.buscarPorCodigoRastreio(codigoRastreio));
+    }
+
     @PostMapping("/{id}/iniciar-diagnostico")
     public ResponseEntity<Void> iniciarDiagnostico(@PathVariable Long id) {
         service.iniciarDiagnostico(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/concluir-diagnostico")
@@ -74,7 +87,7 @@ public class OrdemServicoController {
         service.iniciarExecucaoOS(id);
         return ResponseEntity.ok().build();
     }
-    
+
     @PostMapping("/{id}/finalizar-execucao")
     public ResponseEntity<Void> finalizarExecucao(@PathVariable Long id) {
         service.finalizarExecucaoOS(id);
@@ -86,10 +99,4 @@ public class OrdemServicoController {
         service.entregarVeiculo(id);
         return ResponseEntity.ok().build();
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<OrdemServico> buscar(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarOuFalhar(id));
-    }
-
 }

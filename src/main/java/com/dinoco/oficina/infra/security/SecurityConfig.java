@@ -28,12 +28,13 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll().
-                    requestMatchers(
-                            "/v3/api-docs/**",
-                            "/swagger-ui/**",
-                            "/swagger-ui.html"
-                    ).permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/ordens-servico/rastreio/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                .requestMatchers(
+                "/v3/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-ui.html"
+                ).permitAll()
                 .anyRequest().authenticated()
         )// Adiciona o nosso filtro ANTES do filtro padrão do Spring
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
