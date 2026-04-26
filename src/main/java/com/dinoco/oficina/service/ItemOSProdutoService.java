@@ -23,6 +23,9 @@ public class ItemOSProdutoService {
     public void adicionarItemProduto(Long osId, ItemOSProdutoAdicionarDto dto) {
         OrdemServico os = ordemServicoService.buscarOuFalhar(osId);
         validarSePodeModificarItens(os);
+        if (repository.existsByOrdemServicoIdAndProdutoId(osId, dto.produtoId())) {
+            throw new IllegalArgumentException("Este produto já foi adicionado a esta Ordem de Serviço.");
+        }
         Produto produto = produtoService.buscarEntidadePorId(dto.produtoId());
         ItemOSProduto item = new ItemOSProduto();
         item.setOrdemServico(os);
@@ -71,7 +74,7 @@ public class ItemOSProdutoService {
 
     private void validarSePodeModificarItens(OrdemServico os) {
         if (os.getStatus() != StatusOS.EM_DIAGNOSTICO && os.getStatus() != StatusOS.AGUARDANDO_ORCAMENTO) {
-            throw new IllegalStateException("Não é possível modificar itens de uma OS que já saiu da fase de orçamento. Status atual: " + os.getStatus());
+            throw new IllegalStateException("A OS não permite modificação em itens de produtos no status atual. Status atual: " + os.getStatus());
         }
     }
 }

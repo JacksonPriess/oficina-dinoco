@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ItemOSServicoRepository extends JpaRepository<ItemOSServico, Long> {}
+public interface ItemOSServicoRepository extends JpaRepository<ItemOSServico, Long> {
+    boolean existsByOrdemServicoIdAndServicoId(Long osId, Long servicoId);
+}

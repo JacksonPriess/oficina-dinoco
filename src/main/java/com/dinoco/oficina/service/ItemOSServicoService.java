@@ -29,6 +29,9 @@ public class ItemOSServicoService {
         if ( !os.getStatus().equals(StatusOS.EM_DIAGNOSTICO) ) {
             throw new IllegalArgumentException("Inicie o diagnóstico da OS antes de adicionar itens de serviço.");
         }
+        if (repository.existsByOrdemServicoIdAndServicoId(osId, dto.servicoId())) {
+            throw new IllegalArgumentException("Este serviço já foi adicionado a esta Ordem de Serviço.");
+        }
         Servico servico = servicoService.buscarEntidadePorId(dto.servicoId());
         ItemOSServico item = new ItemOSServico();
         item.setOrdemServico(os);
@@ -93,7 +96,7 @@ public class ItemOSServicoService {
 
     private void validarStatusParaEdicao(OrdemServico os) {
         if (os.getStatus() != StatusOS.EM_DIAGNOSTICO && os.getStatus() != StatusOS.AGUARDANDO_ORCAMENTO) {
-            throw new IllegalStateException("A OS não permite modificação de serviços no status atual: " + os.getStatus());
+            throw new IllegalStateException("A OS não permite modificação em itens de serviços no status atual: " + os.getStatus());
         }
     }
 }
