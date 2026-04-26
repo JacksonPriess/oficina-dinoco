@@ -1,7 +1,7 @@
 package com.dinoco.oficina.service;
 
 import com.dinoco.oficina.dto.ItemOSServicoAdicionarDto;
-import com.dinoco.oficina.dto.ItemServicoAlterarDto;
+import com.dinoco.oficina.dto.ItemOSServicoAlterarDto;
 import com.dinoco.oficina.entity.Funcionario;
 import com.dinoco.oficina.entity.ItemOSServico;
 import com.dinoco.oficina.entity.OrdemServico;
@@ -46,17 +46,15 @@ public class ItemOSServicoService {
     }
 
     @Transactional
-    public void alterarItemServico(Long itemId, ItemServicoAlterarDto dto) {
+    public void alterarItemServico(Long itemId, ItemOSServicoAlterarDto dto) {
         ItemOSServico item = buscarItemOuFalhar(itemId);
         OrdemServico os = item.getOrdemServico();
         validarStatusParaEdicao(os);
-        item.setValorCobrado(dto.valorCobrado());
+        item.setValorCobrado(dto.valorCobrado() != null ? dto.valorCobrado() : item.getValorCobrado() );
         if (dto.mecanicoId() != null) {
             //TODO - Garantir que o funcionario é mecanico
             Funcionario mecanico = funcionarioService.buscarEntidadePorId(dto.mecanicoId());
             item.setMecanico(mecanico);
-        } else {
-            item.setMecanico(null);
         }
         repository.save(item);
         ordemServicoService.recalcularTotais(os.getId());

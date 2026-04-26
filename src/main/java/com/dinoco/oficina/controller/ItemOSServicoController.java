@@ -1,10 +1,11 @@
 package com.dinoco.oficina.controller;
 
 import com.dinoco.oficina.dto.ItemOSServicoAdicionarDto;
-import com.dinoco.oficina.dto.ItemServicoAlterarDto;
+import com.dinoco.oficina.dto.ItemOSServicoAlterarDto;
 import com.dinoco.oficina.service.ItemOSServicoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +20,16 @@ public class ItemOSServicoController {
 
     @Operation(summary = "Adicionar item")
     @PostMapping("/api/ordens-servico/{osId}/servicos")
-    public ResponseEntity<Void> adicionarServico(@PathVariable Long osId, @RequestBody ItemOSServicoAdicionarDto dto) {
+    public ResponseEntity<Void> adicionarServico(@PathVariable Long osId, @Valid @RequestBody ItemOSServicoAdicionarDto dto) {
         itemOSServicoService.adicionarItemServico(osId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "Alterar item")
     @PutMapping("/api/itens-servico/{itemId}")
-    public ResponseEntity<Void> alterarServico(@PathVariable Long itemId, @RequestBody ItemServicoAlterarDto dto) {
+    public ResponseEntity<Void> alterarServico(@PathVariable Long itemId, @Valid @RequestBody ItemOSServicoAlterarDto dto) {
         itemOSServicoService.alterarItemServico(itemId, dto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Remover item")
