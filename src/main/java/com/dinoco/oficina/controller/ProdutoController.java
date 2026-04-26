@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 import java.util.List;
 
 @Tag(name = "Produtos", description = "Controle de estoque")
@@ -21,14 +24,21 @@ public class ProdutoController {
 
     @Operation(summary = "Incluir produto")
     @PostMapping
-    public ResponseEntity<ProdutoResponseDto> cadastrar(@RequestBody @Valid ProdutoRequestDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.criar(dto));
+    public ResponseEntity<ProdutoResponseDto> cadastrar(@RequestBody @Valid ProdutoRequestDto request) {
+        ProdutoResponseDto response = service.criar(request);
+
+        // Retorna 201 Created com a URL do novo recurso no Header Location
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(response);
     }
 
     @Operation(summary = "Buscar produto por termo")
     @GetMapping
-    public ResponseEntity<List<ProdutoResponseDto>> listar(
-            @RequestParam(value = "busca", required = false) String termo) {
+    public ResponseEntity<List<ProdutoResponseDto>> listar(@RequestParam(value = "busca", required = false) String termo) {
         return ResponseEntity.ok(service.listar(termo));
     }
 
