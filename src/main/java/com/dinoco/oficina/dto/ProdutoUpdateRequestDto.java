@@ -4,7 +4,6 @@ import com.dinoco.oficina.enums.TipoProduto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-
 import java.math.BigDecimal;
 
 public record ProdutoUpdateRequestDto(
@@ -21,9 +20,6 @@ public record ProdutoUpdateRequestDto(
 
         @PositiveOrZero
         BigDecimal quantidadeAtual,
-
-        @PositiveOrZero
-        BigDecimal quantidadeReservada,
 
         @PositiveOrZero
         BigDecimal precoCusto,

@@ -4,9 +4,9 @@ import com.dinoco.oficina.dto.*;
 import com.dinoco.oficina.entity.*;
 import com.dinoco.oficina.enums.StatusItemServico;
 import com.dinoco.oficina.enums.StatusOS;
-import com.dinoco.oficina.enums.TipoMovimentacao;
 import com.dinoco.oficina.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -23,23 +23,15 @@ public class OrdemServicoService {
     private final OrdemServicoRepository osRepository;
     private final ClienteService clienteService;
     private final VeiculoService veiculoService;
-    private final ProdutoRepository produtoRepository;
-    private final MovimentacaoEstoqueRepository movimentacaoRepository;
+    private final MovimentacaoEstoqueService movimentacaoEstoqueService;
 
     @Transactional
     public OrdemServicoResponseDto abrirOs(OrdemServicoRequestDto osRequestDto) {
         //TODO - Criar tratamento para não permitir ter mais de uma OS "aberta" para o mesmo veículo.
-        //validarDados(osRequestDto);
         var cliente = clienteService.buscarEntidadePorId(osRequestDto.clienteId());
         var veiculo = veiculoService.buscarEntidadePorId(osRequestDto.veiculoId());
         var ordemServico = new OrdemServico(cliente, veiculo, osRequestDto.quilometragemEntrada(), osRequestDto.reclamacaoCliente());
         return mapearParaResponse(osRepository.save(ordemServico));
-    }
-
-    private void validarDados(OrdemServicoRequestDto osRequestDto) {
-        if (osRepository.existeOsAtivaParaVeiculo(osRequestDto.veiculoId())) {
-            throw new IllegalStateException("Já existe uma Ordem de Serviço aberta para este veículo.");
-        }
     }
 
     @Transactional
@@ -80,7 +72,11 @@ public class OrdemServicoService {
         }
         os.setStatus(StatusOS.AGUARDANDO_APROVACAO);
         osRepository.save(os);
-        //TODO - Melhorar
+
+        return getLinkWhatsAppDto(os);
+    }
+
+    private static LinkWhatsAppDto getLinkWhatsAppDto(OrdemServico os) {
         NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
         String valorFormatado = formatoMoeda.format(os.getValorTotalOS());
         String mensagem = String.format(
@@ -111,17 +107,16 @@ public class OrdemServicoService {
     public void aprovarOrcamento(Long osId) {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.AGUARDANDO_APROVACAO);
-        processarReservaEstoque(os);
+        movimentacaoEstoqueService.reservarItens(os);
+        atualizarStatusPosReserva(os);
+        osRepository.save(os);
+    }
+
+    private void atualizarStatusPosReserva(OrdemServico os) {
         boolean temTudoNoEstoque = os.getItensProduto().stream()
                 .allMatch(item -> item.getProduto().getQuantidadeDisponivel().compareTo(BigDecimal.ZERO) >= 0);
 
-        if (temTudoNoEstoque) {
-            os.setStatus(StatusOS.AGUARDANDO_EXECUCAO);
-        } else {
-            os.setStatus(StatusOS.AGUARDANDO_FORNECEDOR);
-        }
-
-        osRepository.save(os);
+        os.setStatus(temTudoNoEstoque ? StatusOS.AGUARDANDO_EXECUCAO : StatusOS.AGUARDANDO_FORNECEDOR);
     }
 
     @Transactional
@@ -142,7 +137,7 @@ public class OrdemServicoService {
     public void iniciarExecucaoOS(Long osId) {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.AGUARDANDO_EXECUCAO);
-        efetivarBaixaEstoque(os);
+        movimentacaoEstoqueService.consumirReservasParaExecucao(os);
         os.setStatus(StatusOS.EM_EXECUCAO);
         osRepository.save(os);
     }
@@ -152,14 +147,12 @@ public class OrdemServicoService {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.EM_EXECUCAO);
 
-        // Regra de Negócio: Não pode finalizar se houver serviços não concluídos
         boolean temServicoPendente = os.getItensServico().stream()
                 .anyMatch(item -> item.getStatusItem() != StatusItemServico.CONCLUIDO);
 
         if (temServicoPendente) {
             throw new IllegalStateException("Não é possível finalizar a OS. Existem serviços pendentes ou em andamento.");
         }
-
         os.setStatus(StatusOS.FINALIZADA);
         osRepository.save(os);
     }
@@ -197,30 +190,6 @@ public class OrdemServicoService {
         os.setValorTotalOS(totalProdutos.add(totalServicos).subtract(os.getValorDesconto()).max(BigDecimal.ZERO));
 
         osRepository.save(os);
-    }
-
-    private void processarReservaEstoque(OrdemServico os) {
-        for (ItemOSProduto item : os.getItensProduto()) {
-            Produto p = item.getProduto();
-            p.setQuantidadeReservada(p.getQuantidadeReservada().add(item.getQuantidade()));
-            produtoRepository.save(p);
-            registrarAuditoria(p, item.getQuantidade(), TipoMovimentacao.RESERVA_OS, "Reserva OS: " + os.getCodigoRastreio());
-        }
-    }
-
-    private void efetivarBaixaEstoque(OrdemServico os) {
-        for (ItemOSProduto item : os.getItensProduto()) {
-            Produto p = item.getProduto();
-            p.setQuantidadeAtual(p.getQuantidadeAtual().subtract(item.getQuantidade()));
-            p.setQuantidadeReservada(p.getQuantidadeReservada().subtract(item.getQuantidade()));
-            produtoRepository.save(p);
-            registrarAuditoria(p, item.getQuantidade(), TipoMovimentacao.BAIXA_EXECUCAO_OS, "Baixa física OS: " + os.getCodigoRastreio());
-        }
-    }
-
-    private void registrarAuditoria(Produto p, BigDecimal qtd, TipoMovimentacao tipo, String obs) {
-        MovimentacaoEstoque mov = new MovimentacaoEstoque(null, p, tipo, qtd, LocalDateTime.now(), obs);
-        movimentacaoRepository.save(mov);
     }
 
     public OrdemServico buscarOuFalhar(Long id) {

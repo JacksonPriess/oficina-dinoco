@@ -3,7 +3,6 @@ package com.dinoco.oficina.entity;
 import com.dinoco.oficina.enums.TipoMovimentacao;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -11,6 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "movimentacao_estoque")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")

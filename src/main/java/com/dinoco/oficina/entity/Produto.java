@@ -61,4 +61,29 @@ public class Produto {
             return false;
         return valorSugerido.compareTo(this.precoCusto) < 0;
     }
+
+    public void adicionarQuantidadeReservada(BigDecimal quantidade) {
+        if (quantidade == null || quantidade.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Quantidade de reserva deve ser maior que zero.");
+        }
+        this.quantidadeReservada = this.quantidadeReservada.add(quantidade);
+    }
+
+    public void atualizarQuantidadeReal(BigDecimal quantidade) {
+        if ( quantidade == null ) {
+            throw new IllegalArgumentException("Quantidade deve ser informada.");
+        }
+        this.quantidadeAtual = this.quantidadeAtual.add(quantidade);
+    }
+
+    public void consumirQuantidadeReservadaEFisica(BigDecimal quantidade) {
+        if (quantidade == null || quantidade.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("A quantidade para consumo deve ser maior que zero.");
+        }
+        if (this.quantidadeReservada.compareTo(quantidade) < 0) {
+            throw new IllegalStateException("Tentativa de consumir uma quantidade maior do que a reservada.");
+        }
+        this.quantidadeAtual = this.quantidadeAtual.subtract(quantidade);
+        this.quantidadeReservada = this.quantidadeReservada.subtract(quantidade);
+    }
 }

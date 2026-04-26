@@ -66,7 +66,7 @@ public class OrdemServicoController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "07. Verificar estoque")
+    @Operation(summary = "07. Verificar estoque", description = "Ação necessária quando a OS fica Aguadando Fornecedor")
     @PostMapping("/{id}/verificar-estoque")
     public ResponseEntity<Void> verificarDisponibilidadePecas(@PathVariable Long id) {
         service.verificarDisponibilidadePecas(id);

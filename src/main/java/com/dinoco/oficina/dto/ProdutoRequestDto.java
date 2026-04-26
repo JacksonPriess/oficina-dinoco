@@ -22,9 +22,6 @@ public record ProdutoRequestDto(
     BigDecimal quantidadeAtual,
 
     @PositiveOrZero
-    BigDecimal quantidadeReservada,
-
-    @PositiveOrZero
     BigDecimal precoCusto,
 
     @PositiveOrZero
@@ -32,7 +29,6 @@ public record ProdutoRequestDto(
 ) {
     public ProdutoRequestDto {
         quantidadeAtual = quantidadeAtual != null ? quantidadeAtual : BigDecimal.ZERO;
-        quantidadeReservada = quantidadeReservada != null ? quantidadeReservada : BigDecimal.ZERO;
         precoCusto = precoCusto != null ? precoCusto : BigDecimal.ZERO;
         precoVenda = precoVenda != null ? precoVenda : BigDecimal.ZERO;
     }

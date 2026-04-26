@@ -3,15 +3,12 @@ package com.dinoco.oficina.service;
 import com.dinoco.oficina.dto.ProdutoRequestDto;
 import com.dinoco.oficina.dto.ProdutoResponseDto;
 import com.dinoco.oficina.dto.ProdutoUpdateRequestDto;
-import com.dinoco.oficina.entity.Cliente;
 import com.dinoco.oficina.entity.Produto;
-import com.dinoco.oficina.enums.TipoMovimentacao;
 import com.dinoco.oficina.repository.ProdutoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -31,19 +28,15 @@ public class ProdutoService {
         produto.setMarca(dto.marca());
         produto.setCodigoFabricante(dto.codigoFabricante());
         produto.setAplicacao(dto.aplicacao());
-        produto.setQuantidadeAtual(dto.quantidadeAtual());
-        produto.setQuantidadeReservada(dto.quantidadeReservada());
+        produto.setQuantidadeAtual(BigDecimal.ZERO);
+        produto.setQuantidadeReservada(BigDecimal.ZERO);
         produto.setPrecoCusto(dto.precoCusto());
         produto.setPrecoVenda(dto.precoVenda());
-        Produto salvo = produtoRepository.save(produto);
-
-        //Na criação do produto, quando houve entrada real, deve movimentar estoque
+        Produto produtoSalvo = produtoRepository.save(produto);
         if (dto.quantidadeAtual().compareTo(BigDecimal.ZERO) > 0) {
-            movimentacaoEstoqueService.registrarMovimentacao(salvo, dto.quantidadeAtual(),
-                    TipoMovimentacao.ENTRADA_FORNECEDOR, "Carga inicial de estoque");
+            movimentacaoEstoqueService.registrarEntrada(produtoSalvo.getId(),dto.quantidadeAtual(), "Saldo inicial no cadastro do produto");
         }
-
-        return mapearParaResponse(salvo);
+        return mapearParaResponse(produtoSalvo);
     }
 
     @Transactional
@@ -52,19 +45,22 @@ public class ProdutoService {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
 
+        boolean houveAjusteEstoque = dto.quantidadeAtual() != null && dto.quantidadeAtual().compareTo(produto.getQuantidadeAtual()) != 0;
+        BigDecimal diferencaEstoque = BigDecimal.ZERO;
+        if (houveAjusteEstoque) {
+            diferencaEstoque = dto.quantidadeAtual().subtract(produto.getQuantidadeAtual());
+        }
         produto.setNome(dto.nome());
         produto.setTipo(dto.tipo());
         produto.setMarca(dto.marca());
         produto.setCodigoFabricante(dto.codigoFabricante());
         produto.setAplicacao(dto.aplicacao());
-
-        produto.setQuantidadeAtual(dto.quantidadeAtual() != null ? dto.quantidadeAtual() : produto.getQuantidadeAtual());
-        produto.setQuantidadeReservada(dto.quantidadeReservada() != null ? dto.quantidadeReservada() : produto.getQuantidadeReservada());
         produto.setPrecoCusto(dto.precoCusto() != null ? dto.precoCusto() : produto.getPrecoCusto());
         produto.setPrecoVenda(dto.precoVenda() != null ? dto.precoVenda() : produto.getPrecoVenda());
-
         Produto salvo = produtoRepository.save(produto);
-
+        if (houveAjusteEstoque) {
+            movimentacaoEstoqueService.ajustarInventario(id, diferencaEstoque, "Ajuste manual via edição de produto");
+        }
         return mapearParaResponse(salvo);
     }
 
@@ -80,7 +76,6 @@ public class ProdutoService {
     public void desativar(Long id) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
-
         produto.setAtivo(false);
         produtoRepository.save(produto);
     }

@@ -1,9 +1,9 @@
 package com.dinoco.oficina.enums;
 
 public enum TipoMovimentacao {
-    ENTRADA_FORNECEDOR, // Aumenta Físico
-    RESERVA_OS,         // Aumenta Reservado
-    BAIXA_EXECUCAO_OS,  // Diminui Físico e Diminui Reservado
-    ESTORNO_RESERVA,    // Futura implementacao
-    AJUSTE_MANUAL       // Balanço de estoque (quando o dono conta e vê que sumiu peça)
+    ENTRADA,
+    RESERVA_OS,
+    BAIXA_EXECUCAO_OS, // Diminuir quantidade física e reservada
+    AJUSTE_ENTRADA,
+    AJUSTE_SAIDA
 }
