@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
-@Tag(name = "Clientes", description = "Cadastro de cliente")
+@Tag(name = "2. Clientes", description = "Cadastro de cliente")
 @RestController
 @RequestMapping("/api/clientes")
 @RequiredArgsConstructor

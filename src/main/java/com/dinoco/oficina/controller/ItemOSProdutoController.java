@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Itens da OS - Produtos", description = "Cadastro de itens de produto da OS")
+@Tag(name = "8. Itens da OS - Produtos", description = "Cadastro de itens de produto da OS")
 @RestController
 @RequiredArgsConstructor
 public class ItemOSProdutoController {

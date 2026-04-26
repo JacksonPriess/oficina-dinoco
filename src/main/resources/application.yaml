@@ -36,3 +36,4 @@ api:
 springdoc:
   swagger-ui:
     persistAuthorization: true
+    tagsSorter: "alpha"

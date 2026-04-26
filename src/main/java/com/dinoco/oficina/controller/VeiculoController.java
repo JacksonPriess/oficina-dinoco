@@ -13,7 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
-@Tag(name = "Veículos", description = "Cadastro de veículo")
+@Tag(name = "4. Veículos", description = "Cadastro de veículo")
 @RestController
 @RequestMapping("/api/veiculos")
 @RequiredArgsConstructor

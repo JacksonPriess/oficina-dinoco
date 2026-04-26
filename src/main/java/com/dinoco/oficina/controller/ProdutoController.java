@@ -14,7 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-@Tag(name = "Produtos", description = "Controle de estoque")
+@Tag(name = "5. Produtos", description = "Controle de produto/estoque")
 @RestController
 @RequestMapping("api/produtos")
 @RequiredArgsConstructor
