@@ -1,7 +1,7 @@
 package com.dinoco.oficina.controller;
 
 import com.dinoco.oficina.dto.ItemOSProdutoAdicionarDto;
-import com.dinoco.oficina.dto.ItemProdutoAlterarDto;
+import com.dinoco.oficina.dto.ItemOSProdutoAlterarDto;
 import com.dinoco.oficina.service.ItemOSProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,9 +27,9 @@ public class ItemOSProdutoController {
 
     @Operation(summary = "Alterar item")
     @PutMapping("/api/itens-produto/{itemId}")
-    public ResponseEntity<Void> alterarProduto(@PathVariable Long itemId, @Valid @RequestBody ItemProdutoAlterarDto dto) {
+    public ResponseEntity<Void> alterarProduto(@PathVariable Long itemId, @Valid @RequestBody ItemOSProdutoAlterarDto dto) {
         itemProdutoService.alterarItemProduto(itemId, dto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Remover item")

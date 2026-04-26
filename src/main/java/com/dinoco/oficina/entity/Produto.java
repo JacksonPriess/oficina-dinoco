@@ -55,4 +55,10 @@ public class Produto {
     public BigDecimal getQuantidadeDisponivel() {
         return this.quantidadeAtual.subtract(this.quantidadeReservada);
     }
+
+    public boolean isValorVendaInvalido(BigDecimal valorSugerido) {
+        if (this.precoCusto == null || valorSugerido == null)
+            return false;
+        return valorSugerido.compareTo(this.precoCusto) < 0;
+    }
 }

@@ -1,7 +1,7 @@
 package com.dinoco.oficina.service;
 
 import com.dinoco.oficina.dto.ItemOSProdutoAdicionarDto;
-import com.dinoco.oficina.dto.ItemProdutoAlterarDto;
+import com.dinoco.oficina.dto.ItemOSProdutoAlterarDto;
 import com.dinoco.oficina.entity.ItemOSProduto;
 import com.dinoco.oficina.entity.OrdemServico;
 import com.dinoco.oficina.entity.Produto;
@@ -35,15 +35,23 @@ public class ItemOSProdutoService {
     }
 
     @Transactional
-    public void alterarItemProduto(Long itemId, ItemProdutoAlterarDto dto) {
+    public void alterarItemProduto(Long itemId, ItemOSProdutoAlterarDto dto) {
         ItemOSProduto item = buscarItemOuFalhar(itemId);
         OrdemServico os = item.getOrdemServico();
         validarSePodeModificarItens(os);
+        validarValorUnitarioVenda(dto, item);
         item.setQuantidade(dto.quantidade());
         item.setValorUnitarioVenda(dto.valorUnitarioVenda());
         item.setValorTotal(dto.quantidade().multiply(dto.valorUnitarioVenda()));
         repository.save(item);
         ordemServicoService.recalcularTotais(os.getId());
+    }
+
+    private static void validarValorUnitarioVenda(ItemOSProdutoAlterarDto dto, ItemOSProduto item) {
+        Produto produtoOriginal = item.getProduto();
+        if (produtoOriginal.isValorVendaInvalido(dto.valorUnitarioVenda())) {
+            throw new IllegalStateException("O valor de venda não pode ser menor que o preço de custo.");
+        }
     }
 
     @Transactional

@@ -5,7 +5,8 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
-public record ItemProdutoAlterarDto(
+public record ItemOSProdutoAlterarDto(
+
         @NotNull
         @Positive(message = "A quantidade deve ser maior que zero")
         BigDecimal quantidade,
