@@ -59,10 +59,10 @@ public class OrdemServicoController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Enviar orçamento")
     @PostMapping("/{id}/enviar-orcamento")
-    public ResponseEntity<Void> enviarOrcamento(@PathVariable Long id) {
-        service.enviarOrcamento(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<LinkWhatsAppDto> enviarOrcamento(@PathVariable Long id) {
+        return ResponseEntity.ok(service.enviarOrcamento(id));
     }
 
     @PostMapping("/{id}/reprovar")

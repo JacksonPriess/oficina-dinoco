@@ -10,7 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +66,7 @@ public class OrdemServicoService {
     }
 
     @Transactional
-    public void enviarOrcamento(Long osId) {
+    public LinkWhatsAppDto enviarOrcamento(Long osId) {
         OrdemServico os = buscarOuFalhar(osId);
 
         boolean temItemProdutoSemPreco = os.getItensProduto().stream()
@@ -74,9 +78,23 @@ public class OrdemServicoService {
         if ( temItemProdutoSemPreco || temItemServicoSemValor ) {
             throw new IllegalStateException("Existem itens da OS sem valor R$.");
         }
-
         os.setStatus(StatusOS.AGUARDANDO_APROVACAO);
         osRepository.save(os);
+        //TODO - Melhorar
+        NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        String valorFormatado = formatoMoeda.format(os.getValorTotalOS());
+        String mensagem = String.format(
+                "Olá %s, tudo bem? O orçamento do seu veículo está pronto! Total de %s. Podemos dar andamento no atendimento?",
+                os.getCliente().getNome(),
+                valorFormatado
+        );
+        String mensagemCodificada = URLEncoder.encode(mensagem, StandardCharsets.UTF_8);
+        String telefoneLimpo = os.getCliente().getTelefone().replaceAll("[^0-9]", "");
+        if (!telefoneLimpo.startsWith("55")) {
+            telefoneLimpo = "55" + telefoneLimpo;
+        }
+        String urlFinal = "https://wa.me/" + telefoneLimpo + "?text=" + mensagemCodificada;
+        return new LinkWhatsAppDto(urlFinal);
     }
 
     @Transactional
