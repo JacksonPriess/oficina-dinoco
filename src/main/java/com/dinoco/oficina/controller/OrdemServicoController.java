@@ -1,7 +1,6 @@
 package com.dinoco.oficina.controller;
 
 import com.dinoco.oficina.dto.*;
-import com.dinoco.oficina.entity.OrdemServico;
 import com.dinoco.oficina.service.OrdemServicoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,16 +45,18 @@ public class OrdemServicoController {
         return ResponseEntity.ok(service.buscarPorCodigoRastreio(codigoRastreio));
     }
 
+    @Operation(summary = "Iniciar diagnóstico")
     @PostMapping("/{id}/iniciar-diagnostico")
     public ResponseEntity<Void> iniciarDiagnostico(@PathVariable Long id) {
         service.iniciarDiagnostico(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Concluir diagnóstico, informando o laudo técnico final e encaminhar para Orçamento")
     @PostMapping("/{id}/concluir-diagnostico")
-    public ResponseEntity<Void> concluirDiagnostico(@PathVariable Long id, @RequestBody String laudo) {
-        service.concluirDiagnostico(id, laudo);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> concluirDiagnostico(@PathVariable Long id, @Valid @RequestBody ConcluirDiagnosticoDto dto) {
+        service.concluirDiagnostico(id, dto.laudo());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/enviar-orcamento")
