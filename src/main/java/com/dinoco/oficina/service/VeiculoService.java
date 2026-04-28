@@ -1,11 +1,9 @@
 package com.dinoco.oficina.service;
 
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
-import com.dinoco.oficina.repository.ClienteRepository;
 import com.dinoco.oficina.repository.VeiculoRepository;
 import com.dinoco.oficina.dto.VeiculoRequestDto;
 import com.dinoco.oficina.dto.VeiculoResponseDto;
-import com.dinoco.oficina.entity.Cliente;
 import com.dinoco.oficina.entity.Veiculo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class VeiculoService {
 
     private final VeiculoRepository repository;
-    private final ClienteRepository clienteRepository;
 
     @Transactional
     public VeiculoResponseDto criar(VeiculoRequestDto dto) {
@@ -24,12 +21,7 @@ public class VeiculoService {
         if (repository.existsByPlaca(dto.placa())) {
             throw new IllegalArgumentException("Veículo já cadastrado com esta placa.");
         }
-
-        Cliente cliente = clienteRepository.findById(dto.clienteId())
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado."));
-
         Veiculo veiculo = new Veiculo();
-        veiculo.setCliente(cliente);
         veiculo.setPlaca(dto.placa());
         veiculo.setMarca(dto.marca());
         veiculo.setModelo(dto.modelo());
@@ -58,19 +50,10 @@ public class VeiculoService {
         Veiculo veiculo = repository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado."));
 
-        // 1. Valida se a placa foi alterada e se a nova placa já pertence a outro carro
         if (!veiculo.getPlaca().equalsIgnoreCase(dto.placa()) && repository.existsByPlaca(dto.placa())) {
             throw new IllegalArgumentException("Já existe outro veículo cadastrado com esta placa.");
         }
 
-        // 2. Valida se o dono do carro mudou (Transferência de propriedade)
-        if (!veiculo.getCliente().getId().equals(dto.clienteId())) {
-            Cliente novoCliente = clienteRepository.findById(dto.clienteId())
-                    .orElseThrow(() -> new RecursoNaoEncontradoException("Novo cliente não encontrado."));
-            veiculo.setCliente(novoCliente);
-        }
-
-        // 3. Atualiza os demais dados
         veiculo.setPlaca(dto.placa());
         veiculo.setMarca(dto.marca());
         veiculo.setModelo(dto.modelo());
@@ -79,7 +62,6 @@ public class VeiculoService {
         veiculo.setCor(dto.cor());
         veiculo.setChassi(dto.chassi());
         veiculo.setMotor(dto.motor());
-
         Veiculo veiculoAtualizado = repository.save(veiculo);
         return mapearParaResponse(veiculoAtualizado);
     }
@@ -95,8 +77,6 @@ public class VeiculoService {
     private VeiculoResponseDto mapearParaResponse(Veiculo veiculo) {
         return new VeiculoResponseDto(
                 veiculo.getId(),
-                veiculo.getCliente().getId(),
-                veiculo.getCliente().getNome(),
                 veiculo.getPlaca(),
                 veiculo.getMarca(),
                 veiculo.getModelo(),

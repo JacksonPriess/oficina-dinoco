@@ -45,7 +45,6 @@ public class Cliente {
     @Column(name = "data_criacao", updatable = false)
     private LocalDateTime dataCriacao;
 
-    // Relação 1:N com Endereco
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Endereco> enderecos = new ArrayList<>();
 
@@ -54,7 +53,6 @@ public class Cliente {
         this.dataCriacao = LocalDateTime.now();
     }
 
-    // Método utilitário para sincronizar a relação bidirecional
     public void addEndereco(Endereco endereco) {
         enderecos.add(endereco);
         endereco.setCliente(this);

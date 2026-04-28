@@ -18,15 +18,12 @@ Criação da Ordem de Serviço (OS):
 Acompanhamento da OS:
 
 	● Status da OS:
-        ○ Recebida; Carro estacionou, recepção pegou os dados o mecanico recebeu OS para iniciar diagnostico;
-        ○ Em diagnóstico;
-        ○ Aguardando Cotação -> (NOVO!) (Recepção está caçando os preços das peças que não tem na oficina).
-        ○ Aguardando aprovação;
-        ○ Aprovada -> (NOVO!) (Cliente disse sim, a oficina vai encomendar as peças e preparar o elevador).
-        ○ Reprovada -> (Cliente achou caro e foi embora na fase 4. A OS morre aqui). 
-        ○ Em execução;
-        ○ Finalizada;
-        ○ Entregue.
+       ○ Recebida;
+       ○ Em diagnóstico;
+       ○ Aguardando aprovação;
+       ○ Em execução;
+       ○ Finalizada;
+       ○ Entregue;
 
 ● Alteração automática dos status conforme ações no sistema;
 ● Permitir consulta por parte do cliente via API para acompanhar o progresso.

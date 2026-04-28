@@ -43,4 +43,5 @@ public class ItemOSServico {
 
     @Column(name = "data_fim")
     private LocalDateTime dataFim;
+
 }

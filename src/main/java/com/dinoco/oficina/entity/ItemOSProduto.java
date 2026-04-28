@@ -34,7 +34,4 @@ public class ItemOSProduto {
     @Column(name = "valor_total", nullable = false)
     private BigDecimal valorTotal = BigDecimal.ZERO;
 
-    @Column(name = "foi_encomendado", nullable = false)
-    private boolean foiEncomendado = false;
-
 }

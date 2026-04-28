@@ -35,4 +35,5 @@ public class MovimentacaoEstoque {
     private LocalDateTime dataMovimentacao = LocalDateTime.now();
 
     private String observacao;
+
 }

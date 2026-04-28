@@ -16,11 +16,6 @@ public class Veiculo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relação N:1 - Muitos veículos podem pertencer a um Cliente
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente;
-
     @Column(nullable = false, length = 8, unique = true)
     private String placa;
 

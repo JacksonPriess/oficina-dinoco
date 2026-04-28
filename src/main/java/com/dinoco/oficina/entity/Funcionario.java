@@ -29,4 +29,5 @@ public class Funcionario {
 
     @Column(name = "usuario_id")
     private Long usuarioId;
+
 }
