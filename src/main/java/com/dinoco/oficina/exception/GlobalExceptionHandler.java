@@ -1,21 +1,24 @@
 package com.dinoco.oficina.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1. Intercepta erros de Validação (@Valid do DTO)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErroPadraoDto> handleValidationErrors(MethodArgumentNotValidException ex) {
 
-        // Pega todos os campos que deram erro e extrai apenas a mensagem que escrevemos no DTO
         List<String> erros = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -29,10 +32,11 @@ public class GlobalExceptionHandler {
                 erros
         );
 
+        log.warn("Falha de validação recebida. Campos com erro: {}", erros);
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroPadrao);
     }
 
-    // 2. Intercepta erros de Regra de Negócio (ex: IllegalArgumentException e IllegalStateExceptiondo Service)
     @ExceptionHandler({ IllegalArgumentException.class, IllegalStateException.class })
     public ResponseEntity<ErroPadraoDto> handleBusinessErrors(RuntimeException ex) {
 
@@ -43,11 +47,13 @@ public class GlobalExceptionHandler {
                 List.of(ex.getMessage())
         );
 
+
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroPadrao);
     }
 
     @ExceptionHandler(RecursoNaoEncontradoException.class)
-    public ResponseEntity<ErroPadraoDto> recursoNaoEncontradoException(RecursoNaoEncontradoException ex) {
+    public ResponseEntity<ErroPadraoDto> handleRecursoNaoEncontrado(RecursoNaoEncontradoException ex) {
 
         ErroPadraoDto erroPadrao = new ErroPadraoDto(
                 LocalDateTime.now(),
@@ -55,6 +61,58 @@ public class GlobalExceptionHandler {
                 "Recurso não encontrado",
                 List.of(ex.getMessage())
         );
+
+        log.info("Recurso não encontrado: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroPadrao);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErroPadraoDto> handleGenericException(Exception ex) {
+
+        log.error("Erro interno inesperado no servidor", ex);
+
+        ErroPadraoDto erroPadrao = new ErroPadraoDto(
+                LocalDateTime.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Erro Interno no Servidor",
+                List.of("Ocorreu um erro inesperado. Por favor, tente novamente mais tarde ou contate o suporte.")
+        );
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erroPadrao);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErroPadraoDto> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String nomeDoParametro = ex.getName();
+        String valorEnviado = ex.getValue() != null ? ex.getValue().toString() : "nulo";
+        String tipoEsperado = ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "desconhecido";
+
+        String mensagem = String.format("O parâmetro '%s' recebeu o valor '%s', que é de um tipo inválido. Deveria ser do tipo '%s'.",
+                nomeDoParametro, valorEnviado, tipoEsperado);
+
+        ErroPadraoDto erroPadrao = new ErroPadraoDto(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Parâmetro Inválido",
+                List.of(mensagem)
+        );
+
+        log.warn("Erro de conversão de tipo: {}", mensagem);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroPadrao);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErroPadraoDto> handleNoResourceFound(NoResourceFoundException ex) {
+        ErroPadraoDto erroPadrao = new ErroPadraoDto(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Rota não encontrada",
+                List.of("O endpoint '" + ex.getResourcePath() + "' não existe nesta API.")
+        );
+
+        log.warn("Tentativa de acesso a rota inexistente: {}", ex.getResourcePath());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroPadrao);
     }
