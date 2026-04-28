@@ -6,6 +6,7 @@ import com.dinoco.oficina.entity.ItemOSProduto;
 import com.dinoco.oficina.entity.OrdemServico;
 import com.dinoco.oficina.entity.Produto;
 import com.dinoco.oficina.enums.StatusOS;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.ItemOSProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -69,7 +70,7 @@ public class ItemOSProdutoService {
 
     private ItemOSProduto buscarItemOuFalhar(Long itemId) {
         return repository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("Item de produto não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Item de produto não encontrado."));
     }
 
     private void validarSePodeModificarItens(OrdemServico os) {

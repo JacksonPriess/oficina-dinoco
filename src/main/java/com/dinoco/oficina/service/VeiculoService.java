@@ -1,13 +1,12 @@
 package com.dinoco.oficina.service;
 
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.ClienteRepository;
 import com.dinoco.oficina.repository.VeiculoRepository;
 import com.dinoco.oficina.dto.VeiculoRequestDto;
 import com.dinoco.oficina.dto.VeiculoResponseDto;
 import com.dinoco.oficina.entity.Cliente;
 import com.dinoco.oficina.entity.Veiculo;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,7 @@ public class VeiculoService {
         }
 
         Cliente cliente = clienteRepository.findById(dto.clienteId())
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado."));
 
         Veiculo veiculo = new Veiculo();
         veiculo.setCliente(cliente);
@@ -45,19 +44,19 @@ public class VeiculoService {
 
     public VeiculoResponseDto buscarPorId(Long id) {
         Veiculo veiculo = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Veículo não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado."));
         return mapearParaResponse(veiculo);
     }
 
     public Veiculo buscarEntidadePorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Veículo não encontrado com ID: " + id));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado com ID: " + id));
     }
 
     @Transactional
     public VeiculoResponseDto atualizar(Long id, VeiculoRequestDto dto) {
         Veiculo veiculo = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Veículo não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado."));
 
         // 1. Valida se a placa foi alterada e se a nova placa já pertence a outro carro
         if (!veiculo.getPlaca().equalsIgnoreCase(dto.placa()) && repository.existsByPlaca(dto.placa())) {
@@ -67,7 +66,7 @@ public class VeiculoService {
         // 2. Valida se o dono do carro mudou (Transferência de propriedade)
         if (!veiculo.getCliente().getId().equals(dto.clienteId())) {
             Cliente novoCliente = clienteRepository.findById(dto.clienteId())
-                    .orElseThrow(() -> new IllegalArgumentException("Novo cliente não encontrado."));
+                    .orElseThrow(() -> new RecursoNaoEncontradoException("Novo cliente não encontrado."));
             veiculo.setCliente(novoCliente);
         }
 
@@ -88,7 +87,7 @@ public class VeiculoService {
     @Transactional
     public void desativar(Long id) {
         Veiculo veiculo = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Veículo não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado."));
         veiculo.setAtivo(false);
         repository.save(veiculo);
     }

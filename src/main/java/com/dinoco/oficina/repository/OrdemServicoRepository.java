@@ -16,4 +16,16 @@ public interface OrdemServicoRepository extends JpaRepository<OrdemServico, Long
     boolean existeOsAtivaParaVeiculo(@Param("veiculoId") Long veiculoId);
 
     Optional<OrdemServico> findByCodigoRastreio(String codigoRastreio);
+
+    @Query("""
+        SELECT DISTINCT os FROM OrdemServico os
+        LEFT JOIN FETCH os.cliente
+        LEFT JOIN FETCH os.veiculo
+        LEFT JOIN FETCH os.itensServico itensS
+        LEFT JOIN FETCH itensS.servico
+        LEFT JOIN FETCH os.itensProduto itensP
+        LEFT JOIN FETCH itensP.produto
+        WHERE os.codigoRastreio = :codigo
+    """)
+    Optional<OrdemServico> buscarPorCodigoComDetalhes(@Param("codigo") String codigo);
 }

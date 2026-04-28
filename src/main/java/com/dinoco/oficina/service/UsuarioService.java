@@ -1,6 +1,7 @@
 package com.dinoco.oficina.service;
 
 import com.dinoco.oficina.entity.Usuario;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,7 +33,7 @@ public class UsuarioService {
     @Transactional
     public String resetarSenhaGerandoTemporaria(Long usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
 
         // Gera uma senha aleatória simples (Ex: Oficina@8492)
         String senhaTemporaria = "Oficina@" + (1000 + new Random().nextInt(9000));

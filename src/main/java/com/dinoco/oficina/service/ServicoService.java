@@ -3,8 +3,8 @@ package com.dinoco.oficina.service;
 import com.dinoco.oficina.dto.ServicoRequestDto;
 import com.dinoco.oficina.dto.ServicoResponseDto;
 import com.dinoco.oficina.entity.Servico;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.ServicoRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,19 +32,19 @@ public class ServicoService {
 
     public ServicoResponseDto buscarPorId(Long id) {
         Servico servico = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Serviço não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Serviço não encontrado."));
         return mapearParaResponse(servico);
     }
 
     public Servico buscarEntidadePorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado com ID: " + id));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Serviço não encontrado com ID: " + id));
     }
 
     @Transactional
     public ServicoResponseDto atualizar(Long id, ServicoRequestDto dto) {
         Servico servico = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Serviço não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Serviço não encontrado."));
 
         // Valida se o usuário mudou a descrição do serviço para um descrição que já existe em outro registro
         if (!servico.getDescricao().equalsIgnoreCase(dto.descricao()) && repository.existsByDescricaoIgnoreCase(dto.descricao())) {
@@ -61,7 +61,7 @@ public class ServicoService {
     @Transactional
     public void desativar(Long id) {
         Servico servico = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Serviço não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Serviço não encontrado."));
 
         servico.setAtivo(false);
         repository.save(servico);

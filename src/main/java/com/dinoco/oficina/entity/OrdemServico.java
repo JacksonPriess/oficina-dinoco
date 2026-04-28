@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "ordem_servico")
@@ -65,10 +63,10 @@ public class OrdemServico {
     private LocalDateTime dataSaida;
 
     @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemOSServico> itensServico = new ArrayList<>();
+    private Set<ItemOSServico> itensServico = new HashSet<>();
 
     @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemOSProduto> itensProduto = new ArrayList<>();
+    private Set<ItemOSProduto> itensProduto = new HashSet<>();
 
     @PrePersist
     private void prePersist() {

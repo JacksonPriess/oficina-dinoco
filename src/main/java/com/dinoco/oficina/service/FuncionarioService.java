@@ -4,9 +4,9 @@ import com.dinoco.oficina.dto.FuncionarioRequestDto;
 import com.dinoco.oficina.dto.FuncionarioResponseDto;
 import com.dinoco.oficina.entity.Funcionario;
 import com.dinoco.oficina.entity.Usuario;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.FuncionarioRepository;
 import com.dinoco.oficina.util.DocumentoUtil;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,19 +44,19 @@ public class FuncionarioService {
 
     public FuncionarioResponseDto buscarPorId(Long id) {
         Funcionario funcionario = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Funcionário não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Funcionário não encontrado."));
         return mapearParaResponse(funcionario);
     }
 
     public Funcionario buscarEntidadePorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Funcionário não encontrado com ID: " + id));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Funcionário não encontrado com ID: " + id));
     }
 
     @Transactional
     public FuncionarioResponseDto atualizar(Long id, FuncionarioRequestDto dto) {
         Funcionario funcionario = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Funcionário não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Funcionário não encontrado."));
 
         if (!funcionario.getCpf().equals(dto.cpf())) {
             throw new IllegalArgumentException("Não é permitido alterar o cpf de um funcionário já cadastrado.");
@@ -73,7 +73,7 @@ public class FuncionarioService {
     @Transactional
     public void desativar(Long id) {
         Funcionario funcionario = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Funcionário não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Funcionário não encontrado."));
         funcionario.setAtivo(false);
         repository.save(funcionario);
     }
@@ -81,7 +81,7 @@ public class FuncionarioService {
     @Transactional
     public String resetarSenhaFuncionario(Long funcionarioId) {
         Funcionario funcionario = repository.findById(funcionarioId)
-                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Funcionário não encontrado"));
 
         if (funcionario.getUsuarioId() == null) {
             throw new IllegalArgumentException("Este funcionário não possui acesso ao sistema.");

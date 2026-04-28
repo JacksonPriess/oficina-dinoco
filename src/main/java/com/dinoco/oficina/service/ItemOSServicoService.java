@@ -8,6 +8,7 @@ import com.dinoco.oficina.entity.OrdemServico;
 import com.dinoco.oficina.entity.Servico;
 import com.dinoco.oficina.enums.StatusItemServico;
 import com.dinoco.oficina.enums.StatusOS;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.ItemOSServicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -91,7 +92,7 @@ public class ItemOSServicoService {
 
     private ItemOSServico buscarItemOuFalhar(Long itemId) {
         return repository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("Item de serviço não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Item de serviço não encontrado."));
     }
 
     private void validarStatusParaEdicao(OrdemServico os) {

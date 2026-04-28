@@ -4,8 +4,8 @@ import com.dinoco.oficina.dto.ProdutoRequestDto;
 import com.dinoco.oficina.dto.ProdutoResponseDto;
 import com.dinoco.oficina.dto.ProdutoUpdateRequestDto;
 import com.dinoco.oficina.entity.Produto;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.ProdutoRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +43,7 @@ public class ProdutoService {
     public ProdutoResponseDto atualizar(Long id, ProdutoUpdateRequestDto dto) {
 
         Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado"));
 
         boolean houveAjusteEstoque = dto.quantidadeAtual() != null && dto.quantidadeAtual().compareTo(produto.getQuantidadeAtual()) != 0;
         BigDecimal diferencaEstoque = BigDecimal.ZERO;
@@ -75,14 +75,14 @@ public class ProdutoService {
     @Transactional
     public void desativar(Long id) {
         Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado."));
         produto.setAtivo(false);
         produtoRepository.save(produto);
     }
 
     public Produto buscarEntidadePorId(Long id) {
         return produtoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado com ID: " + id));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado com ID: " + id));
     }
 
     private ProdutoResponseDto mapearParaResponse(Produto p) {

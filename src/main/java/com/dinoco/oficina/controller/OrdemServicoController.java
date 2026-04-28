@@ -94,16 +94,22 @@ public class OrdemServicoController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "11. Buscar OS por código")
+    @Operation(summary = "11. Buscar resumo OS por código")
     @GetMapping("/{id}")
     public ResponseEntity<OrdemServicoResponseDto> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
-    @Operation(summary = "12. Buscar OS por número de rastreio")
+    @Operation(summary = "12. Buscar resumo OS por número de rastreio")
     @GetMapping("/rastreio/{codigoRastreio}")
-    public ResponseEntity<OrdemServicoResponseDto> buscarPorCodigoRastreio(@PathVariable String codigoRastreio) {
-        //TODO - Simplificar retorno da OS quando for por código de rastreio.
+    public ResponseEntity<OrdemServicoPublicResponseDto> buscarPorCodigoRastreio(@PathVariable String codigoRastreio) {
         return ResponseEntity.ok(service.buscarPorCodigoRastreio(codigoRastreio));
+    }
+
+    @Operation(summary = "13. Buscar detalhamento da OS por número de rastreio")
+    @GetMapping("/detalhes/{codigoRastreio}")
+    public ResponseEntity<OrdemServicoDetalhadaResponseDto> getDetalhes(@PathVariable String codigoRastreio) {
+        OrdemServicoDetalhadaResponseDto response = service.buscarDetalhesPorCodigo(codigoRastreio);
+        return ResponseEntity.ok(response);
     }
 }

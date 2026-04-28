@@ -40,9 +40,22 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 "Regra de Negócio Violada",
-                List.of(ex.getMessage()) // ex.getMessage() vai capturar o texto exato de qualquer uma das duas
+                List.of(ex.getMessage())
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroPadrao);
+    }
+
+    @ExceptionHandler(RecursoNaoEncontradoException.class)
+    public ResponseEntity<ErroPadraoDto> recursoNaoEncontradoException(RecursoNaoEncontradoException ex) {
+
+        ErroPadraoDto erroPadrao = new ErroPadraoDto(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Recurso não encontrado",
+                List.of(ex.getMessage())
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroPadrao);
     }
 }

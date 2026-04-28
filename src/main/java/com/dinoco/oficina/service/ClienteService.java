@@ -5,9 +5,9 @@ import com.dinoco.oficina.dto.ClienteResponseDto;
 import com.dinoco.oficina.dto.EnderecoDto;
 import com.dinoco.oficina.entity.Cliente;
 import com.dinoco.oficina.entity.Endereco;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.ClienteRepository;
 import com.dinoco.oficina.util.DocumentoUtil;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,20 +65,20 @@ public class ClienteService {
 
     public ClienteResponseDto buscarPorId(Long id) {
         Cliente cliente = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado."));
         return mapearParaResponse(cliente);
     }
 
     public Cliente buscarEntidadePorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + id));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado com ID: " + id));
     }
 
 
     @Transactional
     public ClienteResponseDto atualizar(Long id, ClienteRequestDto dto) {
         Cliente cliente = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado."));
 
         if (!cliente.getDocumento().equals(dto.documento())) {
             throw new IllegalArgumentException("Não é permitido alterar o documento (CPF/CNPJ) de um cliente já cadastrado.");
@@ -116,7 +116,7 @@ public class ClienteService {
     @Transactional
     public void desativar(Long id) {
         Cliente cliente = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado."));
 
         cliente.setAtivo(false);
         repository.save(cliente);

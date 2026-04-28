@@ -4,9 +4,9 @@ import com.dinoco.oficina.dto.*;
 import com.dinoco.oficina.entity.*;
 import com.dinoco.oficina.enums.StatusItemServico;
 import com.dinoco.oficina.enums.StatusOS;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -20,7 +20,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class OrdemServicoService {
 
-    private final OrdemServicoRepository osRepository;
+    private final OrdemServicoRepository repository;
     private final ClienteService clienteService;
     private final VeiculoService veiculoService;
     private final MovimentacaoEstoqueService movimentacaoEstoqueService;
@@ -31,7 +31,7 @@ public class OrdemServicoService {
         var cliente = clienteService.buscarEntidadePorId(osRequestDto.clienteId());
         var veiculo = veiculoService.buscarEntidadePorId(osRequestDto.veiculoId());
         var ordemServico = new OrdemServico(cliente, veiculo, osRequestDto.quilometragemEntrada(), osRequestDto.reclamacaoCliente());
-        return mapearParaResponse(osRepository.save(ordemServico));
+        return mapearParaResponse(repository.save(ordemServico));
     }
 
     @Transactional
@@ -39,7 +39,7 @@ public class OrdemServicoService {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatusDiagnostico(os);
         os.setStatus(StatusOS.EM_DIAGNOSTICO);
-        osRepository.save(os);
+        repository.save(os);
     }
 
     private void validarStatusDiagnostico(OrdemServico os) {
@@ -54,7 +54,7 @@ public class OrdemServicoService {
         validarStatus(os, StatusOS.EM_DIAGNOSTICO);
         os.setLaudoTecnico(laudoTecnico);
         os.setStatus(StatusOS.AGUARDANDO_ORCAMENTO);
-        osRepository.save(os);
+        repository.save(os);
     }
 
     @Transactional
@@ -71,7 +71,7 @@ public class OrdemServicoService {
             throw new IllegalStateException("Existem itens da OS sem valor R$.");
         }
         os.setStatus(StatusOS.AGUARDANDO_APROVACAO);
-        osRepository.save(os);
+        repository.save(os);
 
         return getLinkWhatsAppDto(os);
     }
@@ -100,7 +100,7 @@ public class OrdemServicoService {
         os.setStatus(StatusOS.REPROVADA);
         //TODO - Criar uma data de encerramento geral da OS, saida não fica legal
         os.setDataSaida(LocalDateTime.now());
-        osRepository.save(os);
+        repository.save(os);
     }
 
     @Transactional
@@ -109,7 +109,7 @@ public class OrdemServicoService {
         validarStatus(os, StatusOS.AGUARDANDO_APROVACAO);
         movimentacaoEstoqueService.reservarItens(os);
         atualizarStatusPosReserva(os);
-        osRepository.save(os);
+        repository.save(os);
     }
 
     private void atualizarStatusPosReserva(OrdemServico os) {
@@ -129,7 +129,7 @@ public class OrdemServicoService {
 
         if (agoraTemTudo) {
             os.setStatus(StatusOS.AGUARDANDO_EXECUCAO);
-            osRepository.save(os);
+            repository.save(os);
         }
     }
 
@@ -139,7 +139,7 @@ public class OrdemServicoService {
         validarStatus(os, StatusOS.AGUARDANDO_EXECUCAO);
         movimentacaoEstoqueService.consumirReservasParaExecucao(os);
         os.setStatus(StatusOS.EM_EXECUCAO);
-        osRepository.save(os);
+        repository.save(os);
     }
 
     @Transactional
@@ -154,7 +154,7 @@ public class OrdemServicoService {
             throw new IllegalStateException("Não é possível finalizar a OS. Existem serviços pendentes ou em andamento.");
         }
         os.setStatus(StatusOS.FINALIZADA);
-        osRepository.save(os);
+        repository.save(os);
     }
 
     @Transactional
@@ -164,7 +164,7 @@ public class OrdemServicoService {
         //TODO - Faturamento - Nota de Servico
         os.setStatus(StatusOS.ENTREGUE);
         os.setDataSaida(LocalDateTime.now());
-        osRepository.save(os);
+        repository.save(os);
     }
 
     private void validarStatus(OrdemServico os, StatusOS statusEsperado) {
@@ -189,24 +189,68 @@ public class OrdemServicoService {
         os.setValorTotalServicos(totalServicos);
         os.setValorTotalOS(totalProdutos.add(totalServicos).subtract(os.getValorDesconto()).max(BigDecimal.ZERO));
 
-        osRepository.save(os);
+        repository.save(os);
     }
 
     public OrdemServico buscarOuFalhar(Long id) {
-        return osRepository.findById(id).orElseThrow(() -> new RuntimeException("OS não encontrada"));
+        return repository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("OS não encontrada"));
     }
 
     public OrdemServicoResponseDto buscarPorId(Long id) {
-        OrdemServico ordemServico = osRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("OS não encontrada."));
+        OrdemServico ordemServico = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("OS não encontrada."));
         return mapearParaResponse(ordemServico);
     }
 
-    public OrdemServicoResponseDto buscarPorCodigoRastreio(String codigoRastreio) {
-        OrdemServico ordemServico = osRepository.findByCodigoRastreio(codigoRastreio).orElseThrow(() -> new IllegalArgumentException("OS não encontrada para o código de rastreio: " + codigoRastreio));
-        return mapearParaResponse(ordemServico);
+    public OrdemServicoPublicResponseDto buscarPorCodigoRastreio(String codigoRastreio) {
+        OrdemServico ordemServico = repository.findByCodigoRastreio(codigoRastreio).orElseThrow(() -> new RecursoNaoEncontradoException("OS não encontrada para o código de rastreio: " + codigoRastreio));
+        return mapearParaPublicResponse(ordemServico);
     }
 
+    @Transactional(readOnly = true)
+    public OrdemServicoDetalhadaResponseDto buscarDetalhesPorCodigo(String codigo) {
+        return repository.buscarPorCodigoComDetalhes(codigo)
+                .map(os -> {
+                    var servicos = os.getItensServico().stream()
+                            .map(is -> new ItemServicoDetalheDto(
+                                    is.getId(),
+                                    is.getServico().getDescricao(),
+                                    is.getMecanico() != null ? is.getMecanico().getNome() : "Não atribuído",
+                                    is.getValorCobrado(),
+                                    is.getStatusItem().name(),
+                                    is.getDataInicio(),
+                                    is.getDataFim()
+                            )).toList();
+
+                    var produtos = os.getItensProduto().stream()
+                            .map(ip -> new ItemProdutoDetalheDto(
+                                    ip.getId(),
+                                    ip.getProduto().getNome(),
+                                    ip.getQuantidade(),
+                                    ip.getValorUnitarioVenda(),
+                                    ip.getValorTotal()
+                            )).toList();
+
+                    return new OrdemServicoDetalhadaResponseDto(
+                            os.getId(),
+                            os.getCodigoRastreio(),
+                            os.getCliente().getNome(),
+                            os.getVeiculo().getPlaca(),
+                            os.getReclamacaoCliente(),
+                            os.getLaudoTecnico(),
+                            os.getValorTotalServicos(),
+                            os.getValorTotalProdutos(),
+                            os.getValorTotalOS(),
+                            os.getStatus().name(),
+                            os.getDataEntrada(),
+                            servicos,
+                            produtos
+                    );
+                })
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de Serviço não encontrada: " + codigo));
+    }
+
+    //TODO - Implemenar o uso da biblioteca MapStruct
     private OrdemServicoResponseDto mapearParaResponse(OrdemServico ordemServico) {
         return new OrdemServicoResponseDto(
                 ordemServico.getId(),
@@ -214,6 +258,23 @@ public class OrdemServicoService {
                 ordemServico.getCliente().getId(),
                 ordemServico.getCliente().getNome(),
                 ordemServico.getVeiculo().getId(),
+                ordemServico.getVeiculo().getPlaca(),
+                ordemServico.getReclamacaoCliente(),
+                ordemServico.getQuilometragemEntrada(),
+                ordemServico.getLaudoTecnico(),
+                ordemServico.getValorTotalServicos(),
+                ordemServico.getValorTotalProdutos(),
+                ordemServico.getValorDesconto(),
+                ordemServico.getValorTotalOS(),
+                ordemServico.getStatus().toString()
+        );
+    }
+    //TODO - Implemenar o uso da biblioteca MapStruct
+    private OrdemServicoPublicResponseDto mapearParaPublicResponse(OrdemServico ordemServico) {
+        return new OrdemServicoPublicResponseDto(
+                ordemServico.getId(),
+                ordemServico.getCodigoRastreio(),
+                ordemServico.getCliente().getNome(),
                 ordemServico.getVeiculo().getPlaca(),
                 ordemServico.getReclamacaoCliente(),
                 ordemServico.getQuilometragemEntrada(),

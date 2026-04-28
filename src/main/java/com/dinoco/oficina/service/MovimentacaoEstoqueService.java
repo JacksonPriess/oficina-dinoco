@@ -5,6 +5,7 @@ import com.dinoco.oficina.entity.MovimentacaoEstoque;
 import com.dinoco.oficina.entity.OrdemServico;
 import com.dinoco.oficina.entity.Produto;
 import com.dinoco.oficina.enums.TipoMovimentacao;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.MovimentacaoEstoqueRepository;
 import com.dinoco.oficina.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class MovimentacaoEstoqueService {
     public void consumirReservasParaExecucao(OrdemServico os) {
         for (ItemOSProduto item : os.getItensProduto()) {
             Produto produto = produtoRepository.findById(item.getProduto().getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado no estoque"));
+                    .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado no estoque"));
             produto.consumirQuantidadeReservadaEFisica(item.getQuantidade());
             produtoRepository.save(produto);
             registrarMovimentacao(produto,item.getQuantidade(),TipoMovimentacao.BAIXA_EXECUCAO_OS,"Baixa física OS: " + os.getCodigoRastreio());
@@ -55,7 +56,7 @@ public class MovimentacaoEstoqueService {
     @Transactional
     public void registrarEntrada(Long produtoId, BigDecimal quantidade, String observacao) {
         Produto produto = produtoRepository.findById(produtoId)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado"));
         produto.atualizarQuantidadeReal(quantidade);
         produtoRepository.save(produto);
         registrarMovimentacao(produto, quantidade, TipoMovimentacao.ENTRADA, observacao);
@@ -64,7 +65,7 @@ public class MovimentacaoEstoqueService {
     @Transactional
     public void ajustarInventario(Long produtoId, BigDecimal diferenca, String observacao) {
         Produto produto = produtoRepository.findById(produtoId)
-                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado"));
 
         produto.atualizarQuantidadeReal(diferenca);
         TipoMovimentacao tipo = diferenca.compareTo(BigDecimal.ZERO) > 0
