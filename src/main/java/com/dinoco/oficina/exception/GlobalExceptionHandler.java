@@ -1,6 +1,7 @@
 package com.dinoco.oficina.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -115,5 +116,19 @@ public class GlobalExceptionHandler {
         log.warn("Tentativa de acesso a rota inexistente: {}", ex.getResourcePath());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroPadrao);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErroPadraoDto> handleBadCredentials(BadCredentialsException ex) {
+        ErroPadraoDto erroPadrao = new ErroPadraoDto(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED.value(),
+                "Falha na autenticação",
+                List.of("Usuário ou senha inválidos.")
+        );
+
+        log.warn("Falha de autenticação: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(erroPadrao);
     }
 }
