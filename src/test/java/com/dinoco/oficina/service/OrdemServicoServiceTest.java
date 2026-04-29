@@ -5,6 +5,7 @@ import com.dinoco.oficina.dto.OrdemServicoResponseDto;
 import com.dinoco.oficina.entity.ItemOSProduto;
 import com.dinoco.oficina.entity.ItemOSServico;
 import com.dinoco.oficina.entity.OrdemServico;
+import com.dinoco.oficina.entity.Produto;
 import com.dinoco.oficina.enums.StatusOS;
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.helper.ClienteBuilder;
@@ -43,6 +44,9 @@ class OrdemServicoServiceTest {
 
     @Mock
     private ClienteService clienteService;
+
+    @Mock
+    private MovimentacaoEstoqueService movimentacaoEstoqueService;
 
     @Mock
     private VeiculoService veiculoService;
@@ -333,6 +337,100 @@ class OrdemServicoServiceTest {
 
         assertEquals("Existem itens da OS sem valor R$.", exception.getMessage());
         verify(repository, never()).save(any(OrdemServico.class));
+    }
+
+    @Test
+    @DisplayName("Deve reprovar o orçamento, alterar status para REPROVADA e preencher data de reprovação")
+    void deveReprovarOrcamentoComSucesso() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.AGUARDANDO_APROVACAO);
+
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+
+        // 2. Act
+        osService.reprovarOrcamento(osId);
+
+        // 3. Assert
+        verify(repository, times(1)).save(osCaptor.capture());
+        OrdemServico entidadeCapturada = osCaptor.getValue();
+
+        assertEquals(StatusOS.REPROVADA, entidadeCapturada.getStatus());
+        assertNotNull(entidadeCapturada.getDataReprovacao());
+    }
+
+    @Test
+    @DisplayName("Deve lançar IllegalStateException ao tentar reprovar orçamento com status diferente de AGUARDANDO_APROVACAO")
+    void deveLancarExceptionAoReprovarOrcamentoComStatusInvalido() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.EM_DIAGNOSTICO);
+
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+
+        // 2. Act & Assert
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class,
+                () -> osService.reprovarOrcamento(osId)
+        );
+
+        assertEquals("Operação inválida para o status atual da OS: EM_DIAGNOSTICO", exception.getMessage());
+        verify(repository, never()).save(any(OrdemServico.class));
+    }
+
+    @Test
+    @DisplayName("Deve aprovar orçamento e definir status como AGUARDANDO_EXECUCAO quando houver estoque")
+    void deveAprovarOrcamentoComEstoqueDisponivel() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.AGUARDANDO_APROVACAO);
+
+        Produto produtoComEstoque = new Produto();
+        produtoComEstoque.setQuantidadeAtual(new BigDecimal(1));
+
+        ItemOSProduto item = new ItemOSProduto();
+        item.setQuantidade(new BigDecimal(1));
+        item.setProduto(produtoComEstoque);
+        osMock.setItensProduto(Set.of(item));
+
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+
+        // 2. Act
+        osService.aprovarOrcamento(osId);
+
+        // 3. Assert
+        verify(movimentacaoEstoqueService, times(1)).reservarItens(osMock);
+        verify(repository).save(osCaptor.capture());
+        assertEquals(StatusOS.AGUARDANDO_EXECUCAO, osCaptor.getValue().getStatus());
+    }
+
+    @Test
+    @DisplayName("Deve aprovar orçamento e definir status como AGUARDANDO_FORNECEDOR quando NÃO houver estoque")
+    void deveAprovarOrcamentoSemEstoqueDisponivel() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.AGUARDANDO_APROVACAO);
+
+        Produto produtoSemEstoque = new Produto();
+        produtoSemEstoque.setQuantidadeAtual(new BigDecimal(0));
+        produtoSemEstoque.setQuantidadeReservada(new BigDecimal(1));
+
+        ItemOSProduto item = new ItemOSProduto();
+        item.setQuantidade(new BigDecimal(1));
+        item.setProduto(produtoSemEstoque);
+        osMock.setItensProduto(Set.of(item));
+
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+
+        // 2. Act
+        osService.aprovarOrcamento(osId);
+
+        // 3. Assert
+        assertEquals(StatusOS.AGUARDANDO_FORNECEDOR, osMock.getStatus());
     }
 
 

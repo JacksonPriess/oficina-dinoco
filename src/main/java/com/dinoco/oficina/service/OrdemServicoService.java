@@ -113,8 +113,7 @@ public class OrdemServicoService {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.AGUARDANDO_APROVACAO);
         os.setStatus(StatusOS.REPROVADA);
-        //TODO - Criar uma data de encerramento geral da OS, saida não fica legal
-        os.setDataSaida(LocalDateTime.now());
+        os.setDataReprovacao(LocalDateTime.now());
         repository.save(os);
     }
 
@@ -181,8 +180,6 @@ public class OrdemServicoService {
         os.setDataSaida(LocalDateTime.now());
         repository.save(os);
     }
-
-
 
     @Transactional
     public void recalcularTotais(Long osId) {

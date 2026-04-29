@@ -12,5 +12,6 @@ CREATE TABLE ordem_servico (
     valor_desconto DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     valor_total_os DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     data_entrada TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    data_saida TIMESTAMP
+    data_saida TIMESTAMP,
+    data_reprovacao TIMESTAMP
 );

@@ -62,6 +62,9 @@ public class OrdemServico {
     @Column(name = "data_saida")
     private LocalDateTime dataSaida;
 
+    @Column(name = "data_reprovacao")
+    private LocalDateTime dataReprovacao;
+
     @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ItemOSServico> itensServico = new HashSet<>();
 
