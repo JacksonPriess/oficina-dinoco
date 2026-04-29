@@ -74,7 +74,6 @@ public class ClienteService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado com ID: " + id));
     }
 
-
     @Transactional
     public ClienteResponseDto atualizar(Long id, ClienteRequestDto dto) {
         Cliente cliente = repository.findById(id)

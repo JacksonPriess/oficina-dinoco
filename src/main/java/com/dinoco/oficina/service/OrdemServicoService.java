@@ -27,7 +27,6 @@ public class OrdemServicoService {
 
     @Transactional
     public OrdemServicoResponseDto abrirOs(OrdemServicoRequestDto osRequestDto) {
-        //TODO - Criar tratamento para não permitir ter mais de uma OS "aberta" para o mesmo veículo.
         var cliente = clienteService.buscarEntidadePorId(osRequestDto.clienteId());
         var veiculo = veiculoService.buscarEntidadePorId(osRequestDto.veiculoId());
         var ordemServico = new OrdemServico(cliente, veiculo, osRequestDto.quilometragemEntrada(), osRequestDto.reclamacaoCliente());
@@ -42,6 +41,10 @@ public class OrdemServicoService {
         repository.save(os);
     }
 
+    public OrdemServico buscarOuFalhar(Long id) {
+        return repository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("OS não encontrada"));
+    }
+
     private void validarStatusDiagnostico(OrdemServico os) {
         if (os.getStatus() != StatusOS.RECEBIDA) {
             throw new IllegalStateException("Para iniciar um diagnóstico a OS deve estar com status RECEBIDA. Status atual da OS: " + os.getStatus());
@@ -52,9 +55,22 @@ public class OrdemServicoService {
     public void concluirDiagnostico(Long osId, String laudoTecnico) {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.EM_DIAGNOSTICO);
+        validarItensServico(os);
         os.setLaudoTecnico(laudoTecnico);
         os.setStatus(StatusOS.AGUARDANDO_ORCAMENTO);
         repository.save(os);
+    }
+
+    private void validarItensServico(OrdemServico os) {
+        if (os.getItensServico() == null || os.getItensServico().isEmpty()) {
+            throw new IllegalStateException("Para concluir o diagnóstico, a OS deve possuir ao menos um item de serviço.");
+        }
+    }
+
+    private void validarStatus(OrdemServico os, StatusOS statusEsperado) {
+        if (os.getStatus() != statusEsperado) {
+            throw new IllegalStateException("Operação inválida para o status atual da OS: " + os.getStatus());
+        }
     }
 
     @Transactional
@@ -72,7 +88,6 @@ public class OrdemServicoService {
         }
         os.setStatus(StatusOS.AGUARDANDO_APROVACAO);
         repository.save(os);
-
         return getLinkWhatsAppDto(os);
     }
 
@@ -167,11 +182,7 @@ public class OrdemServicoService {
         repository.save(os);
     }
 
-    private void validarStatus(OrdemServico os, StatusOS statusEsperado) {
-        if (os.getStatus() != statusEsperado) {
-            throw new IllegalStateException("Operação inválida para o status atual da OS: " + os.getStatus());
-        }
-    }
+
 
     @Transactional
     public void recalcularTotais(Long osId) {
@@ -190,10 +201,6 @@ public class OrdemServicoService {
         os.setValorTotalOS(totalProdutos.add(totalServicos).subtract(os.getValorDesconto()).max(BigDecimal.ZERO));
 
         repository.save(os);
-    }
-
-    public OrdemServico buscarOuFalhar(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("OS não encontrada"));
     }
 
     public OrdemServicoResponseDto buscarPorId(Long id) {

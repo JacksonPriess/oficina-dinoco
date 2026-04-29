@@ -64,7 +64,6 @@ public class OrdemServicoServiceIT {
         veiculo.setModelo("Corolla");
         veiculo.setMarca("Toyota");
         veiculo.setPlaca("XYZ-9876");
-        veiculo.setCliente(cliente);
         veiculo.setAtivo(true);
         veiculo.setDataCriacao(LocalDateTime.now());
         veiculo = veiculoRepository.save(veiculo);
