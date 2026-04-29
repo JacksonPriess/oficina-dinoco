@@ -161,6 +161,9 @@ public class OrdemServicoService {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.EM_EXECUCAO);
 
+        if (os.getItensServico() == null || os.getItensServico().isEmpty()) {
+            throw new IllegalStateException("Falha de integridade: A OS chegou na finalização sem itens de serviço atrelados.");
+        }
         boolean temServicoPendente = os.getItensServico().stream()
                 .anyMatch(item -> item.getStatusItem() != StatusItemServico.CONCLUIDO);
 
@@ -290,6 +293,4 @@ public class OrdemServicoService {
                 ordemServico.getStatus().toString()
         );
     }
-
-
 }

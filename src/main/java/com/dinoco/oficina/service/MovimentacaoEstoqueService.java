@@ -71,6 +71,7 @@ public class MovimentacaoEstoqueService {
         TipoMovimentacao tipo = diferenca.compareTo(BigDecimal.ZERO) > 0
                 ? TipoMovimentacao.AJUSTE_ENTRADA
                 : TipoMovimentacao.AJUSTE_SAIDA;
+        produtoRepository.save(produto);
 
         BigDecimal quantidadeMovimento = diferenca.abs();
         registrarMovimentacao(produto, quantidadeMovimento, tipo, observacao);

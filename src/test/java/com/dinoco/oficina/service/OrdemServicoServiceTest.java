@@ -1,11 +1,10 @@
 package com.dinoco.oficina.service;
 
 import com.dinoco.oficina.dto.LinkWhatsAppDto;
+import com.dinoco.oficina.dto.OrdemServicoDetalhadaResponseDto;
 import com.dinoco.oficina.dto.OrdemServicoResponseDto;
-import com.dinoco.oficina.entity.ItemOSProduto;
-import com.dinoco.oficina.entity.ItemOSServico;
-import com.dinoco.oficina.entity.OrdemServico;
-import com.dinoco.oficina.entity.Produto;
+import com.dinoco.oficina.entity.*;
+import com.dinoco.oficina.enums.StatusItemServico;
 import com.dinoco.oficina.enums.StatusOS;
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.helper.ClienteBuilder;
@@ -25,10 +24,8 @@ import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -66,22 +63,18 @@ class OrdemServicoServiceTest {
         when(clienteService.buscarEntidadePorId(requestDto.clienteId())).thenReturn(clienteMock);
         when(veiculoService.buscarEntidadePorId(requestDto.veiculoId())).thenReturn(veiculoMock);
         when(repository.save(any(OrdemServico.class))).thenReturn(osSalvaMock);
-
         // 2. Act
         OrdemServicoResponseDto response = osService.abrirOs(requestDto);
-
         // 3. Assert
         assertNotNull(response);
         verify(repository, times(1)).save(osCaptor.capture());
         OrdemServico entidadeCapturada = osCaptor.getValue();
 
-        // Validações fortes (Garante que a regra de negócio aplicou os dados do request na entidade)
         assertEquals(clienteMock, entidadeCapturada.getCliente());
         assertEquals(veiculoMock, entidadeCapturada.getVeiculo());
         assertEquals(requestDto.quilometragemEntrada(), entidadeCapturada.getQuilometragemEntrada());
         assertEquals(requestDto.reclamacaoCliente(), entidadeCapturada.getReclamacaoCliente());
 
-        // Validações de estado inicial (Business Rules)
         assertEquals(StatusOS.RECEBIDA, entidadeCapturada.getStatus());
 
         assertEquals(0, BigDecimal.ZERO.compareTo(entidadeCapturada.getValorTotalServicos()));
@@ -96,14 +89,11 @@ class OrdemServicoServiceTest {
     void deveLancarExceptionQuandoClienteNaoExistir() {
         // 1. Arrange
         Long clienteIdInvalido = 99L;
-
         var requestDto = OrdemServicoRequestDtoBuilder.umRequest()
                 .comClienteId(clienteIdInvalido)
                 .build();
-
         when(clienteService.buscarEntidadePorId(clienteIdInvalido))
                 .thenThrow(new RecursoNaoEncontradoException("Cliente não encontrado com ID: " + clienteIdInvalido));
-
         // 2. Act & Assert
         RecursoNaoEncontradoException exception = assertThrows(
                 RecursoNaoEncontradoException.class,
@@ -121,14 +111,10 @@ class OrdemServicoServiceTest {
         Long osId = 1L;
         OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
         osMock.setStatus(StatusOS.RECEBIDA);
-
         when(repository.findById(osId)).thenReturn(Optional.of(osMock));
-
         // 2. Act
         osService.iniciarDiagnostico(osId);
-
         // 3. Assert
-        // Captura a entidade que foi enviada para o save()
         verify(repository, times(1)).save(osCaptor.capture());
         OrdemServico entidadeCapturada = osCaptor.getValue();
         assertEquals(StatusOS.EM_DIAGNOSTICO, entidadeCapturada.getStatus());
@@ -140,12 +126,8 @@ class OrdemServicoServiceTest {
         // 1. Arrange
         Long osId = 1L;
         OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
-
-        // Status que NÃO permite iniciar diagnóstico
         osMock.setStatus(StatusOS.FINALIZADA);
-
         when(repository.findById(osId)).thenReturn(Optional.of(osMock));
-
         // 2. Act & Assert
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
@@ -161,23 +143,18 @@ class OrdemServicoServiceTest {
         // 1. Arrange
         Long osId = 1L;
         String laudoTecnicoValido = "Identificado vazamento na junta do cabeçote e necessidade de retífica.";
-
         OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
         osMock.setStatus(StatusOS.EM_DIAGNOSTICO);
 
         ItemOSServico itemMock = new ItemOSServico();
         itemMock.setValorCobrado(new BigDecimal("150.00"));
         osMock.setItensServico(Set.of(itemMock));
-
         when(repository.findById(osId)).thenReturn(Optional.of(osMock));
-
         // 2. Act
         osService.concluirDiagnostico(osId, laudoTecnicoValido);
-
         // 3. Assert
         verify(repository, times(1)).save(osCaptor.capture());
         OrdemServico entidadeCapturada = osCaptor.getValue();
-
         assertEquals(StatusOS.AGUARDANDO_ORCAMENTO, entidadeCapturada.getStatus());
         assertEquals(laudoTecnicoValido, entidadeCapturada.getLaudoTecnico());
     }
@@ -188,13 +165,9 @@ class OrdemServicoServiceTest {
         // 1. Arrange
         Long osId = 1L;
         String laudoTecnicoValido = "Identificado vazamento na junta do cabeçote e necessidade de retífica.";
-
         OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
-        // Simula a OS em um status que NÃO permite a conclusão do diagnóstico
         osMock.setStatus(StatusOS.RECEBIDA);
-
         when(repository.findById(osId)).thenReturn(Optional.of(osMock));
-
         // 2. Act & Assert
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
@@ -213,10 +186,7 @@ class OrdemServicoServiceTest {
 
         OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
         osMock.setStatus(StatusOS.EM_DIAGNOSTICO);
-
-        // Garante que a lista de itens está vazia
         osMock.setItensServico(Collections.EMPTY_SET);
-
         when(repository.findById(osId)).thenReturn(Optional.of(osMock));
 
         // 2. Act & Assert
@@ -225,10 +195,7 @@ class OrdemServicoServiceTest {
                 () -> osService.concluirDiagnostico(osId, laudoTecnico)
         );
 
-        // Valida a mensagem exata
         assertEquals("Para concluir o diagnóstico, a OS deve possuir ao menos um item de serviço.", exception.getMessage());
-
-        // Garante a interrupção do fluxo
         verify(repository, never()).save(any(OrdemServico.class));
     }
 
@@ -239,7 +206,6 @@ class OrdemServicoServiceTest {
         Long osId = 1L;
         OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
 
-        // Configuramos o Cliente para o teste do WhatsApp
         var cliente = ClienteBuilder.umCliente();
         cliente.setNome("Jackson");
         cliente.setTelefone("(47) 988733271");
@@ -267,10 +233,7 @@ class OrdemServicoServiceTest {
         // 4. Assert - Validação do Link do WhatsApp
         assertNotNull(response);
         String urlGerada = response.urlWhatsApp();
-        // Decodificamos a URL para validar o conteúdo de forma legível
         String urlDecodificada = URLDecoder.decode(urlGerada, StandardCharsets.UTF_8);
-
-        // 1. Verifica se o telefone foi limpo e formatado corretamente
         assertTrue(urlDecodificada.contains("wa.me/5547988733271"));
 
         // 2. Verifica as partes principais da mensagem (ignorando o tipo de espaço do R$)
@@ -288,24 +251,19 @@ class OrdemServicoServiceTest {
         Long osId = 1L;
         OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
 
-        // Item de serviço inválido (R$ 0,00)
         ItemOSServico servicoInvalido = new ItemOSServico();
         servicoInvalido.setValorCobrado(BigDecimal.ZERO);
         osMock.setItensServico(Set.of(servicoInvalido));
 
-        // Item de produto válido
         ItemOSProduto produtoMock = new ItemOSProduto();
         produtoMock.setValorUnitarioVenda(new BigDecimal("1000.00"));
         osMock.setItensProduto(Set.of(produtoMock));
-
         when(repository.findById(osId)).thenReturn(Optional.of(osMock));
-
         // 2. Act & Assert
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
                 () -> osService.enviarOrcamento(osId)
         );
-
         assertEquals("Existem itens da OS sem valor R$.", exception.getMessage());
         verify(repository, never()).save(any(OrdemServico.class));
     }
@@ -317,24 +275,18 @@ class OrdemServicoServiceTest {
         Long osId = 1L;
         OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
 
-        // Item de serviço válido
         ItemOSServico servicoValido = new ItemOSServico();
         servicoValido.setValorCobrado(new BigDecimal("500.00"));
         osMock.setItensServico(Set.of(servicoValido));
-
-        // Item de produto inválido (R$ 0,00)
         ItemOSProduto produtoInvalido = new ItemOSProduto();
         produtoInvalido.setValorUnitarioVenda(BigDecimal.ZERO);
         osMock.setItensProduto(Set.of(produtoInvalido));
-
         when(repository.findById(osId)).thenReturn(Optional.of(osMock));
-
         // 2. Act & Assert
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
                 () -> osService.enviarOrcamento(osId)
         );
-
         assertEquals("Existem itens da OS sem valor R$.", exception.getMessage());
         verify(repository, never()).save(any(OrdemServico.class));
     }
@@ -346,16 +298,12 @@ class OrdemServicoServiceTest {
         Long osId = 1L;
         OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
         osMock.setStatus(StatusOS.AGUARDANDO_APROVACAO);
-
         when(repository.findById(osId)).thenReturn(Optional.of(osMock));
-
         // 2. Act
         osService.reprovarOrcamento(osId);
-
         // 3. Assert
         verify(repository, times(1)).save(osCaptor.capture());
         OrdemServico entidadeCapturada = osCaptor.getValue();
-
         assertEquals(StatusOS.REPROVADA, entidadeCapturada.getStatus());
         assertNotNull(entidadeCapturada.getDataReprovacao());
     }
@@ -367,15 +315,12 @@ class OrdemServicoServiceTest {
         Long osId = 1L;
         OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
         osMock.setStatus(StatusOS.EM_DIAGNOSTICO);
-
         when(repository.findById(osId)).thenReturn(Optional.of(osMock));
-
         // 2. Act & Assert
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
                 () -> osService.reprovarOrcamento(osId)
         );
-
         assertEquals("Operação inválida para o status atual da OS: EM_DIAGNOSTICO", exception.getMessage());
         verify(repository, never()).save(any(OrdemServico.class));
     }
@@ -395,12 +340,9 @@ class OrdemServicoServiceTest {
         item.setQuantidade(new BigDecimal(1));
         item.setProduto(produtoComEstoque);
         osMock.setItensProduto(Set.of(item));
-
         when(repository.findById(osId)).thenReturn(Optional.of(osMock));
-
         // 2. Act
         osService.aprovarOrcamento(osId);
-
         // 3. Assert
         verify(movimentacaoEstoqueService, times(1)).reservarItens(osMock);
         verify(repository).save(osCaptor.capture());
@@ -422,15 +364,318 @@ class OrdemServicoServiceTest {
         ItemOSProduto item = new ItemOSProduto();
         item.setQuantidade(new BigDecimal(1));
         item.setProduto(produtoSemEstoque);
+
         osMock.setItensProduto(Set.of(item));
-
         when(repository.findById(osId)).thenReturn(Optional.of(osMock));
-
         // 2. Act
         osService.aprovarOrcamento(osId);
+        // 3. Assert
+        verify(movimentacaoEstoqueService, times(1)).reservarItens(osMock);
+        verify(repository).save(osCaptor.capture());
+        assertEquals(StatusOS.AGUARDANDO_FORNECEDOR, osCaptor.getValue().getStatus());
+    }
+
+    @Test
+    @DisplayName("Deve alterar status para AGUARDANDO_EXECUCAO e salvar quando todos os itens tiverem estoque")
+    void deveMudarStatusQuandoTiverEstoque() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.AGUARDANDO_FORNECEDOR);
+
+        Produto produtoComEstoque = new Produto();
+        produtoComEstoque.setQuantidadeAtual(new BigDecimal(5));
+        produtoComEstoque.setQuantidadeReservada(new BigDecimal(5));
+
+        ItemOSProduto item = new ItemOSProduto();
+        item.setProduto(produtoComEstoque);
+        item.setQuantidade(new BigDecimal(5));
+        osMock.setItensProduto(Set.of(item));
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+        // 2. Act
+        osService.verificarDisponibilidadePecas(osId);
+        // 3. Assert
+        verify(repository, times(1)).save(osCaptor.capture());
+        assertEquals(StatusOS.AGUARDANDO_EXECUCAO, osCaptor.getValue().getStatus());
+    }
+
+    @Test
+    @DisplayName("Não deve alterar status nem salvar a OS quando ainda faltar estoque de algum item")
+    void naoDeveMudarStatusQuandoFaltarEstoque() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.AGUARDANDO_FORNECEDOR);
+
+        Produto produtoSemEstoque = new Produto();
+        produtoSemEstoque.setQuantidadeAtual(new BigDecimal("0"));
+        produtoSemEstoque.setQuantidadeReservada(new BigDecimal("2"));
+
+        ItemOSProduto item = new ItemOSProduto();
+        item.setProduto(produtoSemEstoque);
+        osMock.setItensProduto(Set.of(item));
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+        // 2. Act
+        osService.verificarDisponibilidadePecas(osId);
+        // 3. Assert
+        verify(repository, never()).save(any(OrdemServico.class));
+        assertEquals(StatusOS.AGUARDANDO_FORNECEDOR, osMock.getStatus());
+    }
+
+    @Test
+    @DisplayName("Deve lançar IllegalStateException ao verificar peças de OS com status diferente de AGUARDANDO_FORNECEDOR")
+    void deveLancarExceptionAoVerificarPecasComStatusInvalido() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.AGUARDANDO_EXECUCAO);
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+        // 2. Act & Assert
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class,
+                () -> osService.verificarDisponibilidadePecas(osId)
+        );
+        assertEquals("Operação inválida para o status atual da OS: AGUARDANDO_EXECUCAO", exception.getMessage());
+        verify(repository, never()).save(any(OrdemServico.class));
+    }
+
+    @Test
+    @DisplayName("Deve iniciar a execução da OS, consumir o estoque reservado e alterar status para EM_EXECUCAO")
+    void deveIniciarExecucaoEAcionarBaixaDeEstoque() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.AGUARDANDO_EXECUCAO);
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+        // 2. Act
+        osService.iniciarExecucaoOS(osId);
+        // 3. Assert
+        verify(movimentacaoEstoqueService, times(1)).consumirReservasParaExecucao(osMock);
+        verify(repository, times(1)).save(osCaptor.capture());
+        assertEquals(StatusOS.EM_EXECUCAO, osCaptor.getValue().getStatus());
+    }
+
+    @Test
+    @DisplayName("Deve lançar IllegalStateException ao tentar iniciar execução de uma OS com status inválido")
+    void deveLancarExceptionAoIniciarExecucaoComStatusInvalido() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.AGUARDANDO_FORNECEDOR);
+
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+        // 2. Act & Assert
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class,
+                () -> osService.iniciarExecucaoOS(osId)
+        );
+        assertEquals("Operação inválida para o status atual da OS: AGUARDANDO_FORNECEDOR", exception.getMessage());
+        verify(movimentacaoEstoqueService, never()).consumirReservasParaExecucao(any());
+        verify(repository, never()).save(any(OrdemServico.class));
+    }
+
+    @Test
+    @DisplayName("Deve finalizar a OS com sucesso quando todos os serviços estiverem concluídos")
+    void deveFinalizarExecucaoComSucesso() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.EM_EXECUCAO);
+        ItemOSServico itemConcluido = new ItemOSServico();
+        itemConcluido.setStatusItem(StatusItemServico.CONCLUIDO);
+        osMock.setItensServico(Set.of(itemConcluido));
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+        // 2. Act
+        osService.finalizarExecucaoOS(osId);
+        // 3. Assert
+        verify(repository, times(1)).save(osCaptor.capture());
+        OrdemServico entidadeCapturada = osCaptor.getValue();
+        assertEquals(StatusOS.FINALIZADA, entidadeCapturada.getStatus());
+    }
+
+    @Test
+    @DisplayName("Deve lançar IllegalStateException ao finalizar OS com serviços pendentes")
+    void deveLancarExceptionQuandoHouverServicoPendente() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.EM_EXECUCAO);
+        ItemOSServico itemPendente = new ItemOSServico();
+        itemPendente.setStatusItem(StatusItemServico.PENDENTE);
+        osMock.setItensServico(Set.of(itemPendente));
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+
+        // 2. Act & Assert
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class,
+                () -> osService.finalizarExecucaoOS(osId)
+        );
+
+        assertEquals("Não é possível finalizar a OS. Existem serviços pendentes ou em andamento.", exception.getMessage());
+        verify(repository, never()).save(any(OrdemServico.class));
+    }
+
+    @Test
+    @DisplayName("Deve lançar IllegalStateException por falha de integridade se a OS não tiver serviços atrelados na finalização")
+    void deveLancarExceptionPorFalhaDeIntegridadeSemServicos() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.EM_EXECUCAO);
+        osMock.setItensServico(Collections.emptySet());
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+        // 2. Act & Assert
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class,
+                () -> osService.finalizarExecucaoOS(osId)
+        );
+        assertEquals("Falha de integridade: A OS chegou na finalização sem itens de serviço atrelados.", exception.getMessage());
+        verify(repository, never()).save(any(OrdemServico.class));
+    }
+
+    @Test
+    @DisplayName("Deve entregar o veículo, alterar status para ENTREGUE e preencher a data de saída")
+    void deveEntregarVeiculoComSucesso() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.FINALIZADA);
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+        // 2. Act
+        osService.entregarVeiculo(osId);
+        // 3. Assert
+        verify(repository, times(1)).save(osCaptor.capture());
+        OrdemServico entidadeCapturada = osCaptor.getValue();
+        assertEquals(StatusOS.ENTREGUE, entidadeCapturada.getStatus());
+        assertNotNull(entidadeCapturada.getDataSaida());
+    }
+
+    @Test
+    @DisplayName("Deve lançar IllegalStateException ao tentar entregar veículo de uma OS que não está FINALIZADA")
+    void deveLancarExceptionAoEntregarVeiculoComStatusInvalido() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setStatus(StatusOS.EM_EXECUCAO);
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+        // 2. Act & Assert
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class,
+                () -> osService.entregarVeiculo(osId)
+        );
+        assertEquals("Operação inválida para o status atual da OS: EM_EXECUCAO", exception.getMessage());
+        verify(repository, never()).save(any(OrdemServico.class));
+    }
+
+    @Test
+    @DisplayName("Deve recalcular totais de produtos, serviços e valor final aplicando o desconto")
+    void deveRecalcularTotaisComSucesso() {
+        // 1. Arrange
+        Long osId = 1L;
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setValorDesconto(new BigDecimal("50.00"));
+        ItemOSServico servico1 = mock(ItemOSServico.class);
+        when(servico1.getValorCobrado()).thenReturn(new BigDecimal("100.00"));
+        ItemOSServico servico2 = mock(ItemOSServico.class);
+        when(servico2.getValorCobrado()).thenReturn(new BigDecimal("200.00"));
+        osMock.setItensServico(Set.of(servico1, servico2));
+        ItemOSProduto produto1 = mock(ItemOSProduto.class);
+        when(produto1.getValorTotal()).thenReturn(new BigDecimal("50.00"));
+        ItemOSProduto produto2 = mock(ItemOSProduto.class);
+        when(produto2.getValorTotal()).thenReturn(new BigDecimal("100.00"));
+        osMock.setItensProduto(Set.of(produto1, produto2));
+        when(repository.findById(osId)).thenReturn(Optional.of(osMock));
+        // 2. Act
+        osService.recalcularTotais(osId);
+        // 3. Assert
+        verify(repository, times(1)).save(osCaptor.capture());
+        OrdemServico entidadeCapturada = osCaptor.getValue();
+        assertEquals(new BigDecimal("150.00"), entidadeCapturada.getValorTotalProdutos());
+        assertEquals(new BigDecimal("300.00"), entidadeCapturada.getValorTotalServicos());
+        assertEquals(new BigDecimal("400.00"), entidadeCapturada.getValorTotalOS());
+    }
+
+    @Test
+    @DisplayName("Deve buscar detalhes da OS por código e mapear corretamente para o DTO")
+    void deveBuscarDetalhesPorCodigoComSucesso() {
+        // 1. Arrange
+        String codigoRastreio = "OS-12345678";
+
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setId(1L);
+        osMock.setCodigoRastreio(codigoRastreio);
+        osMock.setReclamacaoCliente("Barulho no motor");
+        osMock.setLaudoTecnico("Correia dentada gasta");
+
+        //Configurando Cliente e Veículo para evitar NullPointerException no DTO
+        var cliente = new Cliente();
+        cliente.setNome("João da Silva");
+        osMock.setCliente(cliente);
+
+        var veiculo = new Veiculo();
+        veiculo.setPlaca("ABC-1234");
+        osMock.setVeiculo(veiculo);
+
+        //Configurando Produto
+        var produto = new Produto();
+        produto.setNome("Correia Dentada");
+        var itemProduto = new ItemOSProduto();
+        itemProduto.setId(10L);
+        itemProduto.setProduto(produto);
+        itemProduto.setQuantidade(new BigDecimal("1"));
+        itemProduto.setValorUnitarioVenda(new BigDecimal("150.00"));
+        osMock.setItensProduto(Set.of(itemProduto));
+
+        // Configurando Serviços (Um com mecânico, outro sem)
+        var servicoTipo = new Servico();
+        servicoTipo.setDescricao("Troca de Correia");
+
+        var mecanico = new Funcionario();
+        mecanico.setNome("Carlos Mecânico");
+
+        var itemComMecanico = new ItemOSServico();
+        itemComMecanico.setId(20L);
+        itemComMecanico.setServico(servicoTipo);
+        itemComMecanico.setMecanico(mecanico); // Tem mecânico
+        itemComMecanico.setValorCobrado(new BigDecimal("200.00"));
+        itemComMecanico.setStatusItem(StatusItemServico.CONCLUIDO);
+
+        var itemSemMecanico = new ItemOSServico();
+        itemSemMecanico.setId(21L);
+        itemSemMecanico.setServico(servicoTipo);
+        // Não setamos o mecânico aqui para forçar a string "Não atribuído"
+        itemSemMecanico.setValorCobrado(new BigDecimal("50.00"));
+        itemSemMecanico.setStatusItem(StatusItemServico.PENDENTE);
+
+        osMock.setItensServico(Set.of(itemComMecanico, itemSemMecanico));
+
+        // Mock do repositório
+        when(repository.buscarPorCodigoComDetalhes(codigoRastreio)).thenReturn(Optional.of(osMock));
+
+        // 2. Act
+        OrdemServicoDetalhadaResponseDto response = osService.buscarDetalhesPorCodigo(codigoRastreio);
 
         // 3. Assert
-        assertEquals(StatusOS.AGUARDANDO_FORNECEDOR, osMock.getStatus());
+        assertNotNull(response);
+        assertEquals(codigoRastreio, response.codigoRastreio());
+        assertEquals("João da Silva", response.nomeCliente());
+        assertEquals("ABC-1234", response.placaVeiculo());
+
+        // Verifica mapeamento da lista de produtos
+        assertEquals(1, response.produtos().size());
+        assertEquals("Correia Dentada", response.produtos().get(0).nomeProduto());
+
+        // Verifica mapeamento da lista de serviços e a lógica do ternário
+        assertEquals(2, response.servicos().size());
+
+        // Precisamos encontrar qual DTO corresponde a qual item pelas características
+        boolean achouMecanicoAtribuido = response.servicos().stream()
+                .anyMatch(s -> s.mecanico().equals("Carlos Mecânico"));
+        boolean achouMecanicoNaoAtribuido = response.servicos().stream()
+                .anyMatch(s -> s.mecanico().equals("Não atribuído"));
+
+        assertTrue(achouMecanicoAtribuido, "Deveria ter mapeado o nome do mecânico");
+        assertTrue(achouMecanicoNaoAtribuido, "Deveria ter aplicado o fallback 'Não atribuído'");
     }
 
 
