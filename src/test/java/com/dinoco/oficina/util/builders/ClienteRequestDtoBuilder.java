@@ -1,9 +1,9 @@
-package com.dinoco.oficina.helper;
+package com.dinoco.oficina.util.builders;
 
 import com.dinoco.oficina.dto.ClienteRequestDto;
 import java.util.Collections;
 
-public abstract class ClienteRequestDtoHelper {
+public abstract class ClienteRequestDtoBuilder {
 
     public static ClienteRequestDto criarPessoaFisica(String documento) {
         return new ClienteRequestDto(

@@ -22,7 +22,6 @@ public class ClienteService {
     @Transactional
     public ClienteResponseDto criar(ClienteRequestDto dto) {
 
-        // 1. Validação Lógica de CPF/CNPJ
         if ("F".equals(dto.tipoPessoa()) && !DocumentoUtil.isCpfValido(dto.documento())) {
             throw new IllegalArgumentException("CPF inválido.");
         }

@@ -2,8 +2,8 @@ package com.dinoco.oficina.service;
 
 import com.dinoco.oficina.dto.VeiculoResponseDto;
 import com.dinoco.oficina.entity.Veiculo;
-import com.dinoco.oficina.helper.VeiculoBuilder;
-import com.dinoco.oficina.helper.VeiculoRequestDtoBuilder;
+import com.dinoco.oficina.util.builders.VeiculoBuilder;
+import com.dinoco.oficina.util.builders.VeiculoRequestDtoBuilder;
 import com.dinoco.oficina.repository.VeiculoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

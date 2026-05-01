@@ -42,7 +42,7 @@ public class DocumentoUtil {
             int soma = 0;
             // Cálculo do 1º dígito verificador (utiliza os 12 primeiros caracteres)
             for (int i = 0; i < 12; i++) {
-                // A mágica do CNPJ Alfanumérico: char - 48 pega o valor correto tanto para número quanto para letra
+                // char - 48 pega o valor correto tanto para número quanto para letra
                 int valorAscii = cnpj.charAt(i) - 48;
                 soma += valorAscii * peso1[i];
             }

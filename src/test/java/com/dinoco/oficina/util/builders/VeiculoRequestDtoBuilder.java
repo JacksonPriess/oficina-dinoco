@@ -1,22 +1,31 @@
-package com.dinoco.oficina.helper;
+package com.dinoco.oficina.util.builders;
 
 import com.dinoco.oficina.dto.VeiculoRequestDto;
 
 public class VeiculoRequestDtoBuilder {
 
-    private String placa = "KLA2024";
-    private String marca = "Toyota";
-    private String modelo = "Corolla";
-    private Integer anoFabricacao = 2024;
-    private Integer anoModelo = 2024;
-    private String cor = "Preto";
-    private String chassi = "9BRZZZ";
-    private String motor = "2.0";
+    private String placa;
+    private String marca;
+    private String modelo;
+    private Integer anoFabricacao;
+    private Integer anoModelo;
+    private String cor;
+    private String chassi;
+    private String motor;
 
     private VeiculoRequestDtoBuilder() {}
 
     public static VeiculoRequestDtoBuilder umRequest() {
-        return new VeiculoRequestDtoBuilder();
+        VeiculoRequestDtoBuilder builder = new VeiculoRequestDtoBuilder();
+        builder.placa = "FOC2012";
+        builder.marca = "Ford";
+        builder.modelo = "Focus";
+        builder.anoFabricacao = 2012;
+        builder.anoModelo = 2013;
+        builder.cor = "Prata";
+        builder.chassi = "9BFZZZABC12345678";
+        builder.motor = "2.0 Duratec";
+        return builder;
     }
 
     public VeiculoRequestDtoBuilder comPlaca(String placa) {

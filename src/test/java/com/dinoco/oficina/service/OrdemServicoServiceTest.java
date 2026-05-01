@@ -2,15 +2,16 @@ package com.dinoco.oficina.service;
 
 import com.dinoco.oficina.dto.LinkWhatsAppDto;
 import com.dinoco.oficina.dto.OrdemServicoDetalhadaResponseDto;
+import com.dinoco.oficina.dto.OrdemServicoPublicResponseDto;
 import com.dinoco.oficina.dto.OrdemServicoResponseDto;
 import com.dinoco.oficina.entity.*;
 import com.dinoco.oficina.enums.StatusItemServico;
 import com.dinoco.oficina.enums.StatusOS;
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
-import com.dinoco.oficina.helper.ClienteBuilder;
-import com.dinoco.oficina.helper.OrdemServicoBuilder;
-import com.dinoco.oficina.helper.OrdemServicoRequestDtoBuilder;
-import com.dinoco.oficina.helper.VeiculoBuilder;
+import com.dinoco.oficina.util.builders.ClienteBuilder;
+import com.dinoco.oficina.util.builders.OrdemServicoBuilder;
+import com.dinoco.oficina.util.builders.OrdemServicoRequestDtoBuilder;
+import com.dinoco.oficina.util.builders.VeiculoBuilder;
 import com.dinoco.oficina.repository.OrdemServicoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,7 @@ class OrdemServicoServiceTest {
         // 1. Arrange
         var requestDto = OrdemServicoRequestDtoBuilder.umRequest().build();
 
-        var clienteMock = ClienteBuilder.umCliente();
+        var clienteMock = ClienteBuilder.umClientePF().build();
         var veiculoMock = VeiculoBuilder.umVeiculo().build();
         var osSalvaMock = OrdemServicoBuilder.umaOrdemServico().build();
 
@@ -205,11 +206,8 @@ class OrdemServicoServiceTest {
         // 1. Arrange
         Long osId = 1L;
         OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
-
-        var cliente = ClienteBuilder.umCliente();
-        cliente.setNome("Jackson");
-        cliente.setTelefone("(47) 988733271");
-        osMock.setCliente(cliente);
+        osMock.getCliente().setNome("Jackson");
+        osMock.getCliente().setTelefone("(47) 988733271");
         osMock.setValorTotalOS(new BigDecimal("1500.00"));
 
         ItemOSServico servicoMock = new ItemOSServico();
@@ -678,5 +676,78 @@ class OrdemServicoServiceTest {
         assertTrue(achouMecanicoNaoAtribuido, "Deveria ter aplicado o fallback 'Não atribuído'");
     }
 
+    @Test
+    void deveBuscarOrdemServicoPorIdComSucesso() {
+        // 1. Arrange
+        Long idBusca = 100L;
+        var osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setId(idBusca);
+        osMock.setReclamacaoCliente("Veiculo falhando");
+        when(repository.findById(idBusca)).thenReturn(Optional.of(osMock));
+        // 2. Act
+        var response = osService.buscarPorId(idBusca);
+        // 3. Assert
+        assertNotNull(response);
+        assertEquals(osMock.getId(), response.id());
+        assertEquals(osMock.getReclamacaoCliente(), response.reclamacaoCliente());
+        verify(repository).findById(idBusca);
+    }
+
+    @Test
+    @DisplayName("Deve lançar exception quando não encontrar a OS.")
+    void deveLancarExceptionQuandoNaoEncontraAOS() {
+        // 1. Arrange
+        Long idBusca = 1L;
+        when(repository.findById(idBusca)).thenReturn(Optional.empty());
+
+        // 2. Act & Assert
+        RecursoNaoEncontradoException exception = assertThrows(
+                RecursoNaoEncontradoException.class,
+                () -> osService.buscarPorId(idBusca)
+        );
+        // 3. Validações adicionais
+        assertEquals("OS não encontrada.", exception.getMessage());
+        verify(repository).findById(idBusca);
+    }
+
+    @Test
+    @DisplayName("Deve buscar Ordem de Serviço por Código de Rastreio com sucesso e validar o mapeamento")
+    void deveBuscarPorCodigoRastreioComSucesso() {
+        // 1. Arrange
+        String codigoRastreio = "OS-XYZ-123";
+        OrdemServico osMock = OrdemServicoBuilder.umaOrdemServico().build();
+        osMock.setId(1L);
+        osMock.setCodigoRastreio(codigoRastreio);
+        osMock.setStatus(StatusOS.EM_EXECUCAO);
+        when(repository.findByCodigoRastreio(codigoRastreio)).thenReturn(Optional.of(osMock));
+        // 2. Act
+        OrdemServicoPublicResponseDto response = osService.buscarPorCodigoRastreio(codigoRastreio);
+        // 3. Assert
+        assertNotNull(response);
+        assertEquals(osMock.getId(), response.id());
+        assertEquals(codigoRastreio, response.codigoRastreio());
+        // Validando os dados aninhados do mapeamento manual
+        assertEquals("João da Silva", response.nomeCliente());
+        assertEquals("FOC2012", response.placaVeiculo());
+        assertEquals("EM_EXECUCAO", response.status());
+        // 4. Verify
+        verify(repository).findByCodigoRastreio(codigoRastreio);
+    }
+
+    @Test
+    @DisplayName("Deve lançar exception quando não encontrar a OS pelo Código de Rastreio")
+    void deveLancarExceptionQuandoCodigoRastreioNaoEncontrado() {
+        // 1. Arrange
+        String codigoRastreioInvalido = "OS-INEXISTENTE";
+        when(repository.findByCodigoRastreio(codigoRastreioInvalido)).thenReturn(Optional.empty());
+        // 2. Act & Assert
+        RecursoNaoEncontradoException exception = assertThrows(
+                RecursoNaoEncontradoException.class,
+                () -> osService.buscarPorCodigoRastreio(codigoRastreioInvalido)
+        );
+        // 3. Validações adicionais
+        assertEquals("OS não encontrada para o código de rastreio: " + codigoRastreioInvalido, exception.getMessage());
+        verify(repository).findByCodigoRastreio(codigoRastreioInvalido);
+    }
 
 }

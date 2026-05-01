@@ -9,8 +9,4 @@ import java.util.List;
 @Repository
 public interface MovimentacaoEstoqueRepository extends JpaRepository<MovimentacaoEstoque, Long> {
 
-    /**
-     * Buscará as movimentações do produto XXX, por ordem decrescente.
-     */
-    List<MovimentacaoEstoque> findByProdutoIdOrderByDataMovimentacaoDesc(Long produtoId);
 }

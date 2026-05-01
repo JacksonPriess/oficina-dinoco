@@ -3,7 +3,8 @@ package com.dinoco.oficina.service;
 import com.dinoco.oficina.dto.ClienteRequestDto;
 import com.dinoco.oficina.dto.ClienteResponseDto;
 import com.dinoco.oficina.entity.Cliente;
-import com.dinoco.oficina.helper.ClienteRequestDtoHelper;
+import com.dinoco.oficina.util.builders.ClienteBuilder;
+import com.dinoco.oficina.util.builders.ClienteRequestDtoBuilder;
 import com.dinoco.oficina.repository.ClienteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,13 +30,8 @@ class ClienteServiceTest {
     @Test
     void deveCriarClientePFComSucesso() {
         //Arrange
-        var request = ClienteRequestDtoHelper.criarPessoaFisica("52998224725");
-
-        Cliente clienteSalvo = new Cliente();
-        clienteSalvo.setId(1L);
-        clienteSalvo.setTipoPessoa("F");
-        clienteSalvo.setDocumento("52998224725");
-        clienteSalvo.setNome("João da Silva");
+        var request = ClienteRequestDtoBuilder.criarPessoaFisica("52998224725");
+        var clienteSalvo = ClienteBuilder.umClientePF().comId(1L).comTipoPessoa("F").comDocumento("52998224725").comNome("João da Silva").build();
 
         when(repository.existsByDocumento(anyString())).thenReturn(false);
         when(repository.save(any(Cliente.class))).thenReturn(clienteSalvo);
@@ -59,7 +55,7 @@ class ClienteServiceTest {
     @Test
     void deveLancarExcecaoQuandoDocumentoJaEstiverCadastrado() {
 
-        var request = ClienteRequestDtoHelper.criarPessoaFisica("52998224725");
+        var request = ClienteRequestDtoBuilder.criarPessoaFisica("52998224725");
 
         // Ensina o mock: Diga que o documento já existe!
         when(repository.existsByDocumento(anyString())).thenReturn(true);
@@ -75,7 +71,7 @@ class ClienteServiceTest {
 
     @Test
     void deveLancarExcecaoQuandoDocumentoCpfForInvalido() {
-        var request = ClienteRequestDtoHelper.criarPessoaFisica("12345678900");
+        var request = ClienteRequestDtoBuilder.criarPessoaFisica("12345678900");
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             service.criar(request);

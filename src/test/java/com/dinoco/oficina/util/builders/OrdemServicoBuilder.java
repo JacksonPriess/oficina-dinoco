@@ -1,4 +1,4 @@
-package com.dinoco.oficina.helper;
+package com.dinoco.oficina.util.builders;
 
 import com.dinoco.oficina.entity.OrdemServico;
 
@@ -12,7 +12,7 @@ public class OrdemServicoBuilder {
 
     public OrdemServico build() {
         return new OrdemServico(
-                ClienteBuilder.umCliente(),
+                ClienteBuilder.umClientePF().build(),
                 VeiculoBuilder.umVeiculo().build(),
                 quilometragemEntrada,
                 reclamacaoCliente

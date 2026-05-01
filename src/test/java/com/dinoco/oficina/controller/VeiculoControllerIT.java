@@ -1,7 +1,7 @@
 package com.dinoco.oficina.controller;
 
 import com.dinoco.oficina.BaseIT;
-import com.dinoco.oficina.helper.VeiculoRequestDtoBuilder;
+import com.dinoco.oficina.util.builders.VeiculoRequestDtoBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,6 +10,8 @@ import org.springframework.test.context.jdbc.Sql;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
+@Sql(scripts = "/scripts/limpar_dados.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(scripts = "/scripts/limpar_veiculos.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class VeiculoControllerIT extends BaseIT {
 
     @ParameterizedTest(name = "Deve criar veículo com a placa válida: {0}")
@@ -18,7 +20,6 @@ class VeiculoControllerIT extends BaseIT {
             "ABC1D23", // Padrão Mercosul (Letra no meio)
             "XYZ9A87"  // Padrão Mercosul alternativo
     })
-    @Sql(statements = "DELETE FROM veiculo", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void deveCriarVeiculoComPlacasValidas(String placaValida) {
         var request = VeiculoRequestDtoBuilder.umRequest().comPlaca(placaValida).build();
         given()
@@ -57,7 +58,6 @@ class VeiculoControllerIT extends BaseIT {
     @Test
     @DisplayName("Deve buscar um veículo existente por ID")
     @Sql(scripts = "/scripts/inserir_veiculo_teste.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(statements = "DELETE FROM veiculo", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void deveBuscarVeiculoPorId() {
         given()
                 .pathParam("id", 100)
@@ -84,7 +84,6 @@ class VeiculoControllerIT extends BaseIT {
     @Test
     @DisplayName("Deve atualizar os dados do veículo com sucesso")
     @Sql(scripts = "/scripts/inserir_veiculo_teste.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(statements = "DELETE FROM veiculo", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void deveAtualizarVeiculo() {
         var requestUpdate = VeiculoRequestDtoBuilder.umRequest().comCor("Branco").build();
         given()
@@ -100,7 +99,6 @@ class VeiculoControllerIT extends BaseIT {
     @Test
     @DisplayName("Deve desativar o veículo com sucesso")
     @Sql(scripts = "/scripts/inserir_veiculo_teste.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(statements = "DELETE FROM veiculo", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void deveDesativarVeiculo() {
 
         given()

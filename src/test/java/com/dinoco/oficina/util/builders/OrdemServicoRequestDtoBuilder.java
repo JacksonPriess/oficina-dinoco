@@ -1,4 +1,4 @@
-package com.dinoco.oficina.helper;
+package com.dinoco.oficina.util.builders;
 
 import com.dinoco.oficina.dto.OrdemServicoRequestDto;
 
