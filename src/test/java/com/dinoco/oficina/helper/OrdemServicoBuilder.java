@@ -13,7 +13,7 @@ public class OrdemServicoBuilder {
     public OrdemServico build() {
         return new OrdemServico(
                 ClienteBuilder.umCliente(),
-                VeiculoBuilder.umVeiculo(),
+                VeiculoBuilder.umVeiculo().build(),
                 quilometragemEntrada,
                 reclamacaoCliente
         );

@@ -57,7 +57,7 @@ class OrdemServicoServiceTest {
         var requestDto = OrdemServicoRequestDtoBuilder.umRequest().build();
 
         var clienteMock = ClienteBuilder.umCliente();
-        var veiculoMock = VeiculoBuilder.umVeiculo();
+        var veiculoMock = VeiculoBuilder.umVeiculo().build();
         var osSalvaMock = OrdemServicoBuilder.umaOrdemServico().build();
 
         when(clienteService.buscarEntidadePorId(requestDto.clienteId())).thenReturn(clienteMock);
