@@ -10,9 +10,7 @@ CREATE TABLE produto (
     preco_custo DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     preco_venda DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
-    version BIGINT NOT NULL DEFAULT 0,
-    CONSTRAINT chk_reserva_valida CHECK (quantidade_atual >= quantidade_reservada),
-    CONSTRAINT chk_quantidades_positivas CHECK (quantidade_atual >= 0 AND quantidade_reservada >= 0)
+    version BIGINT NOT NULL DEFAULT 0
 );
 
 CREATE INDEX idx_produto_busca ON produto (nome, marca, codigo_fabricante);
