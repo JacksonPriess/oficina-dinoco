@@ -14,7 +14,7 @@ import java.net.URI;
 
 @Tag(name = "2. Clientes", description = "Cadastro de cliente")
 @RestController
-@RequestMapping("/api/clientes")
+@RequestMapping("api/clientes")
 @RequiredArgsConstructor
 public class ClienteController {
 

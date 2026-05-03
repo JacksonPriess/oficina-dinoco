@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Tag(name = "10. Métricas", description = "Relatórios")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/metricas")
+@RequestMapping("api/metricas")
 public class MetricasController {
 
     private final MetricasService metricasService;

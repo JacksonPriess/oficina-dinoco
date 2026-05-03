@@ -19,21 +19,21 @@ public class ItemOSProdutoController {
     private final ItemOSProdutoService itemProdutoService;
 
     @Operation(summary = "Adicionar item")
-    @PostMapping("/api/ordens-servico/{osId}/produtos")
+    @PostMapping("api/ordens-servico/{osId}/produtos")
     public ResponseEntity<Void> adicionarProduto(@PathVariable Long osId, @Valid @RequestBody ItemOSProdutoAdicionarDto dto) {
         itemProdutoService.adicionarItemProduto(osId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "Alterar item")
-    @PutMapping("/api/itens-produto/{itemId}")
+    @PutMapping("api/itens-produto/{itemId}")
     public ResponseEntity<Void> alterarProduto(@PathVariable Long itemId, @Valid @RequestBody ItemOSProdutoAlterarDto dto) {
         itemProdutoService.alterarItemProduto(itemId, dto);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Remover item")
-    @DeleteMapping("/api/itens-produto/{itemId}")
+    @DeleteMapping("api/itens-produto/{itemId}")
     public ResponseEntity<Void> removerProduto(@PathVariable Long itemId) {
         itemProdutoService.removerItemProduto(itemId);
         return ResponseEntity.noContent().build();
