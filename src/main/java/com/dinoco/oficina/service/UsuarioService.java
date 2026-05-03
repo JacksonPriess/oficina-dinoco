@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.security.SecureRandom;
 import java.util.Random;
 
 @Service
@@ -15,6 +17,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     @Transactional
     public Usuario criarUsuarioSistema(String login, String senhaPura) {
@@ -35,8 +38,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
 
-        // Gera uma senha aleatória simples (Ex: Oficina@8492)
-        String senhaTemporaria = "Oficina@" + (1000 + new Random().nextInt(9000));
+        String senhaTemporaria = "Oficina@" + (1000 + SECURE_RANDOM.nextInt(9000));
 
         usuario.setSenha(passwordEncoder.encode(senhaTemporaria));
         usuarioRepository.save(usuario);

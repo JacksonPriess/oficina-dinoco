@@ -18,6 +18,7 @@ import java.util.List;
 public class ClienteService {
 
     private final ClienteRepository repository;
+    private static final String MSG_CLIENTE_NAO_ENCONTRADO = "Cliente não encontrado.";
 
     @Transactional
     public ClienteResponseDto criar(ClienteRequestDto dto) {
@@ -64,7 +65,7 @@ public class ClienteService {
 
     public ClienteResponseDto buscarPorId(Long id) {
         Cliente cliente = repository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException(MSG_CLIENTE_NAO_ENCONTRADO));
         return mapearParaResponse(cliente);
     }
 
@@ -76,7 +77,7 @@ public class ClienteService {
     @Transactional
     public ClienteResponseDto atualizar(Long id, ClienteRequestDto dto) {
         Cliente cliente = repository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException(MSG_CLIENTE_NAO_ENCONTRADO));
 
         if (!cliente.getDocumento().equals(dto.documento())) {
             throw new IllegalArgumentException("Não é permitido alterar o documento (CPF/CNPJ) de um cliente já cadastrado.");
@@ -114,13 +115,12 @@ public class ClienteService {
     @Transactional
     public void desativar(Long id) {
         Cliente cliente = repository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException(MSG_CLIENTE_NAO_ENCONTRADO));
 
         cliente.setAtivo(false);
         repository.save(cliente);
     }
 
-    // Método privado para mapear Entidade -> Response DTO
     private ClienteResponseDto mapearParaResponse(Cliente cliente) {
         List<EnderecoDto> enderecosDto = cliente.getEnderecos().stream()
                 .map(end -> new EnderecoDto(

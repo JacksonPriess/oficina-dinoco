@@ -42,7 +42,7 @@ public class OrdemServicoService {
     }
 
     public OrdemServico buscarOuFalhar(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("OS não encontrada"));
+        return repository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("OS não encontrada."));
     }
 
     private void validarStatusDiagnostico(OrdemServico os) {

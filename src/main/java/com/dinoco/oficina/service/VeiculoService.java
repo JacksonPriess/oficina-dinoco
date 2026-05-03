@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VeiculoService {
 
     private final VeiculoRepository repository;
+    private static final String MSG_VEICULO_NAO_ENCONTRADO = "Veículo não encontrado.";
 
     @Transactional
     public VeiculoResponseDto criar(VeiculoRequestDto dto) {
@@ -36,7 +37,7 @@ public class VeiculoService {
 
     public VeiculoResponseDto buscarPorId(Long id) {
         Veiculo veiculo = repository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException(MSG_VEICULO_NAO_ENCONTRADO));
         return mapearParaResponse(veiculo);
     }
 
@@ -48,7 +49,7 @@ public class VeiculoService {
     @Transactional
     public VeiculoResponseDto atualizar(Long id, VeiculoRequestDto dto) {
         Veiculo veiculo = repository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException(MSG_VEICULO_NAO_ENCONTRADO));
 
         if (!veiculo.getPlaca().equalsIgnoreCase(dto.placa()) && repository.existsByPlaca(dto.placa())) {
             throw new IllegalArgumentException("Já existe outro veículo cadastrado com esta placa.");
@@ -69,7 +70,7 @@ public class VeiculoService {
     @Transactional
     public void desativar(Long id) {
         Veiculo veiculo = repository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException(MSG_VEICULO_NAO_ENCONTRADO));
         veiculo.setAtivo(false);
         repository.save(veiculo);
     }

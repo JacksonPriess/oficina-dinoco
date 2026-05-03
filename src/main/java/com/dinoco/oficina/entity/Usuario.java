@@ -31,7 +31,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Por enquanto, todo usuário logado ganha a role padrão
+        // Por enquanto, todos usuário logado ganha a role padrão
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 

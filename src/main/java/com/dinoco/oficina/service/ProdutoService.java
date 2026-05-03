@@ -18,6 +18,7 @@ public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
     private final MovimentacaoEstoqueService movimentacaoEstoqueService;
+    private static final String MSG_PRODUTO_NAO_ENCONTRADO = "Produto não encontrado.";
 
     @Transactional
     public ProdutoResponseDto criar(ProdutoRequestDto dto) {
@@ -43,7 +44,7 @@ public class ProdutoService {
     public ProdutoResponseDto atualizar(Long id, ProdutoUpdateRequestDto dto) {
 
         Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException(MSG_PRODUTO_NAO_ENCONTRADO));
 
         boolean houveAjusteEstoque = dto.quantidadeAtual() != null && dto.quantidadeAtual().compareTo(produto.getQuantidadeAtual()) != 0;
         BigDecimal diferencaEstoque = BigDecimal.ZERO;
@@ -75,7 +76,7 @@ public class ProdutoService {
     @Transactional
     public void desativar(Long id) {
         Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException(MSG_PRODUTO_NAO_ENCONTRADO));
         produto.setAtivo(false);
         produtoRepository.save(produto);
     }

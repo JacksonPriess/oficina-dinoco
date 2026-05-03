@@ -17,6 +17,7 @@ public class FuncionarioService {
 
     private final FuncionarioRepository repository;
     private final UsuarioService usuarioService;
+    private static final String MSG_FUNCIONARIO_NAO_ENCONTRADO = "Funcionário não encontrado.";
 
     @Transactional
     public FuncionarioResponseDto criar(FuncionarioRequestDto dto) {
@@ -44,7 +45,7 @@ public class FuncionarioService {
 
     public FuncionarioResponseDto buscarPorId(Long id) {
         Funcionario funcionario = repository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Funcionário não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException(MSG_FUNCIONARIO_NAO_ENCONTRADO));
         return mapearParaResponse(funcionario);
     }
 
@@ -56,7 +57,7 @@ public class FuncionarioService {
     @Transactional
     public FuncionarioResponseDto atualizar(Long id, FuncionarioRequestDto dto) {
         Funcionario funcionario = repository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Funcionário não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException(MSG_FUNCIONARIO_NAO_ENCONTRADO));
 
         if (!funcionario.getCpf().equals(dto.cpf())) {
             throw new IllegalArgumentException("Não é permitido alterar o cpf de um funcionário já cadastrado.");
@@ -73,7 +74,7 @@ public class FuncionarioService {
     @Transactional
     public void desativar(Long id) {
         Funcionario funcionario = repository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Funcionário não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException(MSG_FUNCIONARIO_NAO_ENCONTRADO));
         funcionario.setAtivo(false);
         repository.save(funcionario);
     }
