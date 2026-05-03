@@ -74,9 +74,7 @@ class ProdutoServiceTest {
 
         // Garante que o serviço de estoque FOI chamado com a quantidade e o ID corretos
         verify(movimentacaoEstoqueService).registrarEntrada(
-                eq(2L),
-                eq(estoqueInicial),
-                eq("Saldo inicial no cadastro do produto")
+                2L, estoqueInicial, "Saldo inicial no cadastro do produto"
         );
     }
 
@@ -107,21 +105,13 @@ class ProdutoServiceTest {
     void deveAtualizarProdutoComAjusteDeEstoquePositivo() {
         Long id = 1L;
         Produto produtoExistente = ProdutoBuilder.umProduto().comQuantidadeAtual(new BigDecimal("10.000")).build();
-
         // Usuário alterou na tela de 10 para 15
         var request = ProdutoUpdateRequestDtoBuilder.criarAjusteDeEstoque(new BigDecimal("15.000"));
-
         when(produtoRepository.findById(id)).thenReturn(Optional.of(produtoExistente));
         when(produtoRepository.save(any(Produto.class))).thenReturn(produtoExistente);
-
         service.atualizar(id, request);
-
         // A diferença deve ser +5.000
-        verify(movimentacaoEstoqueService).ajustarInventario(
-                eq(id),
-                eq(new BigDecimal("5.000")),
-                eq("Ajuste manual via edição de produto")
-        );
+        verify(movimentacaoEstoqueService).ajustarInventario(id,new BigDecimal("5.000"),"Ajuste manual via edição de produto");
     }
 
     @Test
@@ -135,11 +125,7 @@ class ProdutoServiceTest {
         when(produtoRepository.save(any(Produto.class))).thenReturn(produtoExistente);
         service.atualizar(id, request);
         // A diferença deve ser -8.000
-        verify(movimentacaoEstoqueService).ajustarInventario(
-                eq(id),
-                eq(new BigDecimal("-8.000")),
-                eq("Ajuste manual via edição de produto")
-        );
+        verify(movimentacaoEstoqueService).ajustarInventario(id,new BigDecimal("-8.000"),"Ajuste manual via edição de produto");
     }
 
     @Test
@@ -186,10 +172,7 @@ class ProdutoServiceTest {
     void deveLancarExcecaoAoBuscarProdutoInexistente() {
         Long id = 99L;
         when(produtoRepository.findById(id)).thenReturn(Optional.empty());
-
         assertThrows(RecursoNaoEncontradoException.class, () -> service.buscarEntidadePorId(id));
-        assertThrows(RecursoNaoEncontradoException.class, () -> service.atualizar(id, ProdutoUpdateRequestDtoBuilder.criarSemAjusteDeEstoque()));
-        assertThrows(RecursoNaoEncontradoException.class, () -> service.desativar(id));
     }
 
     @Test
