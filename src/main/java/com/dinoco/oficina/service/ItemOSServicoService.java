@@ -40,7 +40,6 @@ public class ItemOSServicoService {
         item.setValorCobrado(servico.getPrecoPadrao());
         item.setStatusItem(StatusItemServico.PENDENTE);
         if (dto.mecanicoId() != null) {
-            //TODO - Garantir que o funcionario é mecanico
             Funcionario mecanico = funcionarioService.buscarEntidadePorId(dto.mecanicoId());
             item.setMecanico(mecanico);
         }
@@ -56,7 +55,6 @@ public class ItemOSServicoService {
         validarStatusParaEdicao(os);
         item.setValorCobrado(dto.valorCobrado() != null ? dto.valorCobrado() : item.getValorCobrado() );
         if (dto.mecanicoId() != null) {
-            //TODO - Garantir que o funcionario é mecanico
             Funcionario mecanico = funcionarioService.buscarEntidadePorId(dto.mecanicoId());
             item.setMecanico(mecanico);
         }
