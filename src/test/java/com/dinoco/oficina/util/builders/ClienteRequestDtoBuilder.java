@@ -13,7 +13,19 @@ public abstract class ClienteRequestDtoBuilder {
                 null,
                 "joao@email.com",
                 "4799999999",
-                Collections.emptyList()
+                Collections.singletonList(EnderecoDtoBuilder.umEnderecoDto().build())
+        );
+    }
+
+    public static ClienteRequestDto criarPessoaJuridica(String documento) {
+        return new ClienteRequestDto(
+                "J", documento,
+                "12345678912345678925",
+                "Empresa Teste",
+                "Empresa Teste Fantasia",
+                "empresa.teste@email.com",
+                "47987654322",
+                Collections.singletonList(EnderecoDtoBuilder.umEnderecoDto().build())
         );
     }
 }
