@@ -6,7 +6,7 @@
 * **Definição:** O documento vital que centraliza todo o ciclo de vida do atendimento de um veículo. Contém a reclamação do cliente, o diagnóstico do mecânico, os produtos (peças e insumos) necessários e os serviços.
 * **Regras:** Uma OS deve sempre estar vinculada a um Veículo e a um Cliente.
 
-### Serviço (Catálogo)
+### Serviço
 * **Definição:** Representa o catálogo de mão de obra e procedimentos técnicos oferecidos pela oficina (ex: Alinhamento, Balanceamento, Troca de Óleo, Mão de Obra Mecânica).
 * **Regras:** Define o valor padrão opcionalmente, um tempo estimado de execução. O preço neste catálogo pode ser reajustado com o tempo sem alterar o histórico das Ordens de Serviço passadas.
 
@@ -22,6 +22,10 @@
 ### Item de Serviço (na OS)
 * **Definição:** Representa a execução de um esforço ou serviço específico dentro de uma Ordem de Serviço.
 * **Regras:** Assim como o item de produto, deve registrar o valor da mão de obra fixado no momento do orçamento.
+* **Status:** O item de serviço OS tem evolução individual, e passa por 3 status:
+* **PENDENTE:** Quando o item é adicionado na OS.
+* **EM_ANDAMENTO:** Quando o mecânico inicia o serviço, registrando a data e hora de inicio. 
+* **CONCLUIDO:** Quando o mecânico conclúi o serviço, registrando a data e hora da conclusão.
 
 ---
 
