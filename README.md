@@ -1,12 +1,137 @@
-# 📄 Documentação da API (Swagger)
+## Em desenvolvimento...
 
-Após subir a aplicação, você pode acessar a documentação interativa nos links abaixo :
+# 🚗 API Oficina Dinoco
 
-## 🔗 Swagger UI (Interface gráfica)
+Uma API RESTful desenvolvida para gerenciar o fluxo principal de uma oficina mecânica, 
+contemplando o ciclo de vida completo de Ordens de Serviço (OS) + controle de estoque (Peças e Insumos).
 
-http://localhost:8080/swagger-ui/index.html
+## 🎯 Objetivos Gerais do Projeto
 
-## 🔗 OpenAPI JSON (documentação bruta)
+* Gestão de ordens de serviço e controle de estoque;
+* Controle rigoroso de estoque através de reservas atreladas às Ordens de Serviço;
+* Histórico imutável de valores de produtos e serviços prestados;
+* Orçamento gerado automaticamente com base nos serviços e peças;
+* Envio do orçamento ao cliente para aprovação;
+* Acompanhamento da OS;
+* Permitir consulta por parte do cliente via API para acompanhar o progresso;
+* Listagem e detalhamento de ordens de serviço;
+* Gestão administrativa com CRUD de clientes, veículos, serviços, produtos, funcionários;  
+* Relatório para monitoramento do tempo médio de execução dos serviços dentro de uma OS; 
 
-http://localhost:8080/v3/api-docs
+## 🛠️ Tecnologias Utilizadas
 
+### Backend
+- **Java 21**
+- **Spring Boot 4.0.6**
+- **Spring Web MVC**
+- **Spring Data JPA**
+- **Spring Security**
+- **JWT (Auth0 Java JWT)**
+- **Bean Validation**
+- **Lombok**
+
+### Banco de Dados
+- **PostgreSQL**
+- **Flyway** (migrações e versionamento)
+- **Seed inicial de dados no profile dev**
+
+### Build e Gerenciamento
+- **Maven**
+- **Docker / Docker Compose**
+
+### Testes
+- **JUnit 5**
+- **Mockito**
+- **Testcontainers**
+- **Rest Assured**
+- **Testes de integração com PostgreSQL real**
+- **Padrão AAA (Arrange, Act, Assert)**
+
+---
+## 📚 Negócio
+* [Linguagem Ubíqua e Dicionário de Dados](./docs/negocio/linguagem_ubiqua.md)
+
+---
+
+## 🚀 Como executar localmente
+
+### Pré-requisitos
+Antes de começar, você precisará ter instalado em sua máquina:
+* [JDK 21](https://adoptium.net/)
+* [Maven](https://maven.apache.org/)
+* [Docker](https://www.docker.com/)
+
+## 🚀 Como Executar
+
+### 1. Preparação
+
+Clone o repositório:
+
+``` bash
+git clone git@github.com:JacksonPriess/oficina-dinoco.git
+cd oficina-dinoco
+```
+------------------------------------------------------------------------
+
+### 2. Escolha uma das opções de execução
+
+## 🔹 Opção A: Banco no Docker + App na IDE
+
+*(Recomendado para Desenvolvimento)*
+
+Esta opção é ideal para debugar o código, usar breakpoints e realizar
+alterações rápidas no IntelliJ IDEA
+
+#### Suba apenas o banco de dados:
+
+``` bash
+docker compose up -d postgres
+```
+
+#### Compile e baixe as dependências:
+
+``` bash
+mvn clean install
+```
+
+#### Execute a aplicação:
+
+Rode a classe `OficinaApiApplication` pela sua IDE ou via terminal:
+
+``` bash
+mvn spring-boot:run
+```
+
+> O profile `dev` já está pré-configurado como fixo para garantir a
+> execução do Seed (população inicial de dados).
+
+------------------------------------------------------------------------
+
+## 🔹 Opção B: Full Stack no Docker
+
+Ideal para validar o ambiente completo (API + Banco) de forma isolada.
+
+#### Suba todo o ecossistema:
+
+``` bash
+docker compose up --build -d
+```
+
+> O parâmetro `--build` garante que a imagem da API seja atualizada com
+> o seu código mais recente.
+
+#### Acompanhe os logs da aplicação:
+
+``` bash
+docker compose logs -f oficina-api
+```
+
+A API estará disponível em: http://localhost:8080
+
+## Swagger UI (Interface gráfica)
+
+* [Swagger UI - Oficina Dinoco](http://localhost:8080/swagger-ui/index.html)
+
+## Documentação do Domínio
+
+* [Linguagem Ubíqua e Dicionário de Dados](./docs/negocio/linguagem_ubiqua.md)
