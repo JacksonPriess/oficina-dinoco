@@ -73,57 +73,12 @@ cd oficina-dinoco
 ```
 ------------------------------------------------------------------------
 
-### 2. Escolha uma das opções de execução
-
-## 🔹 Opção A: Banco no Docker + App na IDE
-
-*(Recomendado para Desenvolvimento)*
-
-Esta opção é ideal para debugar o código, usar breakpoints e realizar
-alterações rápidas no IntelliJ IDEA
-
-#### Suba apenas o banco de dados:
-
-``` bash
-docker compose up -d postgres
-```
-
-#### Compile e baixe as dependências:
-
-``` bash
-mvn clean install
-```
-
-#### Execute a aplicação:
-
-Rode a classe `OficinaApiApplication` pela sua IDE ou via terminal:
-
-``` bash
-mvn spring-boot:run
-```
-
-> O profile `dev` já está pré-configurado como fixo para garantir a
-> execução do Seed (população inicial de dados).
-
-------------------------------------------------------------------------
-
-## 🔹 Opção B: Full Stack no Docker
-
-Ideal para validar o ambiente completo (API + Banco) de forma isolada.
+### 2. Subir ambiente com (API + Banco) 
 
 #### Suba todo o ecossistema:
 
 ``` bash
 docker compose up --build -d
-```
-
-> O parâmetro `--build` garante que a imagem da API seja atualizada com
-> o seu código mais recente.
-
-#### Acompanhe os logs da aplicação:
-
-``` bash
-docker compose logs -f oficina-api
 ```
 
 A API estará disponível em: http://localhost:8080

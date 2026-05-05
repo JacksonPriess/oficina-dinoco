@@ -34,16 +34,16 @@ public class OrdemServicoController {
 
     @Operation(summary = "02. Iniciar diagnóstico")
     @PostMapping("/{id}/iniciar-diagnostico")
-    public ResponseEntity<Void> iniciarDiagnostico(@PathVariable Long id) {
-        service.iniciarDiagnostico(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<OrdemServicoResponseDto> iniciarDiagnostico(@PathVariable Long id) {
+        OrdemServicoResponseDto response = service.iniciarDiagnostico(id);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "03. Concluir diagnóstico", description = "Informar o laudo técnico final e encaminhar para Orçamento")
     @PostMapping("/{id}/concluir-diagnostico")
-    public ResponseEntity<Void> concluirDiagnostico(@PathVariable Long id, @Valid @RequestBody ConcluirDiagnosticoDto dto) {
-        service.concluirDiagnostico(id, dto.laudo());
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<OrdemServicoResponseDto> concluirDiagnostico(@PathVariable Long id, @Valid @RequestBody ConcluirDiagnosticoDto dto) {
+        OrdemServicoResponseDto response = service.concluirDiagnostico(id, dto.laudo());
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "04. Enviar orçamento")
@@ -54,44 +54,44 @@ public class OrdemServicoController {
 
     @Operation(summary = "05. Reprovar orçamento")
     @PostMapping("/{id}/reprovar")
-    public ResponseEntity<Void> reprovar(@PathVariable Long id) {
-        service.reprovarOrcamento(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<OrdemServicoResponseDto> reprovar(@PathVariable Long id) {
+        OrdemServicoResponseDto response = service.reprovarOrcamento(id);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "06. Aprovar orçamento")
     @PostMapping("/{id}/aprovar")
-    public ResponseEntity<Void> aprovar(@PathVariable Long id) {
-        service.aprovarOrcamento(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<OrdemServicoResponseDto> aprovar(@PathVariable Long id) {
+        OrdemServicoResponseDto response = service.aprovarOrcamento(id);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "07. Verificar estoque", description = "Ação necessária quando a OS fica Aguadando Fornecedor")
     @PostMapping("/{id}/verificar-estoque")
-    public ResponseEntity<Void> verificarDisponibilidadePecas(@PathVariable Long id) {
-        service.verificarDisponibilidadePecas(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<OrdemServicoResponseDto> verificarDisponibilidadePecas(@PathVariable Long id) {
+        OrdemServicoResponseDto response = service.verificarDisponibilidadePecas(id);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "08. Iniciar execução do serviço")
     @PostMapping("/{id}/iniciar-execucao")
-    public ResponseEntity<Void> iniciarExecucao(@PathVariable Long id) {
-        service.iniciarExecucaoOS(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<OrdemServicoResponseDto> iniciarExecucao(@PathVariable Long id) {
+        OrdemServicoResponseDto response = service.iniciarExecucaoOS(id);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "09. Finalizar execução do serviço")
     @PostMapping("/{id}/finalizar-execucao")
-    public ResponseEntity<Void> finalizarExecucao(@PathVariable Long id) {
-        service.finalizarExecucaoOS(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<OrdemServicoResponseDto> finalizarExecucao(@PathVariable Long id) {
+        OrdemServicoResponseDto response = service.finalizarExecucaoOS(id);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "10. Concluir OS")
     @PostMapping("/{id}/concluir")
-    public ResponseEntity<Void> concluir(@PathVariable Long id) {
-        service.entregarVeiculo(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<OrdemServicoResponseDto> concluir(@PathVariable Long id) {
+        OrdemServicoResponseDto response = service.entregarVeiculo(id);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "11. Buscar resumo OS por código")
@@ -109,7 +109,7 @@ public class OrdemServicoController {
     @Operation(summary = "13. Buscar detalhamento da OS por número de rastreio")
     @GetMapping("/detalhes/{codigoRastreio}")
     public ResponseEntity<OrdemServicoDetalhadaResponseDto> getDetalhes(@PathVariable String codigoRastreio) {
-        OrdemServicoDetalhadaResponseDto response = service.buscarDetalhesPorCodigo(codigoRastreio);
+        OrdemServicoDetalhadaResponseDto response = service.buscarDetalhesPorCodigoRastreio(codigoRastreio);
         return ResponseEntity.ok(response);
     }
 }

@@ -2,6 +2,7 @@ package com.dinoco.oficina.service;
 
 import com.dinoco.oficina.dto.ItemOSServicoAdicionarDto;
 import com.dinoco.oficina.dto.ItemOSServicoAlterarDto;
+import com.dinoco.oficina.dto.OrdemServicoDetalhadaResponseDto;
 import com.dinoco.oficina.entity.Funcionario;
 import com.dinoco.oficina.entity.ItemOSServico;
 import com.dinoco.oficina.entity.OrdemServico;
@@ -25,7 +26,7 @@ public class ItemOSServicoService {
     private final FuncionarioService funcionarioService;
 
     @Transactional
-    public void adicionarItemServico(Long osId, ItemOSServicoAdicionarDto dto) {
+    public OrdemServicoDetalhadaResponseDto adicionarItemServico(Long osId, ItemOSServicoAdicionarDto dto) {
         OrdemServico os = ordemServicoService.buscarOuFalhar(osId);
         if ( !os.getStatus().equals(StatusOS.EM_DIAGNOSTICO) ) {
             throw new IllegalArgumentException("Inicie o diagnóstico da OS antes de adicionar itens de serviço.");
@@ -46,6 +47,7 @@ public class ItemOSServicoService {
         os.getItensServico().add(item);
         repository.save(item);
         ordemServicoService.recalcularTotais(osId);
+        return ordemServicoService.buscarDetalhesPorCodigoRastreio(os.getCodigoRastreio());
     }
 
     @Transactional

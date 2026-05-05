@@ -7,6 +7,7 @@ import com.dinoco.oficina.enums.StatusOS;
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -16,6 +17,7 @@ import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrdemServicoService {
@@ -34,11 +36,12 @@ public class OrdemServicoService {
     }
 
     @Transactional
-    public void iniciarDiagnostico(Long osId) {
+    public OrdemServicoResponseDto iniciarDiagnostico(Long osId) {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatusDiagnostico(os);
         os.setStatus(StatusOS.EM_DIAGNOSTICO);
         repository.save(os);
+        return mapearParaResponse(os);
     }
 
     public OrdemServico buscarOuFalhar(Long id) {
@@ -52,13 +55,14 @@ public class OrdemServicoService {
     }
 
     @Transactional
-    public void concluirDiagnostico(Long osId, String laudoTecnico) {
+    public OrdemServicoResponseDto concluirDiagnostico(Long osId, String laudoTecnico) {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.EM_DIAGNOSTICO);
         validarItensServico(os);
         os.setLaudoTecnico(laudoTecnico);
         os.setStatus(StatusOS.AGUARDANDO_ORCAMENTO);
         repository.save(os);
+        return mapearParaResponse(os);
     }
 
     private void validarItensServico(OrdemServico os) {
@@ -109,55 +113,68 @@ public class OrdemServicoService {
     }
 
     @Transactional
-    public void reprovarOrcamento(Long osId) {
+    public OrdemServicoResponseDto reprovarOrcamento(Long osId) {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.AGUARDANDO_APROVACAO);
         os.setStatus(StatusOS.REPROVADA);
         os.setDataReprovacao(LocalDateTime.now());
         repository.save(os);
+        return mapearParaResponse(os);
     }
 
     @Transactional
-    public void aprovarOrcamento(Long osId) {
+    public OrdemServicoResponseDto aprovarOrcamento(Long osId) {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.AGUARDANDO_APROVACAO);
         movimentacaoEstoqueService.reservarItens(os);
         atualizarStatusPosReserva(os);
         repository.save(os);
+        return mapearParaResponse(os);
     }
 
     private void atualizarStatusPosReserva(OrdemServico os) {
-        boolean temTudoNoEstoque = os.getItensProduto().stream()
+        boolean todosProdutosEstaoDisponiveis = os.getItensProduto().stream()
                 .allMatch(item -> item.getProduto().getQuantidadeDisponivel().compareTo(BigDecimal.ZERO) >= 0);
-
-        os.setStatus(temTudoNoEstoque ? StatusOS.AGUARDANDO_EXECUCAO : StatusOS.AGUARDANDO_FORNECEDOR);
-    }
-
-    @Transactional
-    public void verificarDisponibilidadePecas(Long osId) {
-        OrdemServico os = buscarOuFalhar(osId);
-        validarStatus(os, StatusOS.AGUARDANDO_FORNECEDOR);
-
-        boolean agoraTemTudo = os.getItensProduto().stream()
-                .allMatch(item -> item.getProduto().getQuantidadeDisponivel().compareTo(BigDecimal.ZERO) >= 0);
-
-        if (agoraTemTudo) {
+        if (todosProdutosEstaoDisponiveis) {
             os.setStatus(StatusOS.AGUARDANDO_EXECUCAO);
-            repository.save(os);
+            log.info("Ao aprovar a OS, foi constatado que todos os produtos estão disponíveis no estoque e pode ser iniciada a execução da OS.");
+        } else {
+            os.setStatus(StatusOS.AGUARDANDO_FORNECEDOR);
+            log.info("Ao aprovar a OS, foi identificado que algum produto está sem saldo disponível no estoque sendo necessário realizar um pedido de compra.");
         }
     }
 
     @Transactional
-    public void iniciarExecucaoOS(Long osId) {
+    public OrdemServicoResponseDto verificarDisponibilidadePecas(Long osId) {
+        OrdemServico os = buscarOuFalhar(osId);
+        validarStatus(os, StatusOS.AGUARDANDO_FORNECEDOR);
+
+        boolean todosProdutosEstaoDisponiveis = os.getItensProduto().stream()
+                .allMatch(item -> item.getProduto().getQuantidadeDisponivel().compareTo(BigDecimal.ZERO) >= 0);
+
+        if (todosProdutosEstaoDisponiveis) {
+            os.setStatus(StatusOS.AGUARDANDO_EXECUCAO);
+            repository.save(os);
+            log.info("Todos os produtos estão disponíveis no estoque e pode ser iniciado a execução da OS.");
+        } else {
+            log.info("Ainda existem produtos sem saldo disponível no estoque, verificar com o fornecedor.");
+        }
+
+        return mapearParaResponse(os);
+    }
+
+    @Transactional
+    public OrdemServicoResponseDto iniciarExecucaoOS(Long osId) {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.AGUARDANDO_EXECUCAO);
         movimentacaoEstoqueService.consumirReservasParaExecucao(os);
         os.setStatus(StatusOS.EM_EXECUCAO);
         repository.save(os);
+        return mapearParaResponse(os);
     }
 
     @Transactional
-    public void finalizarExecucaoOS(Long osId) {
+    public OrdemServicoResponseDto finalizarExecucaoOS(Long osId) {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.EM_EXECUCAO);
 
@@ -172,16 +189,18 @@ public class OrdemServicoService {
         }
         os.setStatus(StatusOS.FINALIZADA);
         repository.save(os);
+        return mapearParaResponse(os);
     }
 
     @Transactional
-    public void entregarVeiculo(Long osId) {
+    public OrdemServicoResponseDto entregarVeiculo(Long osId) {
         OrdemServico os = buscarOuFalhar(osId);
         validarStatus(os, StatusOS.FINALIZADA);
         //TODO - Faturamento - Nota de Servico
         os.setStatus(StatusOS.ENTREGUE);
         os.setDataSaida(LocalDateTime.now());
         repository.save(os);
+        return mapearParaResponse(os);
     }
 
     @Transactional
@@ -215,8 +234,8 @@ public class OrdemServicoService {
     }
 
     @Transactional(readOnly = true)
-    public OrdemServicoDetalhadaResponseDto buscarDetalhesPorCodigo(String codigo) {
-        return repository.buscarPorCodigoComDetalhes(codigo)
+    public OrdemServicoDetalhadaResponseDto buscarDetalhesPorCodigoRastreio(String codigoRastreio) {
+        return repository.buscarPorCodigoRastreioComDetalhes(codigoRastreio)
                 .map(os -> {
                     var servicos = os.getItensServico().stream()
                             .map(is -> new ItemServicoDetalheDto(
@@ -254,7 +273,7 @@ public class OrdemServicoService {
                             produtos
                     );
                 })
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de Serviço não encontrada: " + codigo));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de Serviço não encontrada: " + codigoRastreio));
     }
 
     //TODO - Implemenar o uso da biblioteca MapStruct

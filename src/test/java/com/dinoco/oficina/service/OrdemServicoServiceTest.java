@@ -595,7 +595,7 @@ class OrdemServicoServiceTest {
 
     @Test
     @DisplayName("Deve buscar detalhes da OS por código e mapear corretamente para o DTO")
-    void deveBuscarDetalhesPorCodigoComSucesso() {
+    void deveBuscarDetalhesPorCodigoRastreioComSucesso() {
         // 1. Arrange
         String codigoRastreio = "OS-12345678";
 
@@ -648,10 +648,10 @@ class OrdemServicoServiceTest {
         osMock.setItensServico(Set.of(itemComMecanico, itemSemMecanico));
 
         // Mock do repositório
-        when(repository.buscarPorCodigoComDetalhes(codigoRastreio)).thenReturn(Optional.of(osMock));
+        when(repository.buscarPorCodigoRastreioComDetalhes(codigoRastreio)).thenReturn(Optional.of(osMock));
 
         // 2. Act
-        OrdemServicoDetalhadaResponseDto response = osService.buscarDetalhesPorCodigo(codigoRastreio);
+        OrdemServicoDetalhadaResponseDto response = osService.buscarDetalhesPorCodigoRastreio(codigoRastreio);
 
         // 3. Assert
         assertNotNull(response);

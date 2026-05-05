@@ -2,6 +2,7 @@ package com.dinoco.oficina.service;
 
 import com.dinoco.oficina.dto.ItemOSProdutoAdicionarDto;
 import com.dinoco.oficina.dto.ItemOSProdutoAlterarDto;
+import com.dinoco.oficina.dto.OrdemServicoDetalhadaResponseDto;
 import com.dinoco.oficina.entity.ItemOSProduto;
 import com.dinoco.oficina.entity.OrdemServico;
 import com.dinoco.oficina.entity.Produto;
@@ -21,7 +22,7 @@ public class ItemOSProdutoService {
     private final ProdutoService produtoService;
 
     @Transactional
-    public void adicionarItemProduto(Long osId, ItemOSProdutoAdicionarDto dto) {
+    public OrdemServicoDetalhadaResponseDto adicionarItemProduto(Long osId, ItemOSProdutoAdicionarDto dto) {
         OrdemServico os = ordemServicoService.buscarOuFalhar(osId);
         validarSePodeModificarItens(os);
         if (repository.existsByOrdemServicoIdAndProdutoId(osId, dto.produtoId())) {
@@ -36,6 +37,8 @@ public class ItemOSProdutoService {
         item.setValorTotal(dto.quantidade().multiply(produto.getPrecoVenda()));
         repository.save(item);
         ordemServicoService.recalcularTotais(osId);
+        return ordemServicoService.buscarDetalhesPorCodigoRastreio(os.getCodigoRastreio());
+
     }
 
     @Transactional

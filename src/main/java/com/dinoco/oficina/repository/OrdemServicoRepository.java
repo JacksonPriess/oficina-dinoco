@@ -20,7 +20,7 @@ public interface OrdemServicoRepository extends JpaRepository<OrdemServico, Long
         LEFT JOIN FETCH itensS.servico
         LEFT JOIN FETCH os.itensProduto itensP
         LEFT JOIN FETCH itensP.produto
-        WHERE os.codigoRastreio = :codigo
+        WHERE os.codigoRastreio = :codigoRastreio
     """)
-    Optional<OrdemServico> buscarPorCodigoComDetalhes(@Param("codigo") String codigo);
+    Optional<OrdemServico> buscarPorCodigoRastreioComDetalhes(@Param("codigoRastreio") String codigoRastreio);
 }

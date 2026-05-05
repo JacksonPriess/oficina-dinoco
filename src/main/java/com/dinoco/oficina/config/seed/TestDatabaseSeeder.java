@@ -235,7 +235,7 @@ public class TestDatabaseSeeder implements CommandLineRunner {
         ordemServicoService.enviarOrcamento(osConcluida.id());
         ordemServicoService.aprovarOrcamento(osConcluida.id()); // Com saldo
         ordemServicoService.iniciarExecucaoOS(osConcluida.id());
-        var ordemServicoDetalhadaResponseDto = ordemServicoService.buscarDetalhesPorCodigo(osConcluida.codigoRastreio());
+        var ordemServicoDetalhadaResponseDto = ordemServicoService.buscarDetalhesPorCodigoRastreio(osConcluida.codigoRastreio());
         Long itemServicoId = ordemServicoDetalhadaResponseDto.servicos().getFirst().id();
         itemOSServicoService.iniciarExecucaoItemServico(itemServicoId);
         itemOSServicoService.concluirExecucaoItemServico(itemServicoId);

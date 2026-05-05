@@ -2,12 +2,12 @@ package com.dinoco.oficina.controller;
 
 import com.dinoco.oficina.dto.ItemOSServicoAdicionarDto;
 import com.dinoco.oficina.dto.ItemOSServicoAlterarDto;
+import com.dinoco.oficina.dto.OrdemServicoDetalhadaResponseDto;
 import com.dinoco.oficina.service.ItemOSServicoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +20,9 @@ public class ItemOSServicoController {
 
     @Operation(summary = "Adicionar item")
     @PostMapping("api/ordens-servico/{osId}/servicos")
-    public ResponseEntity<Void> adicionarServico(@PathVariable Long osId, @Valid @RequestBody ItemOSServicoAdicionarDto dto) {
-        itemOSServicoService.adicionarItemServico(osId, dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<OrdemServicoDetalhadaResponseDto> adicionarServico(@PathVariable Long osId, @Valid @RequestBody ItemOSServicoAdicionarDto dto) {
+        OrdemServicoDetalhadaResponseDto response = itemOSServicoService.adicionarItemServico(osId, dto);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Alterar item")

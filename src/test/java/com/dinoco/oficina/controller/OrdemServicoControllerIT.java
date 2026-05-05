@@ -49,7 +49,8 @@ class OrdemServicoControllerIT extends BaseIT {
         .when()
                 .post("/api/ordens-servico/{id}/iniciar-diagnostico")
         .then()
-                .statusCode(204);
+                .statusCode(200)
+                .body("status", equalTo("EM_DIAGNOSTICO"));
     }
 
     @Test
@@ -67,7 +68,8 @@ class OrdemServicoControllerIT extends BaseIT {
         .when()
                 .post("/api/ordens-servico/{id}/concluir-diagnostico")
         .then()
-                .statusCode(204);
+                .statusCode(200)
+                .body("status", equalTo("AGUARDANDO_ORCAMENTO"));
     }
 
     @Test
@@ -91,7 +93,8 @@ class OrdemServicoControllerIT extends BaseIT {
         .when()
                 .post("/api/ordens-servico/{id}/reprovar")
         .then()
-                .statusCode(200);
+                .statusCode(200)
+                .body("status", equalTo("REPROVADA"));
     }
 
     @Test
@@ -102,21 +105,10 @@ class OrdemServicoControllerIT extends BaseIT {
         .when()
                 .post("/api/ordens-servico/{id}/aprovar")
         .then()
-                .statusCode(200);
-
-        // EXTRA: Uma asserção de "caixa preta" brilhante!
-        // Como o aprovar() altera o status da OS, nós podemos chamar o endpoint de GET (método 11)
-        // logo em seguida para validar se a Máquina de Estados funcionou e mudou para AGUARDANDO_EXECUCAO.
-        given()
-                .pathParam("id", 103)
-        .when()
-                .get("/api/ordens-servico/{id}")
-        .then()
                 .statusCode(200)
                 .body("status", equalTo("AGUARDANDO_EXECUCAO"));
     }
 
-    // --- TESTES DE ERROS DE REGRA DE NEGÓCIO (SAD PATHS) ---
 
     @Test
     @DisplayName("Erro 03 - Não deve concluir diagnóstico de uma OS sem itens de serviço (Cenário A - OS 100)")
