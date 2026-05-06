@@ -47,7 +47,7 @@ Uma API RESTful desenvolvida para gerenciar o fluxo principal de uma oficina mec
 Para facilitar os testes e a avaliação do fluxo completo da aplicação, disponibilizamos uma collection do Insomnia com todas as requisições organizadas na ordem lógica de execução:
 Autenticação, Abrir OS, Iniciar diagnóstico, Adicionar Itens de Produto na OS, Adicionar Itens de Serviço na OS, Concluir Diagnóstico, Enviar Orçamento, Aprovar Orçamento, Verificar Estoque (Condicional), Iniciar Execução da OS, Iniciar Execução dos Itens de Serviços, Concluir Execução dos Itens de Serviços, Finalizar execução da OS, e por fim, Concluir a OS. 
 
-1. Baixe o arquivo da collection: [`oficina-dinoco-insomnia-collection.json`](./docs/api/oficina-dinoco-insomnia-collection.yaml)
+1. Baixe o arquivo da collection: [`oficina-dinoco-insomnia-collection.yaml`](./docs/api/oficina-dinoco-insomnia-collection.yaml)
 2. No Insomnia, vá em **Import/Export** > **Import Data** > **From File** e selecione o arquivo baixado.
 3. As requisições já estão na ordem ideal para testar o ciclo de vida completo da API.
 
