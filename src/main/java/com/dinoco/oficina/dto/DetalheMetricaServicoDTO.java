@@ -1,11 +1,13 @@
 package com.dinoco.oficina.dto;
 
+import java.math.BigDecimal;
+
 public record DetalheMetricaServicoDTO(
         Long codigoServico,
         String descricao,
         Long quantidadeExecutada,
-        Double mediaMinutos,
-        Integer tempoPadrao,
-        Double desvioAbsolutoMinutos,
-        Double percentualDiferenca
+        BigDecimal mediaMinutos,
+        Integer tempoPadraoMinutos,
+        BigDecimal desvioAbsolutoMinutos,
+        BigDecimal percentualDiferenca
 ) {}

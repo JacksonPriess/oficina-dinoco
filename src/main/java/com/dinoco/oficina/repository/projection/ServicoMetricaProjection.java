@@ -5,5 +5,5 @@ public interface ServicoMetricaProjection {
     String getDescricao();
     Long getQuantidade();
     Double getMediaMinutos();
-    Integer getTempoPadrao();
+    Integer getTempoPadraoMinutos();
 }
