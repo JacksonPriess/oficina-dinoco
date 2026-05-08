@@ -20,7 +20,7 @@ public interface ItemOSServicoRepository extends JpaRepository<ItemOSServico, Lo
             s.descricao AS descricao,
             COUNT(i.id) AS quantidade,
             AVG(EXTRACT(EPOCH FROM (i.data_fim - i.data_inicio)) / 60) AS mediaMinutos,
-            s.tempo_estimado_minutos AS tempoPadrao
+            s.tempo_estimado_minutos AS tempoPadraoMinutos
         FROM item_os_servico i
         JOIN servico s ON s.id = i.servico_id
         WHERE i.status_item = 'CONCLUIDO'

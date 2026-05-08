@@ -1,10 +1,12 @@
 package com.dinoco.oficina.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import com.dinoco.oficina.entity.Funcionario;
@@ -126,7 +128,6 @@ class ItemOSServicoServiceTest {
         Long itemId = 1L;
         ItemOSServico item = new ItemOSServico();
         item.setStatusItem(StatusItemServico.PENDENTE);
-
         when(repository.findById(itemId)).thenReturn(Optional.of(item));
 
         service.iniciarExecucaoItemServico(itemId);
@@ -134,5 +135,64 @@ class ItemOSServicoServiceTest {
         verify(repository).save(itemCaptor.capture());
         assertThat(itemCaptor.getValue().getStatusItem()).isEqualTo(StatusItemServico.EM_ANDAMENTO);
         assertThat(itemCaptor.getValue().getDataInicio()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Deve concluir execução do item de serviço com data atual quando data manual for nula")
+    void deveConcluirExecucaoComDataAtual() {
+        Long itemId = 1L;
+        ItemOSServico item = new ItemOSServico();
+        item.setStatusItem(StatusItemServico.EM_ANDAMENTO);
+        item.setDataInicio(LocalDateTime.now().minusHours(2));
+
+        when(repository.findById(itemId)).thenReturn(Optional.of(item));
+
+        service.concluirExecucaoItemServico(itemId, null);
+
+        verify(repository).save(itemCaptor.capture());
+        assertThat(itemCaptor.getValue().getStatusItem()).isEqualTo(StatusItemServico.CONCLUIDO);
+        assertThat(itemCaptor.getValue().getDataFim()).isNotNull();
+        assertThat(itemCaptor.getValue().getDataFim()).isAfter(item.getDataInicio());
+    }
+
+    @Test
+    @DisplayName("Deve concluir execução do item de serviço respeitando a data manual fornecida")
+    void deveConcluirExecucaoComDataManual() {
+        Long itemId = 1L;
+        LocalDateTime dataInicio = LocalDateTime.now();
+        LocalDateTime dataFimManual = dataInicio.plusMinutes(30); // Concluído em 30
+
+        ItemOSServico item = new ItemOSServico();
+        item.setStatusItem(StatusItemServico.EM_ANDAMENTO);
+        item.setDataInicio(dataInicio);
+
+        when(repository.findById(itemId)).thenReturn(Optional.of(item));
+
+        // Executa passando a data específica
+        service.concluirExecucaoItemServico(itemId, dataFimManual);
+
+        verify(repository).save(itemCaptor.capture());
+        assertThat(itemCaptor.getValue().getStatusItem()).isEqualTo(StatusItemServico.CONCLUIDO);
+        assertThat(itemCaptor.getValue().getDataFim()).isEqualTo(dataFimManual);
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao tentar concluir serviço com data anterior à data de início")
+    void deveLancarExcecaoQuandoDataFimMenorQueInicio() {
+        Long itemId = 1L;
+        LocalDateTime dataInicio = LocalDateTime.now().minusHours(2);
+        LocalDateTime dataFimInvalida = dataInicio.minusHours(1);
+
+        ItemOSServico item = new ItemOSServico();
+        item.setStatusItem(StatusItemServico.EM_ANDAMENTO);
+        item.setDataInicio(dataInicio);
+
+        when(repository.findById(itemId)).thenReturn(Optional.of(item));
+
+        assertThatThrownBy(() -> service.concluirExecucaoItemServico(itemId, dataFimInvalida))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("não pode ser anterior à data de início");
+
+        verify(repository, never()).save(any());
     }
 }

@@ -4,12 +4,15 @@ import com.dinoco.oficina.dto.*;
 import com.dinoco.oficina.enums.TipoProduto;
 import com.dinoco.oficina.repository.ClienteRepository;
 import com.dinoco.oficina.service.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Component
 @Profile("dev")
 public class TestDatabaseSeeder implements CommandLineRunner {
@@ -41,21 +44,21 @@ public class TestDatabaseSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (clienteRepository.count() > 0) {
-            System.out.println("✅ Banco já populado. Pulando Seeding.");
+            log.info("Banco já populado. Pulando Seeding.");
             return;
         }
-        System.out.println("[INICIO] Executando Fábrica de Dados da Oficina Dinoco...");
+        log.info("[INICIO] Executando Fábrica de Dados da Oficina Dinoco...");
 
         popularClientes();
         popularVeiculos();
         popularProdutosEServicos();
         popularOrdensDeServico();
 
-        System.out.println("✅ [SUCESSO] Ambiente DEV pronto para avaliação!");
+        log.info("[SUCESSO] Ambiente DEV pronto para avaliação!");
     }
 
     private void popularProdutosEServicos() {
-        System.out.println("🔧 Criando Produtos e Serviços relacionados...");
+        log.info("Criando Produtos e Serviços relacionados...");
 
         // 1
         cadastrarProduto("Filtro de Óleo", TipoProduto.PECA, "Fram", "PH10060", "Ford Focus", 20.0, 25.0, 45.0);
@@ -84,7 +87,7 @@ public class TestDatabaseSeeder implements CommandLineRunner {
         // 9
         cadastrarProduto("Bico Injetor Cleaner", TipoProduto.INSUMO, "Car80", "C80", "Universal", 20.0, 15.0, 35.0);
         cadastrarServico("Mão de obra - limpeza de bico injetor", 180.00, 90);
-        System.out.println("✅ Produtos e serviços criados com relacionamento lógico.");
+        log.info("Produtos e serviços criados com relacionamento lógico.");
     }
 
     private void cadastrarServico(String descricao, double preco, int tempo) {
@@ -115,7 +118,7 @@ public class TestDatabaseSeeder implements CommandLineRunner {
     }
 
     private void popularClientes() {
-        System.out.println("Criando clientes...");
+        log.info("Criando clientes...");
         cadastrarCliente("F", "00018563082", null, "João Silva", null, "joao.silva@email.com", "47999990001");
         cadastrarCliente("F", "27695093068", null, "Maria Oliveira", null, "maria.oliveira@email.com", "47999990002");
         cadastrarCliente("F", "04905293057", null, "Carlos Souza", null, "carlos.souza@email.com", "47999990003");
@@ -126,7 +129,7 @@ public class TestDatabaseSeeder implements CommandLineRunner {
         cadastrarCliente("J", "70770430000178", "456123789", "Centro Automotivo Brasil LTDA", "Auto Brasil", "contato@autobrasil.com", "47999990008");
         cadastrarCliente("J", "44103564000125", "321654987", "Car Service Express LTDA", "Car Express", "contato@carexpress.com", "47999990009");
         cadastrarCliente("J", "12ABC34501DE35", "789123456", "Top Motors Comércio LTDA", "Top Motors", "contato@topmotors.com", "47999990010");
-        System.out.println("✅ Clientes criados com sucesso.");
+        log.info("Clientes criados com sucesso.");
     }
 
     private void cadastrarCliente(String tipoPessoa, String documento, String inscricaoEstadual, String nome, String nomeFantasia, String email, String telefone ) {
@@ -145,7 +148,7 @@ public class TestDatabaseSeeder implements CommandLineRunner {
     }
 
     private void popularVeiculos() {
-        System.out.println("Criando Veículos...");
+        log.info("Criando Veículos...");
 
         Object[][] dadosVeiculos = {
                 {"FOC2012", "Ford", "Focus Hatch Titanium", 2012, 2013, "Prata", "9BF123", "2.0 Duratec"},
@@ -172,7 +175,7 @@ public class TestDatabaseSeeder implements CommandLineRunner {
                     (String) v[6], (String) v[7]
             );
         }
-        System.out.println("✅ 15 Veículos cadastrados");
+        log.info("15 Veículos cadastrados");
 
     }
 
@@ -185,7 +188,7 @@ public class TestDatabaseSeeder implements CommandLineRunner {
     }
 
     private void popularOrdensDeServico() {
-        System.out.println("Gerando Ordens de Serviço e executando lógicas...");
+        log.info("Gerando Ordens de Serviço e executando lógicas...");
         // OS recém-aberta (Status: RECEBIDA)
         ordemServicoService.abrirOs(new OrdemServicoRequestDto(1L, 1L, 45000, "Carro puxando para o lado"));
         // OS em diagnóstico (Status: EM_DIAGNOSTICO)
@@ -238,10 +241,24 @@ public class TestDatabaseSeeder implements CommandLineRunner {
         var ordemServicoDetalhadaResponseDto = ordemServicoService.buscarDetalhesPorCodigoRastreio(osConcluida.codigoRastreio());
         Long itemServicoId = ordemServicoDetalhadaResponseDto.servicos().getFirst().id();
         itemOSServicoService.iniciarExecucaoItemServico(itemServicoId);
-        itemOSServicoService.concluirExecucaoItemServico(itemServicoId);
+        itemOSServicoService.concluirExecucaoItemServico(itemServicoId, LocalDateTime.now().plusMinutes(240));
         ordemServicoService.finalizarExecucaoOS(osConcluida.id());
         ordemServicoService.entregarVeiculo(osConcluida.id());
 
-
+        // Os iniciada, mesmos servico da anterior, para ter algo de métrica para visualizar
+        var osConcluidaCorreiaDentada = ordemServicoService.abrirOs(new OrdemServicoRequestDto(6L, 6L, 45500, "Barulho estranho de correia"));
+        ordemServicoService.iniciarDiagnostico(osConcluidaCorreiaDentada.id());
+        itemOSServicoProduto.adicionarItemProduto(osConcluidaCorreiaDentada.id(), new ItemOSProdutoAdicionarDto(6L, new BigDecimal(1)));
+        itemOSServicoService.adicionarItemServico(osConcluidaCorreiaDentada.id(), new ItemOSServicoAdicionarDto(6L, null));
+        ordemServicoService.concluirDiagnostico(osConcluidaCorreiaDentada.id(), "Correia está gasta");
+        ordemServicoService.enviarOrcamento(osConcluidaCorreiaDentada.id());
+        ordemServicoService.aprovarOrcamento(osConcluidaCorreiaDentada.id());
+        ordemServicoService.iniciarExecucaoOS(osConcluidaCorreiaDentada.id());
+        var ordemServicoDetalhadaResponseDto2 = ordemServicoService.buscarDetalhesPorCodigoRastreio(osConcluidaCorreiaDentada.codigoRastreio());
+        Long itemServicoId2 = ordemServicoDetalhadaResponseDto2.servicos().getFirst().id();
+        itemOSServicoService.iniciarExecucaoItemServico(itemServicoId2);
+        itemOSServicoService.concluirExecucaoItemServico(itemServicoId2, LocalDateTime.now().plusMinutes(240));
+        ordemServicoService.finalizarExecucaoOS(osConcluidaCorreiaDentada.id());
+        ordemServicoService.entregarVeiculo(osConcluidaCorreiaDentada.id());
     }
 }

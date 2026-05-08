@@ -77,16 +77,30 @@ public class ItemOSServicoService {
     @Transactional
     public void iniciarExecucaoItemServico(Long itemId) {
         ItemOSServico item = buscarItemOuFalhar(itemId);
+        if (item.getStatusItem() != StatusItemServico.PENDENTE) {
+            throw new IllegalArgumentException(
+                    String.format("Não é possível iniciar a execução. O serviço está com status %s, mas é exigido o status PENDENTE.", item.getStatusItem())
+            );
+        }
         item.setStatusItem(StatusItemServico.EM_ANDAMENTO);
         item.setDataInicio(LocalDateTime.now());
         repository.save(item);
     }
 
     @Transactional
-    public void concluirExecucaoItemServico(Long itemId) {
+    public void concluirExecucaoItemServico(Long itemId, LocalDateTime dataFimManual) {
         ItemOSServico item = buscarItemOuFalhar(itemId);
+        if (item.getStatusItem() != StatusItemServico.EM_ANDAMENTO) {
+            throw new IllegalArgumentException(
+                    String.format("Não é possível concluir a execução. O serviço está com status %s, mas é exigido o status EM_ANDAMENTO.", item.getStatusItem())
+            );
+        }
+        LocalDateTime dataConclusao = dataFimManual != null ? dataFimManual : LocalDateTime.now();
+        if (item.getDataInicio() != null && dataConclusao.isBefore(item.getDataInicio())) {
+            throw new IllegalArgumentException("A data de conclusão não pode ser anterior à data de início do serviço.");
+        }
         item.setStatusItem(StatusItemServico.CONCLUIDO);
-        item.setDataFim(LocalDateTime.now());
+        item.setDataFim(dataConclusao);
         repository.save(item);
     }
 

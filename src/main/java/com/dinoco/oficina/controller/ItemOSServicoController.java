@@ -2,6 +2,7 @@ package com.dinoco.oficina.controller;
 
 import com.dinoco.oficina.dto.ItemOSServicoAdicionarDto;
 import com.dinoco.oficina.dto.ItemOSServicoAlterarDto;
+import com.dinoco.oficina.dto.ItemOSServicoConclusaoRequestDto;
 import com.dinoco.oficina.dto.OrdemServicoDetalhadaResponseDto;
 import com.dinoco.oficina.service.ItemOSServicoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDateTime;
 
 @Tag(name = "9. Itens da OS - Serviços", description = "Cadastro de itens de serviços da OS")
 @RestController
@@ -48,8 +50,9 @@ public class ItemOSServicoController {
 
     @Operation(summary = "Concluir execução")
     @PostMapping("api/itens-servico/{itemId}/concluir-execucao")
-    public ResponseEntity<Void> concluirExecucaoServico(@PathVariable Long itemId) {
-        itemOSServicoService.concluirExecucaoItemServico(itemId);
+    public ResponseEntity<Void> concluirExecucaoServico(@PathVariable Long itemId, @RequestBody(required = false) ItemOSServicoConclusaoRequestDto request) {
+        LocalDateTime dataFim = (request != null) ? request.dataFimManual() : null;
+        itemOSServicoService.concluirExecucaoItemServico(itemId, dataFim);
         return ResponseEntity.noContent().build();
     }
 
