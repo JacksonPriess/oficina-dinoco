@@ -6,7 +6,7 @@ spring:
     active: dev
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/oficina_db
+    url: jdbc:postgresql://localhost:15433/oficina_db
     username: admin
     password: adminpassword
     driver-class-name: org.postgresql.Driver
