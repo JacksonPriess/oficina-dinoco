@@ -1,15 +1,15 @@
 type: collection.insomnia.rest/5.0
 schema_version: "5.1"
-name: Oficina dinoco 05/05
+name: Oficina dinoco 08/05
 meta:
-  id: wrk_0e217571dc8e4c73a836e5485419cc76
-  created: 1778013292887
-  modified: 1778013313450
+  id: wrk_23c2c17657614d80b7c492903230203b
+  created: 1778205037950
+  modified: 1778209722763
   description: ""
 collection:
   - name: Serviço
     meta:
-      id: fld_69561d82e8da402ba4a996fec91eabcb
+      id: fld_be16550eac5b40bf904846eb2d691fee
       created: 1776294754568
       modified: 1777125674285
       sortKey: -1776294974731.875
@@ -18,7 +18,7 @@ collection:
       - url: http://localhost:8080/api/servicos/1
         name: Buscar por Id
         meta:
-          id: req_76235e22d9ee4181b1dbb8bafebe8f77
+          id: req_aa194c255e304ef7b5afb4ce68734876
           created: 1776294529355
           modified: 1777940551182
           isPrivate: false
@@ -44,7 +44,7 @@ collection:
       - url: http://localhost:8080/api/servicos
         name: Create
         meta:
-          id: req_f66905c0292548c59302d9fb8cb4a00d
+          id: req_2752de822eb84502840d92812e2af4a1
           created: 1776295795020
           modified: 1777125821461
           isPrivate: false
@@ -80,7 +80,7 @@ collection:
       - url: http://localhost:8080/api/servicos/8
         name: Update
         meta:
-          id: req_5bd17091d2d2428eba625c210fb5fa41
+          id: req_7423eab9bce945c1a3d7837b3c1ce395
           created: 1776295944490
           modified: 1777125870744
           isPrivate: false
@@ -116,7 +116,7 @@ collection:
       - url: http://localhost:8080/api/servicos/8
         name: Soft Delete
         meta:
-          id: req_863216466f7c42eaab550b8522840cd0
+          id: req_8bc9a3ca24b444d69f452a27dfcd16f8
           created: 1776296275547
           modified: 1777125904093
           isPrivate: false
@@ -141,16 +141,16 @@ collection:
           rebuildPath: true
   - name: Authorize
     meta:
-      id: fld_6d30a812dba84eb784f1a6b8ed4bbd40
+      id: fld_00953aadf49244d58cddcd51848ca095
       created: 1776295081364
-      modified: 1778017933505
+      modified: 1778208288779
       sortKey: -1776295106829
       description: ""
     children:
       - url: http://localhost:8080/api/auth/login
         name: Login
         meta:
-          id: req_203253df4b7a433b8931fc561cf2c2fe
+          id: req_dc7db7c1db6e453e985b3fd17aa27865
           created: 1775843100934
           modified: 1776295085119
           isPrivate: false
@@ -188,16 +188,42 @@ collection:
           rebuildPath: true
   - name: Cliente
     meta:
-      id: fld_6bffb98522934f728a8a8762ab2573dd
+      id: fld_bab502a0a1024861908593023b0ac2ac
       created: 1776296344559
       modified: 1777123841003
       sortKey: -1776295062796.625
       description: ""
     children:
+      - url: http://localhost:8080/api/clientes/4
+        name: Soft Delete
+        meta:
+          id: req_7156c89d14864a989d64b9e97a18cc06
+          created: 1776296344559
+          modified: 1777125112492
+          isPrivate: false
+          description: ""
+          sortKey: -1776294763998
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: "{{token}}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
       - url: http://localhost:8080/api/clientes
         name: Create
         meta:
-          id: req_4a2a3cd4a1404319aae99472f493f441
+          id: req_771948027d1043c389130a0e63867b84
           created: 1776296344559
           modified: 1777125078340
           isPrivate: false
@@ -286,35 +312,9 @@ collection:
             store: true
           rebuildPath: true
       - url: http://localhost:8080/api/clientes/2
-        name: Buscar por Id
-        meta:
-          id: req_99427d2008dc4606b551c3a968f24de4
-          created: 1776296344559
-          modified: 1777940520273
-          isPrivate: false
-          description: ""
-          sortKey: -1776294763923
-        method: GET
-        headers:
-          - name: User-Agent
-            value: insomnia/12.5.0
-            description: ""
-            disabled: false
-        authentication:
-          type: bearer
-          token: "{{token}}"
-        settings:
-          renderRequestBody: true
-          encodeUrl: true
-          followRedirects: global
-          cookies:
-            send: true
-            store: true
-          rebuildPath: true
-      - url: http://localhost:8080/api/clientes/2
         name: Update
         meta:
-          id: req_a7a0e709e8cd420da068f68555f1fcb4
+          id: req_77a1e5442fce4b2281d365bf9c2965a3
           created: 1776296344559
           modified: 1777124703954
           isPrivate: false
@@ -360,16 +360,16 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: http://localhost:8080/api/clientes/4
-        name: Soft Delete
+      - url: http://localhost:8080/api/clientes/2
+        name: Buscar por Id
         meta:
-          id: req_e9fc351160594cdba1098a4c1836445c
+          id: req_e79d8c9119724bcf9d2eb756bcd183a6
           created: 1776296344559
-          modified: 1777125112492
+          modified: 1777940520273
           isPrivate: false
           description: ""
-          sortKey: -1776294763998
-        method: DELETE
+          sortKey: -1776294763923
+        method: GET
         headers:
           - name: User-Agent
             value: insomnia/12.5.0
@@ -389,7 +389,7 @@ collection:
       - url: http://localhost:8080/api/clientes-malucos
         name: Erro
         meta:
-          id: req_54e998b22fd1435f9960728e804e3089
+          id: req_8c323f57fab24496941cc03cca6692b7
           created: 1777342751681
           modified: 1777343392337
           isPrivate: false
@@ -414,42 +414,16 @@ collection:
           rebuildPath: true
   - name: Veículo
     meta:
-      id: fld_168d5e4e484a40ec98498e6fb63dc03b
+      id: fld_52fd71a0bd014f30875f0f1ba163c832
       created: 1776296619434
       modified: 1777123836001
       sortKey: -1776295018764.25
       description: ""
     children:
-      - url: http://localhost:8080/api/veiculos/4
-        name: Buscar por Id
-        meta:
-          id: req_0701ed7b2ed04cdc8c3a45b8abd6e33e
-          created: 1776296619434
-          modified: 1777940542710
-          isPrivate: false
-          description: ""
-          sortKey: -1776294763923
-        method: GET
-        headers:
-          - name: User-Agent
-            value: insomnia/12.5.0
-            description: ""
-            disabled: false
-        authentication:
-          type: bearer
-          token: "{{token}}"
-        settings:
-          renderRequestBody: true
-          encodeUrl: true
-          followRedirects: global
-          cookies:
-            send: true
-            store: true
-          rebuildPath: true
       - url: http://localhost:8080/api/veiculos/3
         name: Update
         meta:
-          id: req_1688fe9adfe84ade990175d982dd625b
+          id: req_323a6e95202f48dd94651271d42d4954
           created: 1776296619434
           modified: 1777124560373
           isPrivate: false
@@ -491,7 +465,7 @@ collection:
       - url: http://localhost:8080/api/veiculos/1
         name: Soft Delete
         meta:
-          id: req_685a33e776aa4c62997140ace851e610
+          id: req_98d1dea4aa594e9ea484a3e1bb432976
           created: 1776296619434
           modified: 1776296677961
           isPrivate: false
@@ -514,10 +488,36 @@ collection:
             send: true
             store: true
           rebuildPath: true
+      - url: http://localhost:8080/api/veiculos/4
+        name: Buscar por Id
+        meta:
+          id: req_ab96c6e210a94db2927c7f061d158b99
+          created: 1776296619434
+          modified: 1777940542710
+          isPrivate: false
+          description: ""
+          sortKey: -1776294763923
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: "{{token}}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
       - url: http://localhost:8080/api/veiculos
         name: Create
         meta:
-          id: req_a285b2a8344a41c3b70db87320444617
+          id: req_d7a8566d3c044383a73b1d99a898ebdf
           created: 1776296619434
           modified: 1777345467224
           isPrivate: false
@@ -557,16 +557,42 @@ collection:
           rebuildPath: true
   - name: Funcionario
     meta:
-      id: fld_a98795fdc1924beea3b7470a875d8e4d
+      id: fld_4c02e8103b1241438706feea92c44a22
       created: 1776571995549
       modified: 1776571995549
       sortKey: -1776294754470
       description: ""
     children:
+      - url: http://localhost:8080/api/funcionarios/2
+        name: Buscar por Id
+        meta:
+          id: req_0821237d2d5046daacbd406bb866de6b
+          created: 1776571995549
+          modified: 1776572050732
+          isPrivate: false
+          description: ""
+          sortKey: -1776294763923
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: "{{token}}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
       - url: http://localhost:8080/api/funcionarios/1
         name: Soft Delete
         meta:
-          id: req_05a28b95e393492fa31a16531b39b0c7
+          id: req_6cd1c392fbb849918e623e7ba12d9632
           created: 1776571995549
           modified: 1776572037102
           isPrivate: false
@@ -590,35 +616,9 @@ collection:
             store: true
           rebuildPath: true
       - url: http://localhost:8080/api/funcionarios/2
-        name: Buscar por Id
-        meta:
-          id: req_6eafca022a44466aaa25dac0a0ada315
-          created: 1776571995549
-          modified: 1776572050732
-          isPrivate: false
-          description: ""
-          sortKey: -1776294763923
-        method: GET
-        headers:
-          - name: User-Agent
-            value: insomnia/12.5.0
-            description: ""
-            disabled: false
-        authentication:
-          type: bearer
-          token: "{{token}}"
-        settings:
-          renderRequestBody: true
-          encodeUrl: true
-          followRedirects: global
-          cookies:
-            send: true
-            store: true
-          rebuildPath: true
-      - url: http://localhost:8080/api/funcionarios/2
         name: Update
         meta:
-          id: req_96e2310c77a44b89a40aaec61a0428c9
+          id: req_88376240c96e48c683a6fff8598b8194
           created: 1776571995549
           modified: 1776572215182
           isPrivate: false
@@ -657,7 +657,7 @@ collection:
       - url: http://localhost:8080/api/funcionarios
         name: Create
         meta:
-          id: req_a34a5669c6e841c181af8aefaaedd6a1
+          id: req_e36b4a4c98c34eb3901125b1a7bb7603
           created: 1776571995549
           modified: 1777148295752
           isPrivate: false
@@ -695,18 +695,115 @@ collection:
           rebuildPath: true
   - name: Ordem de Serviço Fluxo esperado
     meta:
-      id: fld_60428c4da7074b2a91b8c94e34409227
+      id: fld_0191f753a03a4f019e89bb189d81382e
       created: 1776575995862
-      modified: 1778018208614
+      modified: 1778205526576
       sortKey: -1776295084812.8125
       description: ""
     children:
+      - url: http://localhost:8080/api/ordens-servico/{{ _.os_id }}
+        name: Buscar por Id
+        meta:
+          id: req_4eb973a853464f5d9b0a6893ae0dd79f
+          created: 1776575995862
+          modified: 1778205447312
+          isPrivate: false
+          description: ""
+          sortKey: -1776294764019.875
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: "{{token}}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/api/servicos/1
+        name: Soft Delete
+        meta:
+          id: req_79fb680687294a57a5e0c89b5ed9226f
+          created: 1776575995862
+          modified: 1778209595116
+          isPrivate: false
+          description: ""
+          sortKey: -1776294763998
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: "{{token}}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/api/ordens-servico
+        name: Abrir OS
+        meta:
+          id: req_7ecd3d52ea9a4508885aea918990e975
+          created: 1776575995862
+          modified: 1778205342170
+          isPrivate: false
+          description: ""
+          sortKey: -1776294764023
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "clienteId": 1,
+              "veiculoId": 4,
+              "quilometragemEntrada": 150000,
+              "reclamacaoCliente": "Falhando ao acelerar"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: "{{token}}"
+        scripts:
+          afterResponse: >-
+            const responseData = insomnia.response.json();
+
+            insomnia.environment.set("os_rastreio",
+            responseData.codigoRastreio);
+
+            insomnia.environment.set("os_id", responseData.id); 
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
       - url: http://localhost:8080/api/servicos/1
         name: Update
         meta:
-          id: req_4bc23a3a226f42629b818511410f77da
+          id: req_a466c9e6de8a4727a916890c36f1c657
           created: 1776575995862
-          modified: 1776575995862
+          modified: 1778209600324
           isPrivate: false
           description: ""
           sortKey: -1776294763973
@@ -737,101 +834,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: http://localhost:8080/api/servicos/1
-        name: Soft Delete
-        meta:
-          id: req_7dfe6f4139d04071bf604e07d0577001
-          created: 1776575995862
-          modified: 1776575995862
-          isPrivate: false
-          description: ""
-          sortKey: -1776294763998
-        method: DELETE
-        headers:
-          - name: User-Agent
-            value: insomnia/12.5.0
-            description: ""
-            disabled: false
-        authentication:
-          type: bearer
-          token: "{{token}}"
-        settings:
-          renderRequestBody: true
-          encodeUrl: true
-          followRedirects: global
-          cookies:
-            send: true
-            store: true
-          rebuildPath: true
-      - url: http://localhost:8080/api/ordens-servico
-        name: Abrir OS
-        meta:
-          id: req_b3b3253323474f10aca7f1fef643cdd8
-          created: 1776575995862
-          modified: 1778017942927
-          isPrivate: false
-          description: ""
-          sortKey: -1776294764023
-        method: POST
-        body:
-          mimeType: application/json
-          text: |-
-            {
-              "clienteId": 1,
-              "veiculoId": 4,
-              "quilometragemEntrada": 150000,
-              "reclamacaoCliente": "Falhando ao acelerar"
-            }
-        headers:
-          - name: Content-Type
-            value: application/json
-          - name: User-Agent
-            value: insomnia/12.5.0
-            description: ""
-            disabled: false
-        authentication:
-          type: bearer
-          token: "{{token}}"
-        settings:
-          renderRequestBody: true
-          encodeUrl: true
-          followRedirects: global
-          cookies:
-            send: true
-            store: true
-          rebuildPath: true
-      - url: http://localhost:8080/api/ordens-servico/{{ _.os_id }}
-        name: Buscar por Id
-        meta:
-          id: req_c4f529db0dcb4453ad320debaebb6c6f
-          created: 1776575995862
-          modified: 1777941534909
-          isPrivate: false
-          description: ""
-          sortKey: -1776294764019.875
-        method: GET
-        headers:
-          - name: User-Agent
-            value: insomnia/12.5.0
-            description: ""
-            disabled: false
-        authentication:
-          type: bearer
-          token: "{{token}}"
-        settings:
-          renderRequestBody: true
-          encodeUrl: true
-          followRedirects: global
-          cookies:
-            send: true
-            store: true
-          rebuildPath: true
       - url: http://localhost:8080/api/ordens-servico/{{ _.os_id }}/servicos
         name: Adicionar Item de Serviço na OS
         meta:
-          id: req_cb3dd2eb5e5749cbbf0bc4a088737032
+          id: req_2db09a4a146e4c3fa22486985b28cc82
           created: 1776577445768
-          modified: 1778018206382
+          modified: 1778209490174
           isPrivate: false
           description: ""
           sortKey: -1776294764010.5
@@ -840,7 +848,7 @@ collection:
           mimeType: application/json
           text: |-
             {
-              "servicoId": 2
+              "servicoId": 1
             }
         headers:
           - name: Content-Type
@@ -896,9 +904,9 @@ collection:
       - url: http://localhost:8080/api/ordens-servico/{{ _.os_id }}/produtos
         name: Adicionar Item de Produto na OS
         meta:
-          id: req_17b4977840f243ac8776e5ec108cfc39
+          id: req_a2a6f35eb877441c963ed1987786968a
           created: 1776577579308
-          modified: 1778018107892
+          modified: 1778209488531
           isPrivate: false
           description: ""
           sortKey: -1776294764013.625
@@ -931,9 +939,9 @@ collection:
       - url: http://localhost:8080/api/ordens-servico/{{ _.os_id }}/iniciar-diagnostico
         name: Iniciar diagnóstico OS
         meta:
-          id: req_68b537209c9e4bcb881cb6a10b8f811f
+          id: req_9cd4ba59b8bd420197a3c89f05bdb193
           created: 1776577931338
-          modified: 1777941595591
+          modified: 1778209487178
           isPrivate: false
           description: ""
           sortKey: -1776294764016.75
@@ -957,7 +965,7 @@ collection:
       - url: http://localhost:8080/api/ordens-servico/rastreio/{{ _.os_rastreio }}
         name: Buscar por Código de Rastreio
         meta:
-          id: req_4e077ba6e84b4be087f1914afb8391d2
+          id: req_a51f1d972992449a9b535047358ee02e
           created: 1777142840978
           modified: 1777941543106
           isPrivate: false
@@ -982,9 +990,9 @@ collection:
       - url: http://localhost:8080/api/ordens-servico/{{ _.os_id }}/concluir-diagnostico
         name: Concluir diagnóstico OS
         meta:
-          id: req_e7df6c9f976c4aac9fd8f9054ad8ed3b
+          id: req_ed7a59ab1c3c4d10959c9bd53c6505a6
           created: 1777163202118
-          modified: 1777941990343
+          modified: 1778209491532
           isPrivate: false
           description: ""
           sortKey: -1776294763999.5625
@@ -1016,9 +1024,9 @@ collection:
       - url: http://localhost:8080/api/ordens-servico/{{ _.os_id }}/enviar-orcamento
         name: Enviar orçamento
         meta:
-          id: req_19f73bd893a74d33988e17bc9829c24d
+          id: req_eb441d7e577a4a8bb8d49fd2c35a4344
           created: 1777170424202
-          modified: 1777942094725
+          modified: 1778209493256
           isPrivate: false
           description: ""
           sortKey: -1776294763998.7812
@@ -1042,9 +1050,9 @@ collection:
       - url: http://localhost:8080/api/ordens-servico/{{ _.os_id }}/aprovar
         name: Aprovar orçamento
         meta:
-          id: req_4d00650e772d4f4fbea22b187943cd19
+          id: req_d91deb497a664eec8525ac078411e347
           created: 1777230132019
-          modified: 1777942150443
+          modified: 1778209494129
           isPrivate: false
           description: ""
           sortKey: -1776294763998.3906
@@ -1068,9 +1076,9 @@ collection:
       - url: http://localhost:8080/api/ordens-servico/{{ _.os_id }}/verificar-estoque
         name: Verificar estoque (Condicional)
         meta:
-          id: req_98944a24f0b145ebb0b8ff4cd9f7c02a
+          id: req_7599df0cd8d3439093e0270220aa82bd
           created: 1777231229336
-          modified: 1777942778058
+          modified: 1778209495529
           isPrivate: false
           description: >
             Esse endpoint deve ser acionado apenas quando a OS foi APROVADA e
@@ -1113,9 +1121,9 @@ collection:
       - url: http://localhost:8080/api/ordens-servico/{{ _.os_id }}/iniciar-execucao
         name: Iniciar Execucao da OS
         meta:
-          id: req_82575c5babe74b4a9ca51e611e6c910f
+          id: req_8163327a439645d4997bf0f21fd57c34
           created: 1777231383929
-          modified: 1777942797747
+          modified: 1778209496610
           isPrivate: false
           description: ""
           sortKey: -1776294763998.0977
@@ -1139,9 +1147,9 @@ collection:
       - url: http://localhost:8080/api/ordens-servico/{{ _.os_id }}/finalizar-execucao
         name: Finalizar Execucao da OS
         meta:
-          id: req_37bba05252774fae93b19f0907044421
+          id: req_fb032f6fd4704c7ca37d0ff173568d44
           created: 1777231516746
-          modified: 1777943905561
+          modified: 1778209592046
           isPrivate: false
           description: ""
           sortKey: -1776294763998.0488
@@ -1162,16 +1170,18 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: http://localhost:8080/api/itens-servico/8/iniciar-execucao
+      - url: http://localhost:8080/api/itens-servico/{{id item do
+          servico}}/iniciar-execucao
         name: Iniciar Execucao Item de Serviço
         meta:
-          id: req_ebfeab4a0bfd45a4bd2868f991c7c9b2
+          id: req_87b668bac80d46f2b19e72b4850127d2
           created: 1777231560033
-          modified: 1778018337816
+          modified: 1778209587430
           isPrivate: false
           description: >-
             Esse endpoint deve ser acionado para todos os itens de servico da
             OS. 
+
 
             Ver códigos em http://localhost:8080/api/ordens-servico/detalhes/{{
             _.os_rastreio }}
@@ -1183,7 +1193,7 @@ collection:
             Ao iniciar ficam EM_ANDAMENTO
 
 
-            E poir fim CONCLUIDO
+            E por fim CONCLUIDO
           sortKey: -1776294763998.0732
         method: POST
         headers:
@@ -1202,12 +1212,13 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: http://localhost:8080/api/itens-servico/8/concluir-execucao
+      - url: http://localhost:8080/api/itens-servico/{{id item do
+          servico}}/concluir-execucao
         name: Concluir Execucao Item de Serviço
         meta:
-          id: req_85cabf8e5b274d53ad261b90942cea5b
+          id: req_ad1d5b98ed064fd4868bca530d6ddfc2
           created: 1777231665627
-          modified: 1778018355027
+          modified: 1778209590553
           isPrivate: false
           description: >
             Esse endpoint deve ser acionado para todos os itens de servico da
@@ -1217,7 +1228,15 @@ collection:
             _.os_rastreio }}
           sortKey: -1776294763998.061
         method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"dataFimManual": "2026-05-07T23:57:44"
+            }
         headers:
+          - name: Content-Type
+            value: application/json
           - name: User-Agent
             value: insomnia/12.5.0
             description: ""
@@ -1236,9 +1255,9 @@ collection:
       - url: http://localhost:8080/api/ordens-servico/{{ _.os_id }}/concluir
         name: Concluir Execucao da OS
         meta:
-          id: req_19383ce42ea745628b9242c3d2c505c7
+          id: req_0407b78a52f1461eb0daf449df54e459
           created: 1777231782579
-          modified: 1777943915125
+          modified: 1778209592958
           isPrivate: false
           description: ""
           sortKey: -1776294763998.0244
@@ -1262,9 +1281,9 @@ collection:
       - url: http://localhost:8080/api/ordens-servico/detalhes/{{ _.os_rastreio }}
         name: Buscar Detalhes da OS por Código de Rastreio
         meta:
-          id: req_08ebbd7e896d4f9faf59e771eeffc1a0
+          id: req_a0423a7985a440b0940008ede3504fdf
           created: 1777339527186
-          modified: 1778023961240
+          modified: 1778209485269
           isPrivate: false
           description: ""
           sortKey: -1776294764017.5312
@@ -1288,9 +1307,9 @@ collection:
       - url: Iniciar Execução em Lote - Melhoria futura
         name: Iniciar Execução em Lote - Melhoria futura
         meta:
-          id: req_f93fc3e1d43e4aea997f93ddd9993594
+          id: req_292868de795d4a4e8b650d5af744c9fa
           created: 1777943474814
-          modified: 1777943812924
+          modified: 1778209589386
           isPrivate: false
           description: ""
           sortKey: -1776294763998.0671
@@ -1340,6 +1359,7 @@ collection:
                 insomnia.environment.set("lista_ids_servicos", "[]");
 
 
+
                 
             } else {
                 console.log("Nenhum ID encontrado na lista para executar.");
@@ -1354,78 +1374,15 @@ collection:
             send: true
             store: true
           rebuildPath: true
-  - name: Produto
-    meta:
-      id: fld_22e756a306fa41089abffee492efbb40
-      created: 1776577631932
-      modified: 1777126465163
-      sortKey: -1776294952715.6875
-      description: ""
-    children:
-      - url: http://localhost:8080/api/produtos/19
-        name: Update
+      - url: http://localhost:8080/api/ordens-servico
+        name: Buscar todas
         meta:
-          id: req_31de99ad38fe4ff98b034c6321a05ebe
-          created: 1776577631932
-          modified: 1777229949624
-          isPrivate: false
-          description: |-
-            Att:
-
-            {
-            	"nome": "Descarbonizante Spray (Limpa TBI Clia)",
-            	"tipo" : "INSUMO",
-            	"marca": "Sprayzao",
-            	"codigoFabricante": "STBI",
-            	"aplicacao": "Limpeza de TBI em carros",
-            	"quantidadeAtual": 10.000,
-            	"quantidadeReservada": 0,
-            	"precoVenda": 4.00,
-            	"precoCusto": 3.00
-            }
-          sortKey: -1776294763973
-        method: PUT
-        body:
-          mimeType: application/json
-          text: |-
-            {	
-            	"nome": "Stopa",
-            	"tipo": "PECA",
-            	"marca": "VelaBrasil",
-            	"codigoFabricante": "VP",
-            	"aplicacao": "teste",
-            	"quantidadeAtual": 4,
-            	"quantidadeReservada": 0,
-            	"precoVenda": 50.00,
-            	"precoCusto": 35.00	
-            }
-        headers:
-          - name: Content-Type
-            value: application/json
-          - name: User-Agent
-            value: insomnia/12.5.0
-            description: ""
-            disabled: false
-        authentication:
-          type: bearer
-          token: "{{token}}"
-        settings:
-          renderRequestBody: true
-          encodeUrl: true
-          followRedirects: global
-          cookies:
-            send: true
-            store: true
-          rebuildPath: true
-      - url: http://localhost:8080/api/produtos?busca=tbi
-        name: Buscar por termo
-        meta:
-          id: req_cceaf10a4b1145b99e4772ef3d8151b2
-          created: 1776577631932
-          modified: 1777134627760
+          id: req_1592ea9654d44c0ab3cfa48b8d276d75
+          created: 1778209408504
+          modified: 1778209414866
           isPrivate: false
           description: ""
-          sortKey: -1776294763923
+          sortKey: -1776294764021.4375
         method: GET
         headers:
           - name: User-Agent
@@ -1443,10 +1400,18 @@ collection:
             send: true
             store: true
           rebuildPath: true
+  - name: Produto
+    meta:
+      id: fld_b44ea2b2408648f9af8f148a167c640b
+      created: 1776577631932
+      modified: 1777126465163
+      sortKey: -1776294952715.6875
+      description: ""
+    children:
       - url: http://localhost:8080/api/produtos/14
         name: Soft Delete
         meta:
-          id: req_cf459a218bb6469b8606814ca297b340
+          id: req_7ab0c0f5ee6046f3ac635f2da371be0e
           created: 1776577631932
           modified: 1777129869269
           isPrivate: false
@@ -1469,16 +1434,29 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: http://localhost:8080/api/produtos
-        name: Create
+      - url: http://localhost:8080/api/produtos/10
+        name: Update
         meta:
-          id: req_cf78f2fcb934480997d457c465606579
+          id: req_8c839ff6666d411d8c9652696ff41ae1
           created: 1776577631932
-          modified: 1777229728856
+          modified: 1778209686445
           isPrivate: false
-          description: ""
-          sortKey: -1776294764023
-        method: POST
+          description: |-
+            Att:
+
+            {
+            	"nome": "Descarbonizante Spray (Limpa TBI Clia)",
+            	"tipo" : "INSUMO",
+            	"marca": "Sprayzao",
+            	"codigoFabricante": "STBI",
+            	"aplicacao": "Limpeza de TBI em carros",
+            	"quantidadeAtual": 10.000,
+            	"quantidadeReservada": 0,
+            	"precoVenda": 4.00,
+            	"precoCusto": 3.00
+            }
+          sortKey: -1776294763973
+        method: PUT
         body:
           mimeType: application/json
           text: |-
@@ -1488,7 +1466,74 @@ collection:
             	"marca": "VelaBrasil",
             	"codigoFabricante": "VP",
             	"aplicacao": "teste",
-            	"quantidadeAtual": 0,	
+            	"quantidadeAtual": 1,	
+            	"precoVenda": 50.00,
+            	"precoCusto": 35.00
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: "{{token}}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/api/produtos?busca=tbi
+        name: Buscar por termo
+        meta:
+          id: req_dd73cb07406f4ac8925c3da30e20e02d
+          created: 1776577631932
+          modified: 1777134627760
+          isPrivate: false
+          description: ""
+          sortKey: -1776294763923
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: "{{token}}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/api/produtos
+        name: Create
+        meta:
+          id: req_fe028e3d80334604bac112d325e42684
+          created: 1776577631932
+          modified: 1778209645865
+          isPrivate: false
+          description: ""
+          sortKey: -1776294764023
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "Stopa2",
+            	"tipo" : "PECA",
+            	"marca": "VelaBrasil",
+            	"codigoFabricante": "VP",
+            	"aplicacao": "teste",
+            	"quantidadeAtual": 123,	
             	"precoVenda": 50.00,
             	"precoCusto": 35.00
             }
@@ -1512,7 +1557,7 @@ collection:
           rebuildPath: true
   - name: Métricas
     meta:
-      id: fld_431ac03ab1544e65b7208112086432d7
+      id: fld_a5efb2cd033a4496a3476d1f7a3aa610
       created: 1777331805668
       modified: 1777331805668
       sortKey: -1777331805668
@@ -1521,7 +1566,7 @@ collection:
       - url: http://localhost:8080/api/metricas/tempo-execucao?inicio=2026-04-01&fim=2026-05-30
         name: Média de execução dos serviços
         meta:
-          id: req_e2c828c58f0c4886930d5f8867305c96
+          id: req_a0b81a7ec62d42e99b03d1ea7be221bb
           created: 1777331830128
           modified: 1777943965361
           isPrivate: false
@@ -1551,7 +1596,7 @@ collection:
           rebuildPath: true
   - name: Itens de OS Produto/Serviço
     meta:
-      id: fld_8670d4f20b494948ac5bc71eb1f7d095
+      id: fld_161a78524f5844259021a6da36813f37
       created: 1777941813016
       modified: 1777944117356
       sortKey: -1776294963723.7812
@@ -1560,7 +1605,7 @@ collection:
       - url: http://localhost:8080/api/itens-produto/3
         name: Alterar Item de Produto na OS
         meta:
-          id: req_888d5468edd94fea9efafd800aa720fe
+          id: req_3281ac8910fa49eebc23145b1c287ed3
           created: 1777159187982
           modified: 1777941838492
           isPrivate: false
@@ -1595,7 +1640,7 @@ collection:
       - url: http://localhost:8080/api/itens-servico/2
         name: Alterar Item de Serviço na OS
         meta:
-          id: req_0825275a1c304d36909f9fb3961c78c7
+          id: req_641c950274c648f1a2039111367ea172
           created: 1777161319987
           modified: 1777941869117
           isPrivate: false
@@ -1630,7 +1675,7 @@ collection:
       - url: http://localhost:8080/api/itens-produto/3
         name: Remover Item de Produto da OS
         meta:
-          id: req_5af9ab8169f0440a8dd633bdb0dbfba0
+          id: req_932d77ff1b084f8c891cc414b9367e35
           created: 1777162263900
           modified: 1777941842595
           isPrivate: false
@@ -1656,7 +1701,7 @@ collection:
       - url: http://localhost:8080/api/itens-servico/4
         name: Remover Item de Serviço da OS
         meta:
-          id: req_3129bf3c98f8471b905ee3784b5373f3
+          id: req_1b644fc57cbb45fa9543ac5682f56347
           created: 1777162356984
           modified: 1777941874322
           isPrivate: false
@@ -1682,9 +1727,9 @@ collection:
 cookieJar:
   name: Default Jar
   meta:
-    id: jar_9e903817aa3b4dcbb41900f65beb2734
+    id: jar_0a096a3b4a7746b6b4d5d5b99577d82d
     created: 1775838824338
-    modified: 1778018208604
+    modified: 1778208288767
   cookies:
     - id: c6d107d5-e5ef-4148-b645-c967e75d0fb0
       key: JSESSIONID
@@ -1697,13 +1742,11 @@ cookieJar:
 environments:
   name: Base Environment
   meta:
-    id: env_acafa279b4b74982b39f6c9a3ee13244
+    id: env_78ac00db78ca4e858af2c148724897cf
     created: 1775838824324
-    modified: 1778027152560
+    modified: 1778208288771
     isPrivate: false
   data:
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJvZmljaW5hLWFwaSIsInN1YiI6ImFkbWluIiwiZXhwIjoxNzc4MDI1MTMwfQ.NzKMt7yxCC6myHP2WjXdQmePq9fpUY8mdgi_PDEVPMY
-    os_id: "{% response 'body', 'req_b3b3253323474f10aca7f1fef643cdd8',
-      'b64::JC5pZA==::46b', 'never', 60 %}"
-    os_rastreio: "{% response 'body', 'req_b3b3253323474f10aca7f1fef643cdd8',
-      'b64::JC5jb2RpZ29SYXN0cmVpbw==::46b', 'never', 60 %}"
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJvZmljaW5hLWFwaSIsInN1YiI6ImFkbWluIiwiZXhwIjoxNzc4MjE1NDg4fQ.b-0cXcm6n8ulzAK4qwUVL0rciVKKHtK7iQD9SftAn94
+    os_rastreio: OS-846EB939
+    os_id: 9
