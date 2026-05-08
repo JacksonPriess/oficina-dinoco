@@ -8,6 +8,8 @@ import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -220,6 +222,11 @@ public class OrdemServicoService {
         os.setValorTotalOS(totalProdutos.add(totalServicos).subtract(os.getValorDesconto()).max(BigDecimal.ZERO));
 
         repository.save(os);
+    }
+
+    public Page<OrdemServicoResponseDto> listarTodas(Pageable pageable) {
+        Page<OrdemServico> ordens = repository.findAll(pageable);
+        return ordens.map(this::mapearParaResponse);
     }
 
     public OrdemServicoResponseDto buscarPorId(Long id) {

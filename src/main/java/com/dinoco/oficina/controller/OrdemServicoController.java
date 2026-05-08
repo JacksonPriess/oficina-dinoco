@@ -10,6 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 
 @Tag(name = "7. Ordem de servico", description = "Criação e acompanhamento da Ordem de Serviço")
 @RestController
@@ -110,6 +114,15 @@ public class OrdemServicoController {
     @GetMapping("/detalhes/{codigoRastreio}")
     public ResponseEntity<OrdemServicoDetalhadaResponseDto> getDetalhes(@PathVariable String codigoRastreio) {
         OrdemServicoDetalhadaResponseDto response = service.buscarDetalhesPorCodigoRastreio(codigoRastreio);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "14. Listar todas as Ordens de Serviço (com paginação)")
+    @GetMapping
+    public ResponseEntity<Page<OrdemServicoResponseDto>> listarTodas(
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<OrdemServicoResponseDto> response = service.listarTodas(pageable);
         return ResponseEntity.ok(response);
     }
 }
