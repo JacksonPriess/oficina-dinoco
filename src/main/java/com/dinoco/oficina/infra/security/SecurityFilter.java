@@ -23,7 +23,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
     private final UserDetailsService userDetailsService;
-    private final ObjectMapper objectMapper; // Adicionamos o conversor JSON
+    private final ObjectMapper objectMapper;
 
     public SecurityFilter(TokenService tokenService, UserDetailsService userDetailsService, ObjectMapper objectMapper) {
         this.tokenService = tokenService;
@@ -45,32 +45,23 @@ public class SecurityFilter extends OncePerRequestFilter {
                     boolean isRotaTrocaSenha = uri.equals("/api/auth/trocar-senha");
 
                     if (Boolean.TRUE.equals(usuario.getPrecisaTrocarSenha()) && !isRotaTrocaSenha) {
-
-                        // 1. Configura os headers da resposta
                         response.setStatus(HttpStatus.FORBIDDEN.value());
                         response.setContentType("application/json; charset=UTF-8");
-
-                        // 2. Monta o seu objeto de erro padronizado
                         ErroPadraoDto erroDto = new ErroPadraoDto(
                                 LocalDateTime.now(),
                                 HttpStatus.FORBIDDEN.value(),
                                 "Acesso Bloqueado",
                                 List.of("Acesso negado. É obrigatório redefinir a senha provisória antes de continuar.")
                         );
-
-                        // 3. Converte o objeto para JSON e escreve na resposta
                         response.getWriter().write(objectMapper.writeValueAsString(erroDto));
-                        return; // Interrompe a cadeia de filtros e não processa a requisição
+                        return;
                     }
                 }
 
-                // Autentica o usuário no contexto do Spring
                 var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
-
-        // Passa a requisição para frente (para o Controller ou para ser bloqueada)
         filterChain.doFilter(request, response);
     }
 

@@ -36,7 +36,7 @@ public class SecurityConfig {
                 "/swagger-ui.html"
                 ).permitAll()
                 .anyRequest().authenticated()
-        )// Adiciona o nosso filtro ANTES do filtro padrão do Spring
+        )
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
