@@ -55,7 +55,7 @@ public class FuncionarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Restar senha funcionário")
+    @Operation(summary = "Resetar senha funcionário")
     @PutMapping("/{id}/reset-senha")
     public ResponseEntity<SenhaResetadaResponseDto> resetarSenha(@PathVariable Long id) {
         String senhaTemporaria = service.resetarSenhaFuncionario(id);

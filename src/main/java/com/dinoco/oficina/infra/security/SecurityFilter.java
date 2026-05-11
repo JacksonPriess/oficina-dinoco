@@ -1,26 +1,34 @@
 package com.dinoco.oficina.infra.security;
 
+import com.dinoco.oficina.entity.Usuario;
+import com.dinoco.oficina.exception.ErroPadraoDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
     private final UserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper; // Adicionamos o conversor JSON
 
-    public SecurityFilter(TokenService tokenService, UserDetailsService userDetailsService) {
+    public SecurityFilter(TokenService tokenService, UserDetailsService userDetailsService, ObjectMapper objectMapper) {
         this.tokenService = tokenService;
         this.userDetailsService = userDetailsService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -31,10 +39,33 @@ public class SecurityFilter extends OncePerRequestFilter {
             var subject = tokenService.validarToken(token);
             if (!subject.isEmpty()) {
 
-                UserDetails user = userDetailsService.loadUserByUsername(subject);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
+                if (userDetails instanceof Usuario usuario) {
+                    String uri = request.getRequestURI();
+                    boolean isRotaTrocaSenha = uri.equals("/api/auth/trocar-senha");
+
+                    if (Boolean.TRUE.equals(usuario.getPrecisaTrocarSenha()) && !isRotaTrocaSenha) {
+
+                        // 1. Configura os headers da resposta
+                        response.setStatus(HttpStatus.FORBIDDEN.value());
+                        response.setContentType("application/json; charset=UTF-8");
+
+                        // 2. Monta o seu objeto de erro padronizado
+                        ErroPadraoDto erroDto = new ErroPadraoDto(
+                                LocalDateTime.now(),
+                                HttpStatus.FORBIDDEN.value(),
+                                "Acesso Bloqueado",
+                                List.of("Acesso negado. É obrigatório redefinir a senha provisória antes de continuar.")
+                        );
+
+                        // 3. Converte o objeto para JSON e escreve na resposta
+                        response.getWriter().write(objectMapper.writeValueAsString(erroDto));
+                        return; // Interrompe a cadeia de filtros e não processa a requisição
+                    }
+                }
 
                 // Autentica o usuário no contexto do Spring
-                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }

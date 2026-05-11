@@ -29,6 +29,9 @@ public class Usuario implements UserDetails {
 
     private Boolean ativo = true;
 
+    @Column(name = "precisa_trocar_senha", nullable = false)
+    private Boolean precisaTrocarSenha = true;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Por enquanto, todos usuário logado ganha a role padrão

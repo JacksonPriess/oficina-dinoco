@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.security.SecureRandom;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +27,7 @@ public class UsuarioService {
         Usuario usuario = new Usuario();
         usuario.setLogin(login);
         usuario.setSenha(passwordEncoder.encode(senhaPura));
+        usuario.setPrecisaTrocarSenha(true);
 
         return usuarioRepository.save(usuario);
     }
@@ -44,5 +43,15 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
 
         return senhaTemporaria;
+    }
+
+    @Transactional
+    public void registrarNovaSenha(Long usuarioId, String novaSenhaPura) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
+
+        usuario.setSenha(passwordEncoder.encode(novaSenhaPura));
+        usuario.setPrecisaTrocarSenha(false);
+        usuarioRepository.save(usuario);
     }
 }
