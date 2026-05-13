@@ -1,6 +1,8 @@
 package com.dinoco.oficina.exception;
 
+
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.http.HttpStatus;
@@ -9,8 +11,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import tools.jackson.databind.exc.InvalidFormatException;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -47,9 +51,6 @@ public class GlobalExceptionHandler {
                 "Regra de Negócio Violada",
                 List.of(ex.getMessage())
         );
-
-
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroPadrao);
     }
 
@@ -131,4 +132,28 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(erroPadrao);
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErroPadraoDto> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+
+        String mensagemErro = "Corpo da requisição mal formatado ou com tipos de dados inválidos.";
+        if (ex.getCause() instanceof InvalidFormatException invalidFormatEx) {
+            if (invalidFormatEx.getTargetType() != null && invalidFormatEx.getTargetType().isEnum()) {
+                String valorEnviado = invalidFormatEx.getValue().toString();
+                String valoresAceitos = Arrays.toString(invalidFormatEx.getTargetType().getEnumConstants());
+                mensagemErro = String.format("O valor '%s' é inválido. Valores aceitos: %s", valorEnviado, valoresAceitos);
+            }
+        }
+
+        ErroPadraoDto erroPadrao = new ErroPadraoDto(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Erro de Requisição",
+                List.of(mensagemErro)
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroPadrao);
+    }
+
+
 }

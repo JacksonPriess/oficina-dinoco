@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,6 +35,8 @@ public class AuthController {
         var token = tokenService.gerarToken(auth.getName());
         return ResponseEntity.ok(new TokenDto(token));
     }
+
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Trocar senha")
     @PutMapping("/trocar-senha")
     public ResponseEntity<Void> trocarSenha(@RequestBody @Valid TrocarSenhaRequestDto dto, @AuthenticationPrincipal Usuario usuarioLogado) {

@@ -1,6 +1,7 @@
 package com.dinoco.oficina.util.builders;
 
 import com.dinoco.oficina.entity.Usuario;
+import com.dinoco.oficina.enums.PerfilUsuario;
 
 public class UsuarioBuilder {
 
@@ -16,6 +17,8 @@ public class UsuarioBuilder {
         builder.usuario.setLogin("funcionario.teste");
         builder.usuario.setSenha("senhaCriptografada123");
         builder.usuario.setAtivo(true);
+        builder.usuario.setPrecisaTrocarSenha(false);
+        builder.usuario.setPerfil(PerfilUsuario.ADMIN);
         return builder;
     }
 

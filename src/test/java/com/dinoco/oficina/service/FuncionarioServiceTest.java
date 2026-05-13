@@ -9,6 +9,8 @@ import java.util.Optional;
 import com.dinoco.oficina.dto.FuncionarioRequestDto;
 import com.dinoco.oficina.dto.FuncionarioResponseDto;
 import com.dinoco.oficina.entity.Funcionario;
+import com.dinoco.oficina.enums.CargoFuncionario;
+import com.dinoco.oficina.enums.PerfilUsuario;
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.FuncionarioRepository;
 import com.dinoco.oficina.util.builders.FuncionarioBuilder;
@@ -56,7 +58,7 @@ class FuncionarioServiceTest {
         Funcionario capturado = funcionarioCaptor.getValue();
 
         assertThat(capturado.getUsuarioId()).isNull();
-        verify(usuarioService, never()).criarUsuarioSistema(any(), any());
+        verify(usuarioService, never()).criarUsuarioSistema(any(), any(), any());
     }
 
     @Test
@@ -67,14 +69,14 @@ class FuncionarioServiceTest {
         var funcionarioMock = FuncionarioBuilder.umFuncionario().comUsuarioId(99L).build();
 
         when(repository.existsByCpf(anyString())).thenReturn(false);
-        when(usuarioService.criarUsuarioSistema(request.login(), request.senha())).thenReturn(usuarioSalvoMock);
+        when(usuarioService.criarUsuarioSistema(request.login(), request.senha(), PerfilUsuario.MECANICO)).thenReturn(usuarioSalvoMock);
         when(repository.save(any(Funcionario.class))).thenReturn(funcionarioMock);
 
         FuncionarioResponseDto response = service.criar(request);
 
         assertThat(response).isNotNull();
 
-        verify(usuarioService).criarUsuarioSistema(request.login(), request.senha());
+        verify(usuarioService).criarUsuarioSistema(request.login(), request.senha(), PerfilUsuario.MECANICO);
         verify(repository).save(funcionarioCaptor.capture());
 
         Funcionario capturado = funcionarioCaptor.getValue();
@@ -92,7 +94,7 @@ class FuncionarioServiceTest {
 
         assertEquals("CPF já cadastrado.", exception.getMessage());
         verify(repository, never()).save(any());
-        verify(usuarioService, never()).criarUsuarioSistema(any(), any());
+        verify(usuarioService, never()).criarUsuarioSistema(any(), any(), any());
     }
 
     @Test
@@ -141,7 +143,7 @@ class FuncionarioServiceTest {
                 .build();
 
         var requestAtualizacao = new FuncionarioRequestDto(
-                "Nome Modificado", "52998224725", "Gerente", false, null, null
+                "Nome Modificado", "52998224725", CargoFuncionario.ATENDENTE, false, null, null
         );
 
         when(repository.findById(id)).thenReturn(Optional.of(funcionarioExistente));
@@ -153,7 +155,7 @@ class FuncionarioServiceTest {
         Funcionario atualizado = funcionarioCaptor.getValue();
 
         assertThat(atualizado.getNome()).isEqualTo("Nome Modificado");
-        assertThat(atualizado.getCargo()).isEqualTo("Gerente");
+        assertThat(atualizado.getCargo()).isEqualTo(CargoFuncionario.ATENDENTE);
     }
 
     @Test

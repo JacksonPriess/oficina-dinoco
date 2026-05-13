@@ -4,6 +4,8 @@ import com.dinoco.oficina.dto.FuncionarioRequestDto;
 import com.dinoco.oficina.dto.FuncionarioResponseDto;
 import com.dinoco.oficina.entity.Funcionario;
 import com.dinoco.oficina.entity.Usuario;
+import com.dinoco.oficina.enums.CargoFuncionario;
+import com.dinoco.oficina.enums.PerfilUsuario;
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.FuncionarioRepository;
 import com.dinoco.oficina.util.DocumentoUtil;
@@ -36,11 +38,19 @@ public class FuncionarioService {
         funcionario.setCargo(dto.cargo());
 
         if (dto.criarAcesso()) {
-            Usuario usuarioSalvo = usuarioService.criarUsuarioSistema(dto.login(), dto.senha());
+            PerfilUsuario perfilAcesso = definirPerfilPorCargo(dto.cargo());
+            Usuario usuarioSalvo = usuarioService.criarUsuarioSistema(dto.login(), dto.senha(), perfilAcesso);
             funcionario.setUsuarioId(usuarioSalvo.getId());
         }
         Funcionario funcionarioSalvo = repository.save(funcionario);
         return mapearParaResponse(funcionarioSalvo);
+    }
+
+    private PerfilUsuario definirPerfilPorCargo(CargoFuncionario cargo) {
+        return switch (cargo) {
+            case MECANICO -> PerfilUsuario.MECANICO;
+            case ATENDENTE -> PerfilUsuario.ATENDENTE;
+        };
     }
 
     public FuncionarioResponseDto buscarPorId(Long id) {

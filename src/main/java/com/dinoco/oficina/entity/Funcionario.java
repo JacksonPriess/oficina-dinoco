@@ -1,5 +1,6 @@
 package com.dinoco.oficina.entity;
 
+import com.dinoco.oficina.enums.CargoFuncionario;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +24,8 @@ public class Funcionario {
     private String cpf;
 
     @Column(nullable = false)
-    private String cargo;
+    @Enumerated(EnumType.STRING)
+    private CargoFuncionario cargo;
 
     private boolean ativo = true;
 

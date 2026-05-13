@@ -1,6 +1,7 @@
 package com.dinoco.oficina.service;
 
 import com.dinoco.oficina.entity.Usuario;
+import com.dinoco.oficina.enums.PerfilUsuario;
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class UsuarioService {
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     @Transactional
-    public Usuario criarUsuarioSistema(String login, String senhaPura) {
+    public Usuario criarUsuarioSistema(String login, String senhaPura, PerfilUsuario perfilAcesso) {
 
         if (usuarioRepository.existsByLogin(login)) {
             throw new IllegalArgumentException("Este login já está em uso.");
@@ -28,6 +29,7 @@ public class UsuarioService {
         usuario.setLogin(login);
         usuario.setSenha(passwordEncoder.encode(senhaPura));
         usuario.setPrecisaTrocarSenha(true);
+        usuario.setPerfil(perfilAcesso);
 
         return usuarioRepository.save(usuario);
     }

@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.Optional;
 import com.dinoco.oficina.entity.Usuario;
+import com.dinoco.oficina.enums.PerfilUsuario;
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.UsuarioRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +40,7 @@ class UsuarioServiceTest {
         String login = "john.doerr";
         String senhaPura = "senha123";
         String senhaCripto = "encoded_senha";
+        PerfilUsuario perfil = PerfilUsuario.MECANICO;
 
         Usuario usuarioMock = new Usuario();
         usuarioMock.setId(1L);
@@ -47,7 +49,7 @@ class UsuarioServiceTest {
         when(passwordEncoder.encode(senhaPura)).thenReturn(senhaCripto);
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioMock);
         // 2. Act
-        Usuario resultado = usuarioService.criarUsuarioSistema(login, senhaPura);
+        Usuario resultado = usuarioService.criarUsuarioSistema(login, senhaPura, perfil);
         // 3. Assert
         assertNotNull(resultado);
         assertEquals(login, resultado.getLogin());
@@ -56,7 +58,9 @@ class UsuarioServiceTest {
         verify(usuarioRepository, times(1)).save(usuarioCaptor.capture());
         Usuario entidadeSalva = usuarioCaptor.getValue();
         assertEquals(login, entidadeSalva.getLogin());
+        assertEquals(perfil, entidadeSalva.getPerfil());
         assertEquals(senhaCripto, entidadeSalva.getSenha());
+
     }
 
     @Test
@@ -67,7 +71,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.existsByLogin(login)).thenReturn(true);
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            usuarioService.criarUsuarioSistema(login, "qualquerSenha");
+            usuarioService.criarUsuarioSistema(login, "qualquerSenha", PerfilUsuario.MECANICO);
         });
         assertEquals("Este login já está em uso.", exception.getMessage());
         verify(usuarioRepository, never()).save(any());

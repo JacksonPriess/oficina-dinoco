@@ -1,6 +1,7 @@
 package com.dinoco.oficina.util.builders;
 
 import com.dinoco.oficina.entity.Funcionario;
+import com.dinoco.oficina.enums.CargoFuncionario;
 
 public class FuncionarioBuilder {
 
@@ -15,7 +16,7 @@ public class FuncionarioBuilder {
         builder.funcionario.setId(1L);
         builder.funcionario.setNome("Mecânico Silva");
         builder.funcionario.setCpf("52998224725");
-        builder.funcionario.setCargo("Mecânico Sênior");
+        builder.funcionario.setCargo(CargoFuncionario.MECANICO);
         builder.funcionario.setAtivo(true);
         builder.funcionario.setUsuarioId(null);
         return builder;

@@ -1,6 +1,7 @@
 package com.dinoco.oficina.util.builders;
 
 import com.dinoco.oficina.dto.FuncionarioRequestDto;
+import com.dinoco.oficina.enums.CargoFuncionario;
 
 public class FuncionarioRequestDtoBuilder {
 
@@ -10,7 +11,7 @@ public class FuncionarioRequestDtoBuilder {
         return new FuncionarioRequestDto(
                 "Mecânico Silva",
                 cpf,
-                "Mecânico Sênior",
+                CargoFuncionario.MECANICO,
                 false,
                 null,
                 null
@@ -21,7 +22,7 @@ public class FuncionarioRequestDtoBuilder {
         return new FuncionarioRequestDto(
                 "Mecânico Silva",
                 cpf,
-                "Mecânico Sênior",
+                CargoFuncionario.MECANICO,
                 true,
                 login,
                 senha

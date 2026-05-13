@@ -1,5 +1,6 @@
 package com.dinoco.oficina.entity;
 
+import com.dinoco.oficina.enums.PerfilUsuario;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,10 +33,14 @@ public class Usuario implements UserDetails {
     @Column(name = "precisa_trocar_senha", nullable = false)
     private Boolean precisaTrocarSenha = true;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PerfilUsuario perfil;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Por enquanto, todos usuário logado ganha a role padrão
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        // O Spring Security EXIGE que as roles comecem com "ROLE_"
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.perfil.name()));
     }
 
     @Override
