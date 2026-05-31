@@ -1,6 +1,6 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.dto.VeiculoRequestDto;
+import com.dinoco.oficina.veiculo.infrastructure.web.dto.VeiculoRequestDto;
 
 public class VeiculoRequestDtoBuilder {
 

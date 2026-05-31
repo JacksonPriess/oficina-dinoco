@@ -1,6 +1,6 @@
 package com.dinoco.oficina.service;
 
-import com.dinoco.oficina.dto.VeiculoResponseDto;
+import com.dinoco.oficina.veiculo.infrastructure.web.dto.VeiculoResponseDto;
 import com.dinoco.oficina.entity.Veiculo;
 import com.dinoco.oficina.util.builders.VeiculoBuilder;
 import com.dinoco.oficina.util.builders.VeiculoRequestDtoBuilder;

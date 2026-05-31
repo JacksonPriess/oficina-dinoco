@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 public class ItemOSProdutoController {
-
+/*
     private final ItemOSProdutoService itemProdutoService;
 
     @Operation(summary = "Adicionar item")
@@ -38,4 +38,6 @@ public class ItemOSProdutoController {
         itemProdutoService.removerItemProduto(itemId);
         return ResponseEntity.noContent().build();
     }
+
+ */
 }

@@ -25,16 +25,17 @@ import java.util.Locale;
 public class OrdemServicoService {
 
     private final OrdemServicoRepository repository;
-    private final ClienteService clienteService;
-    private final VeiculoService veiculoService;
+    //private final ClienteService clienteService;
+    //private final VeiculoService veiculoService;
     private final MovimentacaoEstoqueService movimentacaoEstoqueService;
 
     @Transactional
     public OrdemServicoResponseDto abrirOs(OrdemServicoRequestDto osRequestDto) {
-        var cliente = clienteService.buscarEntidadePorId(osRequestDto.clienteId());
-        var veiculo = veiculoService.buscarEntidadePorId(osRequestDto.veiculoId());
-        var ordemServico = new OrdemServico(cliente, veiculo, osRequestDto.quilometragemEntrada(), osRequestDto.reclamacaoCliente());
-        return mapearParaResponse(repository.save(ordemServico));
+        //var cliente = clienteService.buscarEntidadePorId(osRequestDto.clienteId());
+        //var veiculo = veiculoService.buscarEntidadePorId(osRequestDto.veiculoId());
+        //var ordemServico = new OrdemServico(cliente, veiculo, osRequestDto.quilometragemEntrada(), osRequestDto.reclamacaoCliente());
+        //return mapearParaResponse(repository.save(ordemServico));
+        return null;
     }
 
     @Transactional

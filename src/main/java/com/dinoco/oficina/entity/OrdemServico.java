@@ -1,5 +1,6 @@
 package com.dinoco.oficina.entity;
 
+import com.dinoco.oficina.cliente.infrastructure.persistence.ClienteEntity;
 import com.dinoco.oficina.enums.StatusOS;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,7 +26,7 @@ public class OrdemServico {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente;
+    private ClienteEntity cliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "veiculo_id", nullable = false)
@@ -78,7 +79,7 @@ public class OrdemServico {
         }
     }
 
-    public OrdemServico(Cliente cliente, Veiculo veiculo, Integer quilometragem, String reclamacao) {
+    public OrdemServico(ClienteEntity cliente, Veiculo veiculo, Integer quilometragem, String reclamacao) {
         this.cliente = cliente;
         this.veiculo = veiculo;
         this.quilometragemEntrada = quilometragem;

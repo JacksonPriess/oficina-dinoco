@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class ItemOSProdutoService {
-
+/*
     private final ItemOSProdutoRepository repository;
     private final OrdemServicoService ordemServicoService;
     private final ProdutoService produtoService;
@@ -81,4 +81,6 @@ public class ItemOSProdutoService {
             throw new IllegalStateException("A OS não permite modificação em itens de produtos no status atual. Status atual: " + os.getStatus());
         }
     }
+
+ */
 }

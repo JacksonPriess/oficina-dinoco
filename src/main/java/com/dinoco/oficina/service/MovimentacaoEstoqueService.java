@@ -31,7 +31,7 @@ public class MovimentacaoEstoqueService {
                 .build();
         movimentacaoRepository.save(mov);
     }
-
+    //Usado POR OS
     @Transactional
     public void reservarItens(OrdemServico os) {
         for (ItemOSProduto item : os.getItensProduto()) {
@@ -53,6 +53,7 @@ public class MovimentacaoEstoqueService {
         }
     }
 
+    //Usado por PRODUTO
     @Transactional
     public void registrarEntrada(Long produtoId, BigDecimal quantidade, String observacao) {
         Produto produto = produtoRepository.findById(produtoId)

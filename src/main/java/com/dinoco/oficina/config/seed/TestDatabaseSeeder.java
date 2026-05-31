@@ -1,9 +1,14 @@
 package com.dinoco.oficina.config.seed;
 
+import com.dinoco.oficina.catalogoproduto.domain.TipoProduto;
+import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoRequestDto;
+import com.dinoco.oficina.catalogoservico.infrastructure.web.dto.ServicoRequestDto;
+import com.dinoco.oficina.cliente.infrastructure.web.dto.ClienteRequestDto;
 import com.dinoco.oficina.dto.*;
-import com.dinoco.oficina.enums.TipoProduto;
-import com.dinoco.oficina.repository.ClienteRepository;
+
+import com.dinoco.oficina.cliente.infrastructure.persistence.ClienteJpaRepository;
 import com.dinoco.oficina.service.*;
+import com.dinoco.oficina.veiculo.infrastructure.web.dto.VeiculoRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -12,22 +17,22 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Slf4j
-@Component
-@Profile("dev")
-public class TestDatabaseSeeder implements CommandLineRunner {
+//@Slf4j
+//@Component
+//@Profile("dev")
+public class TestDatabaseSeeder {//implements CommandLineRunner {
+/*
+    private final ClienteJpaRepository clienteRepository;
 
-    private final ClienteRepository clienteRepository;
-
-    private final ClienteService clienteService;
+    //private final ClienteService clienteService;
     private final VeiculoService veiculoService;
-    private final ServicoService servicoService;
-    private final ProdutoService produtoService;
+    //private final ServicoService servicoService;
+    //private final ProdutoService produtoService;
     private final OrdemServicoService ordemServicoService;
-    private final ItemOSServicoService itemOSServicoService;
-    private final ItemOSProdutoService itemOSServicoProduto;
+    //private final ItemOSServicoService itemOSServicoService;
+    //private final ItemOSProdutoService itemOSServicoProduto;
 
-    public TestDatabaseSeeder(ClienteRepository clienteRepository, ClienteService clienteService,
+    public TestDatabaseSeeder(ClienteJpaRepository clienteRepository, ClienteService clienteService,
                               VeiculoService veiculoService, ServicoService servicoService,
                               ProdutoService produtoService, OrdemServicoService ordemServicoService,
                               ItemOSServicoService itemOSServicoService, ItemOSProdutoService itemOSServicoProduto) {
@@ -97,7 +102,7 @@ public class TestDatabaseSeeder implements CommandLineRunner {
                 tempo
         );
 
-        servicoService.criar(dto);
+        //servicoService.criar(dto);
     }
 
     private void cadastrarProduto(String nome, TipoProduto tipo, String marca, String codigo,
@@ -114,7 +119,7 @@ public class TestDatabaseSeeder implements CommandLineRunner {
                 BigDecimal.valueOf(venda)
         );
 
-        produtoService.criar(dto);
+        //rodutoService.criar(dto);
     }
 
     private void popularClientes() {
@@ -144,7 +149,7 @@ public class TestDatabaseSeeder implements CommandLineRunner {
                 telefone,
                 List.of(enderecoPadrao)
         );
-        clienteService.criar(dto);
+        //clienteService.criar(dto);
     }
 
     private void popularVeiculos() {
@@ -197,25 +202,25 @@ public class TestDatabaseSeeder implements CommandLineRunner {
         // OS com diagnóstico concluido diagnóstico, (Status: AGUARDANDO_ORCAMENTO)
         var osDiagnoticoConcluido = ordemServicoService.abrirOs(new OrdemServicoRequestDto(3L, 3L, 45500, "Preventiva trocar filtro e óleo"));
         ordemServicoService.iniciarDiagnostico(osDiagnoticoConcluido.id());
-        itemOSServicoService.adicionarItemServico(osDiagnoticoConcluido.id(), new ItemOSServicoAdicionarDto(1L, null));
-        itemOSServicoProduto.adicionarItemProduto(osDiagnoticoConcluido.id(), new ItemOSProdutoAdicionarDto(1L, new BigDecimal(1)));
-        itemOSServicoService.adicionarItemServico(osDiagnoticoConcluido.id(), new ItemOSServicoAdicionarDto(2L, null));
-        itemOSServicoProduto.adicionarItemProduto(osDiagnoticoConcluido.id(), new ItemOSProdutoAdicionarDto(2L, new BigDecimal(4)));
+        //itemOSServicoService.adicionarItemServico(osDiagnoticoConcluido.id(), new ItemOSServicoAdicionarDto(1L, null));
+        //itemOSServicoProduto.adicionarItemProduto(osDiagnoticoConcluido.id(), new ItemOSProdutoAdicionarDto(1L, new BigDecimal(1)));
+        //itemOSServicoService.adicionarItemServico(osDiagnoticoConcluido.id(), new ItemOSServicoAdicionarDto(2L, null));
+        //itemOSServicoProduto.adicionarItemProduto(osDiagnoticoConcluido.id(), new ItemOSProdutoAdicionarDto(2L, new BigDecimal(4)));
         ordemServicoService.concluirDiagnostico(osDiagnoticoConcluido.id(), "Cárter rachado, necessário trocar óleo.");
 
         // OS orcamento revisado e enviado ao cliente (Status: AGUARDANDO_APROVACAO)
         var aguardandoAprovacao = ordemServicoService.abrirOs(new OrdemServicoRequestDto(4L, 4L, 45500, "Luz de freio acesa"));
         ordemServicoService.iniciarDiagnostico(aguardandoAprovacao.id());
-        itemOSServicoProduto.adicionarItemProduto(aguardandoAprovacao.id(), new ItemOSProdutoAdicionarDto(3L, new BigDecimal(1)));
-        itemOSServicoService.adicionarItemServico(aguardandoAprovacao.id(), new ItemOSServicoAdicionarDto(3L, null));
+        //itemOSServicoProduto.adicionarItemProduto(aguardandoAprovacao.id(), new ItemOSProdutoAdicionarDto(3L, new BigDecimal(1)));
+       // itemOSServicoService.adicionarItemServico(aguardandoAprovacao.id(), new ItemOSServicoAdicionarDto(3L, null));
         ordemServicoService.concluirDiagnostico(aguardandoAprovacao.id(), "Trocar o disco de freio");
         ordemServicoService.enviarOrcamento(aguardandoAprovacao.id());
 
         // Os aprovada, contem estoque e AGUARDANDO_EXECUCAO
         var aprovadaComEstoque = ordemServicoService.abrirOs(new OrdemServicoRequestDto(5L, 5L, 45500, "Ar cheiro ruim"));
         ordemServicoService.iniciarDiagnostico(aprovadaComEstoque.id());
-        itemOSServicoProduto.adicionarItemProduto(aprovadaComEstoque.id(), new ItemOSProdutoAdicionarDto(4L, new BigDecimal(4)));
-        itemOSServicoService.adicionarItemServico(aprovadaComEstoque.id(), new ItemOSServicoAdicionarDto(4L, null));
+        //itemOSServicoProduto.adicionarItemProduto(aprovadaComEstoque.id(), new ItemOSProdutoAdicionarDto(4L, new BigDecimal(4)));
+        //itemOSServicoService.adicionarItemServico(aprovadaComEstoque.id(), new ItemOSServicoAdicionarDto(4L, null));
         ordemServicoService.concluirDiagnostico(aprovadaComEstoque.id(), "Trocar filtro do Ar");
         ordemServicoService.enviarOrcamento(aprovadaComEstoque.id());
         ordemServicoService.aprovarOrcamento(aprovadaComEstoque.id()); // Com saldo em estoque.
@@ -223,8 +228,8 @@ public class TestDatabaseSeeder implements CommandLineRunner {
         // Os aprovada, sem estoque e AGUARDANDO_FORNECEDOR
         var aprovadaSemEstoque = ordemServicoService.abrirOs(new OrdemServicoRequestDto(5L, 5L, 45500, "Carro está falhando engasgando"));
         ordemServicoService.iniciarDiagnostico(aprovadaSemEstoque.id());
-        itemOSServicoProduto.adicionarItemProduto(aprovadaSemEstoque.id(), new ItemOSProdutoAdicionarDto(5L, new BigDecimal(4))); // Tem apenas 2 velas no estoque.
-        itemOSServicoService.adicionarItemServico(aprovadaSemEstoque.id(), new ItemOSServicoAdicionarDto(5L, null));
+        //itemOSServicoProduto.adicionarItemProduto(aprovadaSemEstoque.id(), new ItemOSProdutoAdicionarDto(5L, new BigDecimal(4))); // Tem apenas 2 velas no estoque.
+        //itemOSServicoService.adicionarItemServico(aprovadaSemEstoque.id(), new ItemOSServicoAdicionarDto(5L, null));
         ordemServicoService.concluirDiagnostico(aprovadaSemEstoque.id(), "Trocar as velas");
         ordemServicoService.enviarOrcamento(aprovadaSemEstoque.id());
         ordemServicoService.aprovarOrcamento(aprovadaSemEstoque.id()); // Sem saldo suficiente em estoque
@@ -232,33 +237,35 @@ public class TestDatabaseSeeder implements CommandLineRunner {
         // Os iniciada, servicos iniciados e concluidos, concluido OS
         var osConcluida = ordemServicoService.abrirOs(new OrdemServicoRequestDto(5L, 5L, 45500, "Barulho estranho de correia"));
         ordemServicoService.iniciarDiagnostico(osConcluida.id());
-        itemOSServicoProduto.adicionarItemProduto(osConcluida.id(), new ItemOSProdutoAdicionarDto(6L, new BigDecimal(1)));
-        itemOSServicoService.adicionarItemServico(osConcluida.id(), new ItemOSServicoAdicionarDto(6L, null));
+        //itemOSServicoProduto.adicionarItemProduto(osConcluida.id(), new ItemOSProdutoAdicionarDto(6L, new BigDecimal(1)));
+        //itemOSServicoService.adicionarItemServico(osConcluida.id(), new ItemOSServicoAdicionarDto(6L, null));
         ordemServicoService.concluirDiagnostico(osConcluida.id(), "Correia está gasta");
         ordemServicoService.enviarOrcamento(osConcluida.id());
         ordemServicoService.aprovarOrcamento(osConcluida.id()); // Com saldo
         ordemServicoService.iniciarExecucaoOS(osConcluida.id());
         var ordemServicoDetalhadaResponseDto = ordemServicoService.buscarDetalhesPorCodigoRastreio(osConcluida.codigoRastreio());
         Long itemServicoId = ordemServicoDetalhadaResponseDto.servicos().getFirst().id();
-        itemOSServicoService.iniciarExecucaoItemServico(itemServicoId);
-        itemOSServicoService.concluirExecucaoItemServico(itemServicoId, LocalDateTime.now().plusMinutes(240));
+        //itemOSServicoService.iniciarExecucaoItemServico(itemServicoId);
+        //itemOSServicoService.concluirExecucaoItemServico(itemServicoId, LocalDateTime.now().plusMinutes(240));
         ordemServicoService.finalizarExecucaoOS(osConcluida.id());
         ordemServicoService.entregarVeiculo(osConcluida.id());
 
         // Os iniciada, mesmos servico da anterior, para ter algo de métrica para visualizar
         var osConcluidaCorreiaDentada = ordemServicoService.abrirOs(new OrdemServicoRequestDto(6L, 6L, 45500, "Barulho estranho de correia"));
         ordemServicoService.iniciarDiagnostico(osConcluidaCorreiaDentada.id());
-        itemOSServicoProduto.adicionarItemProduto(osConcluidaCorreiaDentada.id(), new ItemOSProdutoAdicionarDto(6L, new BigDecimal(1)));
-        itemOSServicoService.adicionarItemServico(osConcluidaCorreiaDentada.id(), new ItemOSServicoAdicionarDto(6L, null));
+        //itemOSServicoProduto.adicionarItemProduto(osConcluidaCorreiaDentada.id(), new ItemOSProdutoAdicionarDto(6L, new BigDecimal(1)));
+        //itemOSServicoService.adicionarItemServico(osConcluidaCorreiaDentada.id(), new ItemOSServicoAdicionarDto(6L, null));
         ordemServicoService.concluirDiagnostico(osConcluidaCorreiaDentada.id(), "Correia está gasta");
         ordemServicoService.enviarOrcamento(osConcluidaCorreiaDentada.id());
         ordemServicoService.aprovarOrcamento(osConcluidaCorreiaDentada.id());
         ordemServicoService.iniciarExecucaoOS(osConcluidaCorreiaDentada.id());
         var ordemServicoDetalhadaResponseDto2 = ordemServicoService.buscarDetalhesPorCodigoRastreio(osConcluidaCorreiaDentada.codigoRastreio());
         Long itemServicoId2 = ordemServicoDetalhadaResponseDto2.servicos().getFirst().id();
-        itemOSServicoService.iniciarExecucaoItemServico(itemServicoId2);
-        itemOSServicoService.concluirExecucaoItemServico(itemServicoId2, LocalDateTime.now().plusMinutes(240));
+        //itemOSServicoService.iniciarExecucaoItemServico(itemServicoId2);
+        //itemOSServicoService.concluirExecucaoItemServico(itemServicoId2, LocalDateTime.now().plusMinutes(240));
         ordemServicoService.finalizarExecucaoOS(osConcluidaCorreiaDentada.id());
         ordemServicoService.entregarVeiculo(osConcluidaCorreiaDentada.id());
     }
+
+ */
 }

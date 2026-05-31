@@ -1,6 +1,6 @@
 package com.dinoco.oficina.entity;
 
-import com.dinoco.oficina.enums.TipoProduto;
+import com.dinoco.oficina.catalogoproduto.domain.TipoProduto;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -46,7 +46,8 @@ public class Produto {
     @Column(name = "preco_venda", nullable = false)
     private BigDecimal precoVenda = BigDecimal.ZERO;
 
-    private boolean ativo = true;
+    @Column(nullable = false)
+    private Boolean ativo = true;
 
     @Version
     private Long version;

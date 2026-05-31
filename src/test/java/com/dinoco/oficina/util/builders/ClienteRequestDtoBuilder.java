@@ -1,6 +1,6 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.dto.ClienteRequestDto;
+import com.dinoco.oficina.cliente.infrastructure.web.dto.ClienteRequestDto;
 import java.util.Collections;
 
 public abstract class ClienteRequestDtoBuilder {

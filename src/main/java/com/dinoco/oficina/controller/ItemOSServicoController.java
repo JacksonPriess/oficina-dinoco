@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequiredArgsConstructor
 public class ItemOSServicoController {
-
+/*
     private final ItemOSServicoService itemOSServicoService;
 
     @Operation(summary = "Adicionar item")
@@ -55,5 +55,5 @@ public class ItemOSServicoController {
         itemOSServicoService.concluirExecucaoItemServico(itemId, dataFim);
         return ResponseEntity.noContent().build();
     }
-
+*/
 }

@@ -1,16 +1,8 @@
 package com.dinoco.oficina.service;
 
-import com.dinoco.oficina.dto.ProdutoRequestDto;
-import com.dinoco.oficina.dto.ProdutoResponseDto;
-import com.dinoco.oficina.dto.ProdutoUpdateRequestDto;
-import com.dinoco.oficina.entity.Produto;
-import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -101,4 +93,6 @@ public class ProdutoService {
                 p.isAtivo()
         );
     }
+
+ */
 }

@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class ItemOSServicoService {
-
+/*
     private final ItemOSServicoRepository repository;
     private final OrdemServicoService ordemServicoService;
     private final ServicoService servicoService;
@@ -114,4 +114,6 @@ public class ItemOSServicoService {
             throw new IllegalStateException("A OS não permite modificação em itens de serviços no status atual: " + os.getStatus());
         }
     }
+
+ */
 }

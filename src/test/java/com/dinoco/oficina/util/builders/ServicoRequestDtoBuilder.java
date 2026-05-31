@@ -1,6 +1,6 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.dto.ServicoRequestDto;
+import com.dinoco.oficina.catalogoservico.infrastructure.web.dto.ServicoRequestDto;
 import java.math.BigDecimal;
 
 public class ServicoRequestDtoBuilder {

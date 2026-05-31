@@ -1,22 +1,13 @@
 package com.dinoco.oficina.service;
 
-import com.dinoco.oficina.dto.ClienteRequestDto;
-import com.dinoco.oficina.dto.ClienteResponseDto;
-import com.dinoco.oficina.dto.EnderecoDto;
-import com.dinoco.oficina.entity.Cliente;
-import com.dinoco.oficina.entity.Endereco;
-import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
-import com.dinoco.oficina.repository.ClienteRepository;
-import com.dinoco.oficina.util.DocumentoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
-@Service
-@RequiredArgsConstructor
+
+//@Service
+//@RequiredArgsConstructor
 public class ClienteService {
-
+/*
     private final ClienteRepository repository;
     private static final String MSG_CLIENTE_NAO_ENCONTRADO = "Cliente não encontrado.";
 
@@ -133,4 +124,6 @@ public class ClienteService {
                 cliente.getNome(), cliente.getNomeFantasia(), cliente.getEmail(), cliente.getTelefone(), cliente.getAtivo(), enderecosDto
         );
     }
+
+ */
 }

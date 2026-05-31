@@ -1,7 +1,8 @@
 package com.dinoco.oficina.util.builders;
 
+import com.dinoco.oficina.catalogoproduto.domain.TipoProduto;
 import com.dinoco.oficina.entity.Produto;
-import com.dinoco.oficina.enums.TipoProduto;
+
 import java.math.BigDecimal;
 
 public class ProdutoBuilder {

@@ -1,0 +1,18 @@
+package com.dinoco.oficina.catalogoproduto.application.usecases.commands.atualizar;
+
+import com.dinoco.oficina.catalogoproduto.domain.TipoProduto;
+import java.math.BigDecimal;
+
+public record AtualizarProdutoCommand(
+        Long id,
+        Long versao,
+        String nome,
+        TipoProduto tipo,
+        String marca,
+        String codigoFabricante,
+        String aplicacao,
+        BigDecimal quantidadeAtual,
+        BigDecimal quantidadeReservada,
+        BigDecimal precoCusto,
+        BigDecimal precoVenda
+) {}

@@ -2,8 +2,8 @@ package com.dinoco.oficina.service;
 
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.repository.VeiculoRepository;
-import com.dinoco.oficina.dto.VeiculoRequestDto;
-import com.dinoco.oficina.dto.VeiculoResponseDto;
+import com.dinoco.oficina.veiculo.infrastructure.web.dto.VeiculoRequestDto;
+import com.dinoco.oficina.veiculo.infrastructure.web.dto.VeiculoResponseDto;
 import com.dinoco.oficina.entity.Veiculo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
