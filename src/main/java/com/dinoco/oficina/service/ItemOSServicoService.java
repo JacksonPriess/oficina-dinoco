@@ -1,7 +1,7 @@
 package com.dinoco.oficina.service;
-
-import com.dinoco.oficina.dto.ItemOSServicoAdicionarDto;
-import com.dinoco.oficina.dto.ItemOSServicoAlterarDto;
+/*
+import com.dinoco.oficina.aordemservico.infrastructure.web.dto.ItemOSServicoAdicionarDto;
+import com.dinoco.oficina.aordemservico.infrastructure.web.dto.ItemOSServicoAlterarDto;
 import com.dinoco.oficina.dto.OrdemServicoDetalhadaResponseDto;
 import com.dinoco.oficina.entity.Funcionario;
 import com.dinoco.oficina.entity.ItemOSServico;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class ItemOSServicoService {
-/*
+
     private final ItemOSServicoRepository repository;
     private final OrdemServicoService ordemServicoService;
     private final ServicoService servicoService;
@@ -115,5 +115,6 @@ public class ItemOSServicoService {
         }
     }
 
- */
 }
+
+ */

@@ -1,5 +1,7 @@
 package com.dinoco.oficina.controller;
 
+/*
+import com.dinoco.oficina.aordemservico.infrastructure.web.dto.ConcluirDiagnosticoDto;
 import com.dinoco.oficina.dto.*;
 import com.dinoco.oficina.service.OrdemServicoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -126,3 +128,5 @@ public class OrdemServicoController {
         return ResponseEntity.ok(response);
     }
 }
+
+ */

@@ -1,5 +1,5 @@
 package com.dinoco.oficina.dto;
-
+/*
 import jakarta.validation.constraints.NotNull;
 
 public record OrdemServicoRequestDto(
@@ -15,3 +15,5 @@ public record OrdemServicoRequestDto(
         @NotNull
         String reclamacaoCliente
 ) {}
+
+ */

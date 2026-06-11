@@ -1,5 +1,5 @@
 package com.dinoco.oficina.service;
-
+/*
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 //@Service
 //@RequiredArgsConstructor
 public class ClienteService {
-/*
+
     private final ClienteRepository repository;
     private static final String MSG_CLIENTE_NAO_ENCONTRADO = "Cliente não encontrado.";
 
@@ -125,5 +125,7 @@ public class ClienteService {
         );
     }
 
- */
+
 }
+
+ */

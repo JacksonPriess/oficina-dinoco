@@ -1,5 +1,7 @@
 package com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarporid;
 
+import com.dinoco.oficina.catalogoproduto.application.usecases.queries.ProdutoQueryOutput;
+
 public interface BuscarProdutoPorIdUseCase {
-    BuscarProdutoPorIdOutput executar(BuscarProdutoPorIdQuery query);
+    ProdutoQueryOutput executar(BuscarProdutoPorIdQuery query);
 }

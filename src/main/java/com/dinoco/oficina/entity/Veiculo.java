@@ -1,5 +1,5 @@
 package com.dinoco.oficina.entity;
-
+/*
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -51,3 +51,4 @@ public class Veiculo {
         this.dataCriacao = LocalDateTime.now();
     }
 }
+*/

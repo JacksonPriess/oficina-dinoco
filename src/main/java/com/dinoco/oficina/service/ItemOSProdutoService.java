@@ -1,7 +1,7 @@
 package com.dinoco.oficina.service;
-
+/*
 import com.dinoco.oficina.dto.ItemOSProdutoAdicionarDto;
-import com.dinoco.oficina.dto.ItemOSProdutoAlterarDto;
+import com.dinoco.oficina.aordemservico.infrastructure.web.dto.ItemOSProdutoAlterarDto;
 import com.dinoco.oficina.dto.OrdemServicoDetalhadaResponseDto;
 import com.dinoco.oficina.entity.ItemOSProduto;
 import com.dinoco.oficina.entity.OrdemServico;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class ItemOSProdutoService {
-/*
+
     private final ItemOSProdutoRepository repository;
     private final OrdemServicoService ordemServicoService;
     private final ProdutoService produtoService;
@@ -82,5 +82,7 @@ public class ItemOSProdutoService {
         }
     }
 
- */
+
 }
+
+ */

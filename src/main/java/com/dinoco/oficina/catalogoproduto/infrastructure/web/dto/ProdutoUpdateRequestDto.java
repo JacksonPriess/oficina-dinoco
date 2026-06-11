@@ -19,9 +19,6 @@ public record ProdutoUpdateRequestDto(
         String aplicacao,
 
         @PositiveOrZero
-        BigDecimal quantidadeAtual,
-
-        @PositiveOrZero
         BigDecimal precoCusto,
 
         @PositiveOrZero

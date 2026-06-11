@@ -1,6 +1,7 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.entity.OrdemServico;
+
+import com.dinoco.oficina.ordemservico.infrastructure.persistence.OrdemServicoEntity;
 
 public class OrdemServicoBuilder {
     private Integer quilometragemEntrada = 85000;
@@ -10,12 +11,8 @@ public class OrdemServicoBuilder {
         return new OrdemServicoBuilder();
     }
 
-    public OrdemServico build() {
-        return new OrdemServico(
-                ClienteBuilder.umClientePF().build(),
-                VeiculoBuilder.umVeiculo().build(),
-                quilometragemEntrada,
-                reclamacaoCliente
-        );
+    public OrdemServicoEntity build() {
+        return null;
+
     }
 }

@@ -1,5 +1,5 @@
 package com.dinoco.oficina.controller;
-
+/*
 import com.dinoco.oficina.dto.RelatorioMetricasDTO;
 import com.dinoco.oficina.service.MetricasService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
+
 
 @Tag(name = "10. Métricas", description = "Relatórios")
 @RestController
@@ -27,3 +28,5 @@ public class MetricasController {
         return ResponseEntity.ok(relatorio);
     }
 }
+
+ */

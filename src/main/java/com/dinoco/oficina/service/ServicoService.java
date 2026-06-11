@@ -1,9 +1,10 @@
 package com.dinoco.oficina.service;
 
+/*
 //@Service
 //@RequiredArgsConstructor
 public class ServicoService {
-/*
+
     private final ServicoRepository repository;
 
     @Transactional
@@ -68,5 +69,7 @@ public class ServicoService {
         );
     }
 
- */
+
 }
+
+ */

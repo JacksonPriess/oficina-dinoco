@@ -1,5 +1,5 @@
 package com.dinoco.oficina.dto;
-
+/*
 import java.math.BigDecimal;
 
 public record ItemProdutoDetalheDto(
@@ -9,3 +9,5 @@ public record ItemProdutoDetalheDto(
         BigDecimal valorUnitario,
         BigDecimal valorTotal
 ) {}
+
+ */

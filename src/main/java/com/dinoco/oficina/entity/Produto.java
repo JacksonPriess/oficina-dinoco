@@ -1,5 +1,5 @@
 package com.dinoco.oficina.entity;
-
+/*
 import com.dinoco.oficina.catalogoproduto.domain.TipoProduto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -87,4 +87,8 @@ public class Produto {
         this.quantidadeAtual = this.quantidadeAtual.subtract(quantidade);
         this.quantidadeReservada = this.quantidadeReservada.subtract(quantidade);
     }
+
+
 }
+
+ */

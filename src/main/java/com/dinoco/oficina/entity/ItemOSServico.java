@@ -1,5 +1,5 @@
 package com.dinoco.oficina.entity;
-
+/*
 import com.dinoco.oficina.enums.StatusItemServico;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,3 +45,5 @@ public class ItemOSServico {
     private LocalDateTime dataFim;
 
 }
+
+ */

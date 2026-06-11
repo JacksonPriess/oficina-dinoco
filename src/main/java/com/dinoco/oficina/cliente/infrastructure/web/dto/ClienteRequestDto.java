@@ -1,6 +1,5 @@
 package com.dinoco.oficina.cliente.infrastructure.web.dto;
 
-import com.dinoco.oficina.dto.EnderecoDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;

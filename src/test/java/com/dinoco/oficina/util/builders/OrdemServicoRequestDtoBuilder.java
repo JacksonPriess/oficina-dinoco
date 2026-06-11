@@ -1,6 +1,6 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.dto.OrdemServicoRequestDto;
+import com.dinoco.oficina.ordemservico.infrastructure.web.dto.OrdemServicoRequestDto;
 
 public class OrdemServicoRequestDtoBuilder {
     private Long clienteId = 1L;

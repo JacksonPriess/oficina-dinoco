@@ -1,8 +1,8 @@
 package com.dinoco.oficina.service;
 
-import com.dinoco.oficina.cliente.infrastructure.web.dto.ClienteRequestDto;
+
 import com.dinoco.oficina.cliente.infrastructure.web.dto.ClienteResponseDto;
-import com.dinoco.oficina.dto.EnderecoDto;
+
 import com.dinoco.oficina.cliente.infrastructure.persistence.ClienteEntity;
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.util.builders.ClienteBuilder;

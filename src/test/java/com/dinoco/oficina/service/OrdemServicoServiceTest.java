@@ -1,5 +1,5 @@
 package com.dinoco.oficina.service;
-
+/*
 import com.dinoco.oficina.cliente.infrastructure.persistence.ClienteEntity;
 import com.dinoco.oficina.dto.LinkWhatsAppDto;
 import com.dinoco.oficina.dto.OrdemServicoDetalhadaResponseDto;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrdemServicoServiceTest {
-/*
+
     @InjectMocks
     private OrdemServicoService osService;
 
@@ -67,7 +67,7 @@ class OrdemServicoServiceTest {
         when(veiculoService.buscarEntidadePorId(requestDto.veiculoId())).thenReturn(veiculoMock);
         when(repository.save(any(OrdemServico.class))).thenReturn(osSalvaMock);
         // 2. Act
-        OrdemServicoResponseDto response = osService.abrirOs(requestDto);
+        OrdemServicoAbrirResponseDto response = osService.abrirOs(requestDto);
         // 3. Assert
         assertNotNull(response);
         verify(repository, times(1)).save(osCaptor.capture());
@@ -751,6 +751,8 @@ class OrdemServicoServiceTest {
         assertEquals("OS não encontrada para o código de rastreio: " + codigoRastreioInvalido, exception.getMessage());
         verify(repository).findByCodigoRastreio(codigoRastreioInvalido);
     }
-    */
+
 
 }
+
+ */

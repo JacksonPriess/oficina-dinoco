@@ -55,8 +55,6 @@ public class Cliente {
         this.enderecos = enderecos != null ? new ArrayList<>(enderecos) : new ArrayList<>();
     }
 
-    // --- REGRAS DE NEGÓCIO E COMPORTAMENTOS ---
-
     private void validarDocumento(String tipoPessoa, String documento) {
         if ("F".equals(tipoPessoa) && !DocumentoUtil.isCpfValido(documento)) {
             throw new IllegalArgumentException("CPF inválido.");
@@ -64,10 +62,6 @@ public class Cliente {
         if ("J".equals(tipoPessoa) && !DocumentoUtil.isCnpjValido(documento)) {
             throw new IllegalArgumentException("CNPJ inválido.");
         }
-    }
-
-    public void desativar() {
-        this.ativo = false;
     }
 
     public void adicionarEndereco(Endereco endereco) {
@@ -90,5 +84,9 @@ public class Cliente {
         if (novosEnderecos != null) {
             this.enderecos.addAll(novosEnderecos);
         }
+    }
+
+    public void desativar() {
+        this.ativo = false;
     }
 }

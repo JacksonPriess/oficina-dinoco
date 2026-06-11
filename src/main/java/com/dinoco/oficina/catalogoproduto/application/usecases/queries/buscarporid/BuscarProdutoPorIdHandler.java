@@ -1,6 +1,7 @@
 package com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarporid;
 
 import com.dinoco.oficina.catalogoproduto.application.gateways.ProdutoQueryGateway;
+import com.dinoco.oficina.catalogoproduto.application.usecases.queries.ProdutoQueryOutput;
 
 public class BuscarProdutoPorIdHandler implements BuscarProdutoPorIdUseCase {
 
@@ -11,8 +12,8 @@ public class BuscarProdutoPorIdHandler implements BuscarProdutoPorIdUseCase {
     }
 
     @Override
-    public BuscarProdutoPorIdOutput executar(BuscarProdutoPorIdQuery query) {
-        return produtoQueryGateway.buscarDetalhesPorId(query.id())
+    public ProdutoQueryOutput executar(BuscarProdutoPorIdQuery query) {
+        return produtoQueryGateway.buscarPorId(query.id())
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado com ID: " + query.id()));
     }
 }

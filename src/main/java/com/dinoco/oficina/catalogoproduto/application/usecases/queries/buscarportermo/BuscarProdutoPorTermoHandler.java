@@ -1,6 +1,7 @@
 package com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarportermo;
 
 import com.dinoco.oficina.catalogoproduto.application.gateways.ProdutoQueryGateway;
+import com.dinoco.oficina.catalogoproduto.application.usecases.queries.ProdutoQueryOutput;
 import java.util.List;
 
 public class BuscarProdutoPorTermoHandler implements BuscarProdutoPorTermoUseCase {
@@ -12,8 +13,8 @@ public class BuscarProdutoPorTermoHandler implements BuscarProdutoPorTermoUseCas
     }
 
     @Override
-    public List<BuscarProdutoPorTermoOutput> executar(BuscarProdutoPorTermoQuery query) {
-        return produtoQueryGateway.buscarDetalhesPorTermo(query.termo());
+    public List<ProdutoQueryOutput> executar(BuscarProdutoPorTermoQuery query) {
+        return produtoQueryGateway.buscarPorTermo(query.termo());
 
     }
 }

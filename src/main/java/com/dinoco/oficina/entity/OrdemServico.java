@@ -1,5 +1,5 @@
 package com.dinoco.oficina.entity;
-
+/*
 import com.dinoco.oficina.cliente.infrastructure.persistence.ClienteEntity;
 import com.dinoco.oficina.enums.StatusOS;
 import jakarta.persistence.*;
@@ -86,3 +86,4 @@ public class OrdemServico {
         this.reclamacaoCliente = reclamacao;
     }
 }
+*/

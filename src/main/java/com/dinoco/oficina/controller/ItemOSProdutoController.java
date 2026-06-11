@@ -1,7 +1,7 @@
 package com.dinoco.oficina.controller;
-
+/*
 import com.dinoco.oficina.dto.ItemOSProdutoAdicionarDto;
-import com.dinoco.oficina.dto.ItemOSProdutoAlterarDto;
+import com.dinoco.oficina.aordemservico.infrastructure.web.dto.ItemOSProdutoAlterarDto;
 import com.dinoco.oficina.dto.OrdemServicoDetalhadaResponseDto;
 import com.dinoco.oficina.service.ItemOSProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 public class ItemOSProdutoController {
-/*
+
     private final ItemOSProdutoService itemProdutoService;
 
     @Operation(summary = "Adicionar item")
@@ -39,5 +39,7 @@ public class ItemOSProdutoController {
         return ResponseEntity.noContent().build();
     }
 
- */
+
 }
+
+ */

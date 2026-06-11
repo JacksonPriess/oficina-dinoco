@@ -12,8 +12,6 @@ public record AtualizarProdutoOutput(
         String marca,
         String codigoFabricante,
         String aplicacao,
-        BigDecimal quantidadeAtual,
-        BigDecimal quantidadeReservada,
         BigDecimal precoCusto,
         BigDecimal precoVenda,
         Boolean ativo

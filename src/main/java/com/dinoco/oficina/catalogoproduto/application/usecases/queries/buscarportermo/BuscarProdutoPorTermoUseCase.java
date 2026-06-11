@@ -1,7 +1,8 @@
 package com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarportermo;
 
+import com.dinoco.oficina.catalogoproduto.application.usecases.queries.ProdutoQueryOutput;
 import java.util.List;
 
 public interface BuscarProdutoPorTermoUseCase {
-    List<BuscarProdutoPorTermoOutput> executar(BuscarProdutoPorTermoQuery query);
+    List<ProdutoQueryOutput> executar(BuscarProdutoPorTermoQuery query);
 }

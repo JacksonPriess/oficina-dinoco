@@ -1,5 +1,5 @@
 package com.dinoco.oficina.repository;
-
+/*
 import com.dinoco.oficina.entity.OrdemServico;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,3 +24,5 @@ public interface OrdemServicoRepository extends JpaRepository<OrdemServico, Long
     """)
     Optional<OrdemServico> buscarPorCodigoRastreioComDetalhes(@Param("codigoRastreio") String codigoRastreio);
 }
+
+ */

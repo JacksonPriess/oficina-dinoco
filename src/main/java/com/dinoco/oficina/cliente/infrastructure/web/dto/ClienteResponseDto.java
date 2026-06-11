@@ -1,7 +1,5 @@
 package com.dinoco.oficina.cliente.infrastructure.web.dto;
 
-import com.dinoco.oficina.dto.EnderecoDto;
-
 import java.util.List;
 
 public record ClienteResponseDto(

@@ -1,11 +1,7 @@
 package com.dinoco.oficina.entity;
 
-import com.dinoco.oficina.enums.TipoMovimentacao;
-import jakarta.persistence.*;
-import lombok.*;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
+/*
 @Entity
 @Table(name = "movimentacao_estoque")
 @Getter
@@ -37,3 +33,5 @@ public class MovimentacaoEstoque {
     private String observacao;
 
 }
+*/
+

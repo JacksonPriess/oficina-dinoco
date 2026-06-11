@@ -1,5 +1,5 @@
 package com.dinoco.oficina.service;
-
+/*
 import com.dinoco.oficina.dto.DetalheMetricaServicoDTO;
 import com.dinoco.oficina.dto.RelatorioMetricasDTO;
 import com.dinoco.oficina.repository.ItemOSServicoRepository;
@@ -52,3 +52,5 @@ public class MetricasService {
         );
     }
 }
+
+ */

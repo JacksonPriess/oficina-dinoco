@@ -1,5 +1,5 @@
 package com.dinoco.oficina.dto;
-
+/*
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -13,3 +13,5 @@ public record ItemOSProdutoAdicionarDto(
         @Positive(message = "A quantidade deve ser maior que zero")
         BigDecimal quantidade
 ) {}
+
+ */

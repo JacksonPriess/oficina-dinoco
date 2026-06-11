@@ -34,12 +34,6 @@ public class ProdutoEntity {
     @Column(columnDefinition = "TEXT")
     private String aplicacao;
 
-    @Column(name = "quantidade_atual", nullable = false, columnDefinition = "DECIMAL(10,3) DEFAULT 0.000")
-    private BigDecimal quantidadeAtual = BigDecimal.ZERO;
-
-    @Column(name = "quantidade_reservada", nullable = false, columnDefinition = "DECIMAL(10,3) DEFAULT 0.000")
-    private BigDecimal quantidadeReservada = BigDecimal.ZERO;
-
     @Column(name = "preco_custo", nullable = false)
     private BigDecimal precoCusto = BigDecimal.ZERO;
 
@@ -51,5 +45,4 @@ public class ProdutoEntity {
 
     @Version
     private Long version;
-
 }

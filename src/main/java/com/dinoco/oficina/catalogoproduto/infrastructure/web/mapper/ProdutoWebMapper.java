@@ -5,8 +5,7 @@ import com.dinoco.oficina.catalogoproduto.application.usecases.commands.atualiza
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.criar.CriarProdutoCommand;
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.criar.CriarProdutoOutput;
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.desativar.DesativarProdutoCommand;
-import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarporid.BuscarProdutoPorIdOutput;
-import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarportermo.BuscarProdutoPorTermoOutput;
+import com.dinoco.oficina.catalogoproduto.application.usecases.queries.ProdutoQueryOutput;
 import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoRequestDto;
 import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoResponseDto;
 import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoUpdateRequestDto;
@@ -29,8 +28,6 @@ public interface ProdutoWebMapper {
 
     DesativarProdutoCommand toDesativarCommand(Long id);
 
-    ProdutoResponseDto toQueryResponse(BuscarProdutoPorIdOutput output);
-
-    ProdutoResponseDto toQueryResponse(BuscarProdutoPorTermoOutput output);
+    ProdutoResponseDto toQueryResponse(ProdutoQueryOutput output);
 
 }

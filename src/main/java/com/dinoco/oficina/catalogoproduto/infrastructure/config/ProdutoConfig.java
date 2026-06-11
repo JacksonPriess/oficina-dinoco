@@ -3,6 +3,7 @@ package com.dinoco.oficina.catalogoproduto.infrastructure.config;
 
 import com.dinoco.oficina.catalogoproduto.adapters.controllers.ProdutoControllerClean;
 import com.dinoco.oficina.catalogoproduto.application.gateways.ProdutoCommandGateway;
+import com.dinoco.oficina.catalogoproduto.application.gateways.ProdutoEventPublisher;
 import com.dinoco.oficina.catalogoproduto.application.gateways.ProdutoQueryGateway;
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.atualizar.AtualizarProdutoHandler;
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.atualizar.AtualizarProdutoUseCase;
@@ -21,8 +22,8 @@ import org.springframework.context.annotation.Configuration;
 public class ProdutoConfig {
 
     @Bean
-    public CriarProdutoUseCase criarProdutoUseCase(ProdutoCommandGateway produtoCommandGateway, ProdutoQueryGateway produtoQueryGateway) {
-        return new CriarProdutoHandler(produtoCommandGateway, produtoQueryGateway);
+    public CriarProdutoUseCase criarProdutoUseCase(ProdutoCommandGateway produtoCommandGateway, ProdutoQueryGateway produtoQueryGateway, ProdutoEventPublisher eventPublisher) {
+        return new CriarProdutoHandler(produtoCommandGateway, produtoQueryGateway, eventPublisher);
     }
 
     @Bean

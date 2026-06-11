@@ -11,8 +11,6 @@ public record ProdutoResponseDto(
     String marca,
     String codigoFabricante,
     String aplicacao,
-    BigDecimal quantidadeAtual,
-    BigDecimal quantidadeReservada,
     BigDecimal precoVenda,
     BigDecimal precoCusto,
     Boolean ativo

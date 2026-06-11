@@ -1,5 +1,5 @@
 package com.dinoco.oficina.entity;
-
+/*
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -35,3 +35,5 @@ public class ItemOSProduto {
     private BigDecimal valorTotal = BigDecimal.ZERO;
 
 }
+
+ */

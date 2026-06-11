@@ -12,7 +12,6 @@ public class AtualizarClienteHandler implements AtualizarClienteUseCase {
 
     private final ClienteCommandGateway clienteCommandGateway;
 
-    // Injeta apenas o gateway de escrita (Command)
     public AtualizarClienteHandler(ClienteCommandGateway clienteCommandGateway) {
         this.clienteCommandGateway = clienteCommandGateway;
     }

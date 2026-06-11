@@ -11,8 +11,6 @@ public record AtualizarProdutoCommand(
         String marca,
         String codigoFabricante,
         String aplicacao,
-        BigDecimal quantidadeAtual,
-        BigDecimal quantidadeReservada,
         BigDecimal precoCusto,
         BigDecimal precoVenda
 ) {}

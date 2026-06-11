@@ -19,7 +19,7 @@ public record ProdutoRequestDto(
     String aplicacao,
 
     @PositiveOrZero
-    BigDecimal quantidadeAtual,
+    BigDecimal quantidade,
 
     @PositiveOrZero
     BigDecimal precoCusto,

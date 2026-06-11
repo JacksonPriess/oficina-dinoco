@@ -1,6 +1,6 @@
 package com.dinoco.oficina.catalogoproduto.infrastructure.web;
 
-import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarportermo.BuscarProdutoPorTermoOutput;
+import com.dinoco.oficina.catalogoproduto.application.usecases.queries.ProdutoQueryOutput;
 import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarportermo.BuscarProdutoPorTermoQuery;
 import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoRequestDto;
 import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoResponseDto;
@@ -12,7 +12,6 @@ import com.dinoco.oficina.catalogoproduto.application.usecases.commands.atualiza
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.criar.CriarProdutoCommand;
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.criar.CriarProdutoOutput;
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.desativar.DesativarProdutoCommand;
-import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarporid.BuscarProdutoPorIdOutput;
 import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarporid.BuscarProdutoPorIdQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -71,26 +70,20 @@ public class ProdutoSpringWebController {
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoResponseDto> buscarPorId(@PathVariable Long id) {
         BuscarProdutoPorIdQuery query = new BuscarProdutoPorIdQuery(id);
-        BuscarProdutoPorIdOutput output = controllerClean.buscarPorId(query);
-        ProdutoResponseDto response = mapper.toQueryResponse(output);
+        ProdutoQueryOutput produtosESaldo = controllerClean.buscarPorId(query);
+        ProdutoResponseDto response = mapper.toQueryResponse(produtosESaldo);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Buscar produto por termo")
     @GetMapping
-    public ResponseEntity<List<ProdutoResponseDto>> buscarPorTermo(
-            @RequestParam(value = "busca", required = false) String termo) {
-
+    public ResponseEntity<List<ProdutoResponseDto>> buscarPorTermo(@RequestParam(value = "busca", required = false) String termo) {
         BuscarProdutoPorTermoQuery query = new BuscarProdutoPorTermoQuery(termo);
-        List<BuscarProdutoPorTermoOutput> outputs = controllerClean.buscarPorTermo(query);
-
-        // Converte cada output para o DTO de resposta
-        List<ProdutoResponseDto> response = outputs.stream()
-                .map(mapper::toQueryResponse)   // precisa existir um método toQueryResponse(BuscarProdutoPorTermoOutput)
+        List<ProdutoQueryOutput> produtosESaldos = controllerClean.buscarPorTermo(query);
+        List<ProdutoResponseDto> response = produtosESaldos.stream()
+                .map(mapper::toQueryResponse)
                 .toList();
 
         return ResponseEntity.ok(response);
     }
-
-
 }

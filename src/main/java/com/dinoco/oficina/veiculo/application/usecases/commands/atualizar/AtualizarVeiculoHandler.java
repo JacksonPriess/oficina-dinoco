@@ -32,7 +32,6 @@ public class AtualizarVeiculoHandler implements AtualizarVeiculoUseCase {
         Veiculo veiculoSalvo = veiculoCommandGateway.salvar(veiculo);
 
         return mapearParaOutput(veiculoSalvo);
-
     }
 
     private AtualizarVeiculoOutput mapearParaOutput(Veiculo veiculo) {

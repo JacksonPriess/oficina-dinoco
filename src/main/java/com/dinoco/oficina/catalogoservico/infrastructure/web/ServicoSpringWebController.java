@@ -22,7 +22,6 @@ import java.net.URI;
 @Tag(name = "6. Serviços", description = "Cadastro de serviço")
 @RestController
 @RequestMapping("api/servicos")
-
 public class ServicoSpringWebController {
 
     private final ServicoControllerClean controllerClean;

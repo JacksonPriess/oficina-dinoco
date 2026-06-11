@@ -20,6 +20,9 @@ public class Veiculo {
 
     public Veiculo(String placa, String marca, String modelo, Integer anoFabricacao,
                     Integer anoModelo, String cor, String chassi, String motor) {
+
+        validarVeiculo(placa, marca, modelo);
+
         this.placa = placa;
         this.marca = marca;
         this.modelo = modelo;
@@ -30,6 +33,26 @@ public class Veiculo {
         this.motor = motor;
         this.dataCriacao = LocalDateTime.now();
         this.ativo = true;
+    }
+
+    private void validarVeiculo(String placa, String marca, String modelo) {
+
+        if (placa == null || placa.trim().isEmpty()) {
+            throw new IllegalArgumentException("A placa não pode estar vazia.");
+        }
+
+        String regex = "^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$";
+        if (!placa.matches(regex)) {
+            throw new IllegalArgumentException("Placa inválida. Digite apenas letras e números no padrão antigo (ABC1234) ou mercosul (ABC1D23), sem hífen.");
+        }
+
+        if (marca == null || marca.trim().isEmpty()) {
+            throw new IllegalArgumentException("A marca não pode estar vazia.");
+        }
+
+        if (modelo == null || modelo.trim().isEmpty()) {
+            throw new IllegalArgumentException("O modelo não pode estar vazia.");
+        }
     }
 
     public Veiculo(Long id, String placa, String marca, String modelo, Integer anoFabricacao,
@@ -48,12 +71,11 @@ public class Veiculo {
         this.dataCriacao = dataCriacao;
     }
 
-    public void desativar() {
-        this.ativo = false;
-    }
-
     public void atualizar(String placa, String marca, String modelo, Integer anoFabricacao,
                         Integer anoModelo, String cor, String chassi, String motor) {
+
+        validarVeiculo(placa, marca, modelo);
+
         this.placa = placa;
         this.marca = marca;
         this.modelo = modelo;
@@ -64,6 +86,8 @@ public class Veiculo {
         this.motor = motor;
     }
 
-
+    public void desativar() {
+        this.ativo = false;
+    }
 
 }

@@ -1,17 +1,21 @@
 package com.dinoco.oficina.catalogoproduto.application.usecases.commands.criar;
 
 import com.dinoco.oficina.catalogoproduto.application.gateways.ProdutoCommandGateway;
+import com.dinoco.oficina.catalogoproduto.application.gateways.ProdutoEventPublisher;
 import com.dinoco.oficina.catalogoproduto.application.gateways.ProdutoQueryGateway;
 import com.dinoco.oficina.catalogoproduto.domain.Produto;
+import com.dinoco.oficina.shared.events.ProdutoCadastradoEvent;
 
 public class CriarProdutoHandler implements CriarProdutoUseCase {
 
     private final ProdutoCommandGateway produtoCommandGateway;
     private final ProdutoQueryGateway produtoQueryGateway;
+    private final ProdutoEventPublisher eventPublisher;
 
-    public CriarProdutoHandler(ProdutoCommandGateway produtoCommandGateway, ProdutoQueryGateway produtoQueryGateway) {
+    public CriarProdutoHandler(ProdutoCommandGateway produtoCommandGateway, ProdutoQueryGateway produtoQueryGateway, ProdutoEventPublisher eventPublisher) {
         this.produtoCommandGateway = produtoCommandGateway;
         this.produtoQueryGateway = produtoQueryGateway;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -21,19 +25,22 @@ public class CriarProdutoHandler implements CriarProdutoUseCase {
             throw new IllegalArgumentException("Produto já cadastrado com este nome.");
         }
 
+        // A quantidade informada pelo usuário não será utilizada em Produto, será usada apenas no SaldoEstoque.
         Produto novoProduto = new Produto(
                 command.nome(),
                 command.tipo(),
                 command.marca(),
                 command.codigoFabricante(),
                 command.aplicacao(),
-                command.quantidadeAtual(),
-                command.quantidadeReservada(),
                 command.precoCusto(),
                 command.precoVenda()
         );
 
         Produto produtoSalvo = produtoCommandGateway.salvar(novoProduto);
+
+        //Avisa a aplicação que um novo produto foi cadastrado, para que o estoque possa ser atualizado com a quantidade inicial.
+        ProdutoCadastradoEvent evento = new ProdutoCadastradoEvent(produtoSalvo.getId(), command.quantidade());
+        eventPublisher.publicar(evento);
 
         return mapearParaOutput(produtoSalvo);
     }
@@ -48,8 +55,6 @@ public class CriarProdutoHandler implements CriarProdutoUseCase {
                 produto.getMarca(),
                 produto.getCodigoFabricante(),
                 produto.getAplicacao(),
-                produto.getQuantidadeAtual(),
-                produto.getQuantidadeReservada(),
                 produto.getPrecoCusto(),
                 produto.getPrecoVenda(),
                 produto.getAtivo()

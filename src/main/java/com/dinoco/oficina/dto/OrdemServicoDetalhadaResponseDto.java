@@ -1,5 +1,5 @@
 package com.dinoco.oficina.dto;
-
+/*
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,3 +19,5 @@ public record OrdemServicoDetalhadaResponseDto(
         List<ItemServicoDetalheDto> servicos,
         List<ItemProdutoDetalheDto> produtos
 ) {}
+
+ */

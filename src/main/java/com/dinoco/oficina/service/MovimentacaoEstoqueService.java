@@ -1,5 +1,5 @@
 package com.dinoco.oficina.service;
-
+/*
 import com.dinoco.oficina.entity.ItemOSProduto;
 import com.dinoco.oficina.entity.MovimentacaoEstoque;
 import com.dinoco.oficina.entity.OrdemServico;
@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+
 public class MovimentacaoEstoqueService {
 
     private final MovimentacaoEstoqueRepository movimentacaoRepository;
@@ -77,4 +78,8 @@ public class MovimentacaoEstoqueService {
         BigDecimal quantidadeMovimento = diferenca.abs();
         registrarMovimentacao(produto, quantidadeMovimento, tipo, observacao);
     }
+
+
 }
+
+ */

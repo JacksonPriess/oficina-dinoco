@@ -1,5 +1,6 @@
 package com.dinoco.oficina.service;
 
+/*
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,7 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ItemOSServicoServiceTest {
-/*
+
     @Mock
     private ItemOSServicoRepository repository;
     @Mock
@@ -196,5 +197,7 @@ class ItemOSServicoServiceTest {
         verify(repository, never()).save(any());
     }
 
- */
+
 }
+
+ */

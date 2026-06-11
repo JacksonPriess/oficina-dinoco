@@ -1,6 +1,5 @@
 package com.dinoco.oficina.veiculo.application.usecases.commands.criar;
 
-
 import com.dinoco.oficina.veiculo.application.gateways.VeiculoCommandGateway;
 import com.dinoco.oficina.veiculo.application.gateways.VeiculoQueryGateway;
 import com.dinoco.oficina.veiculo.domain.Veiculo;
@@ -17,6 +16,10 @@ public class CriarVeiculoHandler implements CriarVeiculoUseCase {
 
     @Override
     public CriarVeiculoOutput executar(CriarVeiculoCommand command) {
+
+        if (command.placa() == null || command.placa().trim().isEmpty()) {
+            throw new IllegalArgumentException("A placa não pode estar vazia.");
+        }
 
         if (veiculoQueryGateway.existePorPlaca(command.placa())) {
             throw new IllegalArgumentException("Veiculo já cadastrado com esta placa.");

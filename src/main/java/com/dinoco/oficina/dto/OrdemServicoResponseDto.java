@@ -1,5 +1,5 @@
 package com.dinoco.oficina.dto;
-
+/*
 import java.math.BigDecimal;
 
 public record OrdemServicoResponseDto(
@@ -18,3 +18,5 @@ public record OrdemServicoResponseDto(
         BigDecimal valorTotalOS,
         String status
 ) {}
+
+ */

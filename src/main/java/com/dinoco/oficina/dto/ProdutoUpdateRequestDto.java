@@ -1,5 +1,5 @@
 package com.dinoco.oficina.dto;
-
+/*
 import com.dinoco.oficina.enums.TipoProduto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,3 +27,5 @@ public record ProdutoUpdateRequestDto(
         @PositiveOrZero
         BigDecimal precoVenda
 ) {}
+
+ */

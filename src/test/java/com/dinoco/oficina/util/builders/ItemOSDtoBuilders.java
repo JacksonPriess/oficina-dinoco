@@ -1,9 +1,10 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.dto.ItemOSProdutoAdicionarDto;
-import com.dinoco.oficina.dto.ItemOSProdutoAlterarDto;
-import com.dinoco.oficina.dto.ItemOSServicoAdicionarDto;
-import com.dinoco.oficina.dto.ItemOSServicoAlterarDto;
+
+import com.dinoco.oficina.ordemservico.infrastructure.web.dto.ItemOSProdutoAdicionarDto;
+import com.dinoco.oficina.ordemservico.infrastructure.web.dto.ItemOSProdutoAlterarDto;
+import com.dinoco.oficina.ordemservico.infrastructure.web.dto.ItemOSServicoAdicionarDto;
+import com.dinoco.oficina.ordemservico.infrastructure.web.dto.ItemOSServicoAlterarDto;
 
 import java.math.BigDecimal;
 

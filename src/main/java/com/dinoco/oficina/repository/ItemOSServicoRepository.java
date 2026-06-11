@@ -1,5 +1,5 @@
 package com.dinoco.oficina.repository;
-
+/*
 import com.dinoco.oficina.entity.ItemOSServico;
 import com.dinoco.oficina.repository.projection.ServicoMetricaProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,3 +33,5 @@ public interface ItemOSServicoRepository extends JpaRepository<ItemOSServico, Lo
             @Param("fim") LocalDateTime fim
     );
 }
+
+ */

@@ -14,8 +14,8 @@ public record VeiculoRequestDto(
         String marca,
 
         @NotBlank(message = "O modelo do veículo é obrigatório.")
-
         String modelo,
+
         Integer anoFabricacao,
         Integer anoModelo,
         String cor,

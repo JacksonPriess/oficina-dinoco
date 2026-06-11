@@ -1,13 +1,14 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.entity.Veiculo;
+
+import com.dinoco.oficina.veiculo.domain.Veiculo;
 
 public class VeiculoBuilder {
 
     private Veiculo veiculo;
 
     private VeiculoBuilder() {
-        this.veiculo = new Veiculo();
+        //this.veiculo = new Veiculo();
     }
 
     public static VeiculoBuilder umVeiculo() {

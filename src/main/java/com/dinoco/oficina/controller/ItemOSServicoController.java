@@ -1,7 +1,7 @@
 package com.dinoco.oficina.controller;
-
-import com.dinoco.oficina.dto.ItemOSServicoAdicionarDto;
-import com.dinoco.oficina.dto.ItemOSServicoAlterarDto;
+/*
+import com.dinoco.oficina.aordemservico.infrastructure.web.dto.ItemOSServicoAdicionarDto;
+import com.dinoco.oficina.aordemservico.infrastructure.web.dto.ItemOSServicoAlterarDto;
 import com.dinoco.oficina.dto.ItemOSServicoConclusaoRequestDto;
 import com.dinoco.oficina.dto.OrdemServicoDetalhadaResponseDto;
 import com.dinoco.oficina.service.ItemOSServicoService;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequiredArgsConstructor
 public class ItemOSServicoController {
-/*
+
     private final ItemOSServicoService itemOSServicoService;
 
     @Operation(summary = "Adicionar item")
@@ -55,5 +55,7 @@ public class ItemOSServicoController {
         itemOSServicoService.concluirExecucaoItemServico(itemId, dataFim);
         return ResponseEntity.noContent().build();
     }
-*/
+
 }
+
+ */

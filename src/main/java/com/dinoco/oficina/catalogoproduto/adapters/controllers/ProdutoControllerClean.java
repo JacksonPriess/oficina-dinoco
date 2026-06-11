@@ -8,18 +8,13 @@ import com.dinoco.oficina.catalogoproduto.application.usecases.commands.criar.Cr
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.criar.CriarProdutoUseCase;
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.desativar.DesativarProdutoCommand;
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.desativar.DesativarProdutoUseCase;
-import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarporid.BuscarProdutoPorIdOutput;
+import com.dinoco.oficina.catalogoproduto.application.usecases.queries.ProdutoQueryOutput;
 import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarporid.BuscarProdutoPorIdQuery;
 import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarporid.BuscarProdutoPorIdUseCase;
-import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarportermo.BuscarProdutoPorTermoOutput;
 import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarportermo.BuscarProdutoPorTermoQuery;
 import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarportermo.BuscarProdutoPorTermoUseCase;
-
 import java.util.List;
 
-/**
- * Orquestra commands e queries
- */
 public class ProdutoControllerClean {
 
     private final CriarProdutoUseCase criarProdutoUseCase;
@@ -48,11 +43,11 @@ public class ProdutoControllerClean {
         desativarProdutoUseCase.executar(command);
     }
 
-    public BuscarProdutoPorIdOutput buscarPorId(BuscarProdutoPorIdQuery query) {
+    public ProdutoQueryOutput buscarPorId(BuscarProdutoPorIdQuery query) {
         return buscarProdutoPorIdUseCase.executar(query);
     }
 
-    public List<BuscarProdutoPorTermoOutput> buscarPorTermo(BuscarProdutoPorTermoQuery termo) {
+    public List<ProdutoQueryOutput> buscarPorTermo(BuscarProdutoPorTermoQuery termo) {
         return buscarProdutoPorTermoUseCase.executar(termo);
     }
 }

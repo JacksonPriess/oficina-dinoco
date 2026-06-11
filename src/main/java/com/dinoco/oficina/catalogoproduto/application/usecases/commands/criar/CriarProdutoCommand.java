@@ -9,8 +9,7 @@ public record CriarProdutoCommand(
         String marca,
         String codigoFabricante,
         String aplicacao,
-        BigDecimal quantidadeAtual,
-        BigDecimal quantidadeReservada,
+        BigDecimal quantidade,
         BigDecimal precoCusto,
         BigDecimal precoVenda
 ) {}

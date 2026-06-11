@@ -1,5 +1,5 @@
 package com.dinoco.oficina.dto;
-
+/*
 import java.math.BigDecimal;
 
 public record DetalheMetricaServicoDTO(
@@ -11,3 +11,5 @@ public record DetalheMetricaServicoDTO(
         BigDecimal desvioAbsolutoMinutos,
         BigDecimal percentualDiferenca
 ) {}
+
+ */

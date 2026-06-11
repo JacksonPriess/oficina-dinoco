@@ -8,7 +8,6 @@ public class AtualizarProdutoHandler implements AtualizarProdutoUseCase {
 
     private final ProdutoCommandGateway produtoCommandGateway;
 
-    // Injeta apenas o gateway de escrita (Command)
     public AtualizarProdutoHandler(ProdutoCommandGateway produtoCommandGateway) {
         this.produtoCommandGateway = produtoCommandGateway;
     }
@@ -26,8 +25,6 @@ public class AtualizarProdutoHandler implements AtualizarProdutoUseCase {
                 command.marca(),
                 command.codigoFabricante(),
                 command.aplicacao(),
-                command.quantidadeAtual(),
-                command.quantidadeReservada(),
                 command.precoCusto(),
                 command.precoVenda()
         );
@@ -45,8 +42,6 @@ public class AtualizarProdutoHandler implements AtualizarProdutoUseCase {
                 produto.getMarca(),
                 produto.getCodigoFabricante(),
                 produto.getAplicacao(),
-                produto.getQuantidadeAtual(),
-                produto.getQuantidadeReservada(),
                 produto.getPrecoCusto(),
                 produto.getPrecoVenda(),
                 produto.getAtivo()

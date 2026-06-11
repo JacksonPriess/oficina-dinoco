@@ -1,5 +1,5 @@
 package com.dinoco.oficina.service;
-
+/*
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,7 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ServicoServiceTest {
-/*
+
     @Mock
     private ServicoRepository repository;
 
@@ -190,5 +190,7 @@ class ServicoServiceTest {
         assertThat(servicoCaptor.getValue().getAtivo()).isFalse();
     }
 
- */
+
 }
+
+ */

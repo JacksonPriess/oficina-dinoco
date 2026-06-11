@@ -1,5 +1,5 @@
 package com.dinoco.oficina.dto;
-
+/*
 public record EnderecoDto(
     String cep,
     String logradouro,
@@ -9,3 +9,5 @@ public record EnderecoDto(
     String cidade,
     String uf
 ) {}
+
+ */
