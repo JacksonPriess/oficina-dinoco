@@ -5,13 +5,13 @@ import lombok.Data;
 @Data
 public class Endereco {
 
-    private final String cep;
-    private final String logradouro;
-    private final String numero;
-    private final String complemento;
-    private final String bairro;
-    private final String cidade;
-    private final String uf;
+    private String cep;
+    private String logradouro;
+    private String numero;
+    private String complemento;
+    private String bairro;
+    private String cidade;
+    private String uf;
 
     public Endereco(String cep, String logradouro, String numero, String complemento,
                     String bairro, String cidade, String uf) {
@@ -24,4 +24,7 @@ public class Endereco {
         this.uf = uf;
     }
 
+    public Endereco() {
+
+    }
 }

@@ -37,7 +37,6 @@ class CriarClienteHandlerTest {
     @DisplayName("Deve criar cliente Pessoa Física com sucesso")
     void deveCriarClientePFComSucesso() {
         // Arrange
-        // (Você pode manter seus builders, apenas adaptando para retornar o Command do Core)
         var command = new CriarClienteCommand(
                 "F", "52998224725", null, "João da Silva",
                 "João", "joao@email.com", "47999999999", Collections.emptyList()
@@ -63,16 +62,12 @@ class CriarClienteHandlerTest {
 
         // Verificamos se o gateway de escrita foi chamado capturando o objeto de domínio puro
         verify(commandGateway).salvar(clienteCaptor.capture());
-
         Cliente clienteSalvo = clienteCaptor.getValue();
-
         // Assertions garantem que o Handler montou a Entidade de Domínio corretamente
         assertThat(clienteSalvo.getDocumento()).isEqualTo("52998224725");
         assertThat(clienteSalvo.getTipoPessoa()).isEqualTo("F");
         assertThat(clienteSalvo.getNome()).isEqualTo("João da Silva");
-
-        // Se houver regras de negócio no construtor do Domínio (ex: data de criação preenchida),
-        // você pode validar aqui também!
         assertThat(clienteSalvo.getDataCriacao()).isNotNull();
+        assertThat(clienteSalvo.getAtivo()).isTrue();
     }
 }

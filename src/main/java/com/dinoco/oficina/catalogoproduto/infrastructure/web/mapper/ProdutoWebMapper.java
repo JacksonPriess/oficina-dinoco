@@ -6,6 +6,7 @@ import com.dinoco.oficina.catalogoproduto.application.usecases.commands.criar.Cr
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.criar.CriarProdutoOutput;
 import com.dinoco.oficina.catalogoproduto.application.usecases.commands.desativar.DesativarProdutoCommand;
 import com.dinoco.oficina.catalogoproduto.application.usecases.queries.ProdutoQueryOutput;
+import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoComSaldoResponseDto;
 import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoRequestDto;
 import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoResponseDto;
 import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoUpdateRequestDto;
@@ -28,6 +29,6 @@ public interface ProdutoWebMapper {
 
     DesativarProdutoCommand toDesativarCommand(Long id);
 
-    ProdutoResponseDto toQueryResponse(ProdutoQueryOutput output);
+    ProdutoComSaldoResponseDto toQueryResponse(ProdutoQueryOutput output);
 
 }

@@ -19,14 +19,25 @@ public class Produto {
 
     public Produto(String nome, TipoProduto tipo, String marca, String codigoFabricante, String aplicacao,
                    BigDecimal precoCusto, BigDecimal precoVenda) {
+
+        validarProduto(nome,tipo);
         this.nome = nome;
         this.tipo = tipo;
         this.marca = marca;
         this.codigoFabricante = codigoFabricante;
         this.aplicacao = aplicacao;
-        this.precoCusto = precoCusto;
-        this.precoVenda = precoVenda;
+        this.precoCusto = precoCusto == null ? BigDecimal.ZERO : precoCusto;
+        this.precoVenda = precoVenda == null ? BigDecimal.ZERO : precoVenda;
         this.ativo = true;
+    }
+
+    private void validarProduto(String nome, TipoProduto tipo) {
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("O nome do produto é obrigatório.");
+        }
+        if (tipo == null) {
+            throw new IllegalArgumentException("O tipo do produto é obrigatório.");
+        }
     }
 
     public Produto(Long id, Long versao, String nome, TipoProduto tipo, String marca, String codigoFabricante, String aplicacao,
@@ -65,9 +76,4 @@ public class Produto {
         this.ativo = false;
     }
 
-    public boolean isValorVendaInvalido(BigDecimal valorSugerido) {
-        if (this.precoCusto == null || valorSugerido == null)
-            return false;
-        return valorSugerido.compareTo(this.precoCusto) < 0;
-    }
 }

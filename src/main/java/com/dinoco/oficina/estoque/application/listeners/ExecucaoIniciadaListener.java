@@ -17,6 +17,10 @@ public class ExecucaoIniciadaListener {
         this.estoqueGateway = estoqueGateway;
     }
 
+    /**
+     * Este método é acionado automaticamente pelo Spring quando qualquer lugar
+     * da aplicação chamar o ApplicationEventPublisher.publishEvent().
+     */
     @EventListener
     public void consumirItensDoEstoque(ExecucaoIniciadaEvent event) {
 

@@ -59,16 +59,11 @@ public class EstoqueCommandGatewayImpl implements EstoqueCommandGateway {
 
     private SaldoEstoqueEntity mapearParaEntity(SaldoEstoque dominio) {
         SaldoEstoqueEntity entity = new SaldoEstoqueEntity();
-        // O Id pode ser nulo se for uma prateleira nova recém-criada pelo evento
-        // Nesse caso, só não podemos chamar setId(null) se usarmos reflexão, mas no set comum é tranquilo.
-        // É importante checar e preservar a arquitetura
+        entity.setId(dominio.getId());
         entity.setProdutoId(dominio.getProdutoId());
         entity.setQuantidadeReal(dominio.getQuantidadeReal());
         entity.setQuantidadeReservada(dominio.getQuantidadeReservada());
         entity.setVersao(dominio.getVersao());
-
-        // Use reflexão ou um setter protegido se o ID e versão estiverem privados no construtor
-        // O Spring Data usa o ID não-nulo para saber que é um UPDATE (merge)
         return entity;
     }
 

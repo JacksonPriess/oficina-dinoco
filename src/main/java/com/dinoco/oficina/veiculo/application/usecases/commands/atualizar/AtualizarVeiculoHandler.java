@@ -45,7 +45,8 @@ public class AtualizarVeiculoHandler implements AtualizarVeiculoUseCase {
                 veiculo.getAnoModelo(),
                 veiculo.getCor(),
                 veiculo.getChassi(),
-                veiculo.getMotor()
+                veiculo.getMotor(),
+                veiculo.getAtivo()
         );
     }
 }

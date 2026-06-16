@@ -2,6 +2,7 @@ package com.dinoco.oficina.catalogoproduto.infrastructure.web;
 
 import com.dinoco.oficina.catalogoproduto.application.usecases.queries.ProdutoQueryOutput;
 import com.dinoco.oficina.catalogoproduto.application.usecases.queries.buscarportermo.BuscarProdutoPorTermoQuery;
+import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoComSaldoResponseDto;
 import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoRequestDto;
 import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoResponseDto;
 import com.dinoco.oficina.catalogoproduto.adapters.controllers.ProdutoControllerClean;
@@ -68,19 +69,19 @@ public class ProdutoSpringWebController {
 
     @Operation(summary = "Buscar produto por código")
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDto> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<ProdutoComSaldoResponseDto> buscarPorId(@PathVariable Long id) {
         BuscarProdutoPorIdQuery query = new BuscarProdutoPorIdQuery(id);
         ProdutoQueryOutput produtosESaldo = controllerClean.buscarPorId(query);
-        ProdutoResponseDto response = mapper.toQueryResponse(produtosESaldo);
+        ProdutoComSaldoResponseDto response = mapper.toQueryResponse(produtosESaldo);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Buscar produto por termo")
     @GetMapping
-    public ResponseEntity<List<ProdutoResponseDto>> buscarPorTermo(@RequestParam(value = "busca", required = false) String termo) {
+    public ResponseEntity<List<ProdutoComSaldoResponseDto>> buscarPorTermo(@RequestParam(value = "busca", required = false) String termo) {
         BuscarProdutoPorTermoQuery query = new BuscarProdutoPorTermoQuery(termo);
         List<ProdutoQueryOutput> produtosESaldos = controllerClean.buscarPorTermo(query);
-        List<ProdutoResponseDto> response = produtosESaldos.stream()
+        List<ProdutoComSaldoResponseDto> response = produtosESaldos.stream()
                 .map(mapper::toQueryResponse)
                 .toList();
 

@@ -19,6 +19,7 @@ public class SaldoEstoque {
         this.produtoId = produtoId;
         this.quantidadeReal = BigDecimal.ZERO;
         this.quantidadeReservada = BigDecimal.ZERO;
+        this.versao = 0L;
     }
 
     // Construtor de RECONSTRUÇÃO (Usado pelo Gateway ao ler do banco)
@@ -49,23 +50,11 @@ public class SaldoEstoque {
         this.quantidadeReal = this.quantidadeReal.subtract(quantidade);
     }
 
-    // Método de Negócio: Calcula a quantidade virtual em tempo real
-    public BigDecimal getQuantidadeDisponivel() {
-        return this.getQuantidadeReal().subtract(this.quantidadeReservada);
-    }
-
     public void adicionarQuantidadeReservada(BigDecimal quantidade) {
         if (quantidade == null || quantidade.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Quantidade de reserva deve ser maior que zero.");
         }
         this.quantidadeReservada = this.quantidadeReservada.add(quantidade);
-    }
-
-    public void atualizarQuantidadeReal(BigDecimal quantidade) {
-        if ( quantidade == null ) {
-            throw new IllegalArgumentException("Quantidade deve ser informada.");
-        }
-        this.quantidadeReal = this.quantidadeReal.add(quantidade);
     }
 
     public void consumirQuantidadeReservadaEFisica(BigDecimal quantidade) {

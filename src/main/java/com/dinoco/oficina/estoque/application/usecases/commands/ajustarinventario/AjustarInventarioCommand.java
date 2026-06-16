@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 public record AjustarInventarioCommand(
         Long produtoId,
-        BigDecimal diferenca,
+        Long versao,
+        BigDecimal quantidadeContadaNaPrateleira,
         String observacao
 ) {}

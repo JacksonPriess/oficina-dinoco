@@ -10,9 +10,9 @@ import java.util.List;
 public class Cliente {
 
     private Long id;
-    private final String tipoPessoa;
-    private final String documento;
-    private final LocalDateTime dataCriacao;
+    private String tipoPessoa;
+    private String documento;
+    private LocalDateTime dataCriacao;
     private String nome;
     private String inscricaoEstadual;
     private String nomeFantasia;
@@ -20,7 +20,7 @@ public class Cliente {
     private String telefone;
     private Boolean ativo;
 
-    private final List<Endereco> enderecos;
+    private List<Endereco> enderecos;
 
     public Cliente(String tipoPessoa, String documento, String nome, String inscricaoEstadual,
                    String nomeFantasia, String email, String telefone) {
@@ -53,6 +53,9 @@ public class Cliente {
         this.ativo = ativo;
         this.dataCriacao = dataCriacao;
         this.enderecos = enderecos != null ? new ArrayList<>(enderecos) : new ArrayList<>();
+    }
+
+    public Cliente() {
     }
 
     private void validarDocumento(String tipoPessoa, String documento) {

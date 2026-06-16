@@ -9,5 +9,6 @@ public record AtualizarVeiculoOutput(
         Integer anoModelo,
         String cor,
         String chassi,
-        String motor
+        String motor,
+        Boolean ativo
 ) {}

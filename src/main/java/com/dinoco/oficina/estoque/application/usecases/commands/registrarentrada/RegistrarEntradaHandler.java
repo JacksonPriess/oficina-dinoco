@@ -19,13 +19,11 @@ public class RegistrarEntradaHandler implements RegistrarEntradaUseCase {
         SaldoEstoque saldo = estoqueGateway.buscarSaldoPorProdutoIdParaAlteracao(command.produtoId())
                 .orElseThrow(() -> new IllegalArgumentException("Prateleira não encontrada para este produto."));
 
-        // 2. Altera o Domínio Rico (Aplica a matemática e validações)
         saldo.adicionarEntrada(command.quantidade());
 
-        // 3. Cria o histórico
         MovimentacaoEstoque movimentacao = new MovimentacaoEstoque(
                 command.produtoId(),
-                TipoMovimentacao.ENTRADA,
+                TipoMovimentacao.ENTRADA, // Entrada por Compra
                 command.quantidade(),
                 command.observacao()
         );
