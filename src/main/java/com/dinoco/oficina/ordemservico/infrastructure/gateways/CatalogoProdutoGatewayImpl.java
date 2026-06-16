@@ -18,11 +18,11 @@ public class CatalogoProdutoGatewayImpl implements CatalogoProdutoGateway {
 
     @Override
     public BigDecimal buscarPrecoVendaAtual(Long produtoId) {
-        String sql = """
-        SELECT preco_venda
-        FROM produto
-        WHERE id = :produtoId
-    """;
+            String sql = """
+            SELECT preco_venda
+            FROM produto
+            WHERE id = :produtoId
+        """;
 
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("produtoId", produtoId);

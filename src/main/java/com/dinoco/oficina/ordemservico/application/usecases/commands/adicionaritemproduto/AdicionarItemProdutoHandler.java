@@ -5,7 +5,6 @@ import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoCommandG
 import com.dinoco.oficina.ordemservico.domain.exceptions.RecursoNaoEncontradoException;
 import com.dinoco.oficina.ordemservico.domain.models.ItemOSProduto;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
-
 import java.math.BigDecimal;
 
 public class AdicionarItemProdutoHandler implements AdicionarItemProdutoUseCase{
@@ -33,7 +32,7 @@ public class AdicionarItemProdutoHandler implements AdicionarItemProdutoUseCase{
         // 4. Aplica a inteligência do negócio
         os.adicionarProduto(novoItem);
 
-        // 5. Salva apenas o Agregado Raiz! O Hibernate faz o INSERT na tabela filha pelo Cascade.
+        // 5. Salva apenas o Agregado Raiz, o Hibernate faz o INSERT na tabela filha pelo Cascade.
         ordemServicoCommandGateway.salvar(os);
     }
 }

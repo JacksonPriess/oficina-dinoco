@@ -36,8 +36,6 @@ public class OrdemServicoCommandGatewayImpl implements OrdemServicoCommandGatewa
 
     private OrdemServicoEntity mapearParaEntity(OrdemServico dominio) {
         OrdemServicoEntity entity = new OrdemServicoEntity();
-
-        // Capa da OS
         entity.setId(dominio.getId());
         entity.setCodigoRastreio(dominio.getCodigoRastreio());
         entity.setClienteId(dominio.getClienteId());

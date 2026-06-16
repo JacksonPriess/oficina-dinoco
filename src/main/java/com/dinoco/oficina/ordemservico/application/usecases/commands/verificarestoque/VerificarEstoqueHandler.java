@@ -41,7 +41,6 @@ public class VerificarEstoqueHandler implements VerificarEstoqueUseCase {
             ordemServicoCommandGateway.salvar(ordemServico);
         }
 
-
         // Retorna o Output rico para a Controller
         return new VerificarEstoqueOutput(
                 ordemServico.getId(),

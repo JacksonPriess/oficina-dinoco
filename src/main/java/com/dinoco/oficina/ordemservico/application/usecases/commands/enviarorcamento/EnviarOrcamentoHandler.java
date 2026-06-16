@@ -22,7 +22,7 @@ public class EnviarOrcamentoHandler implements EnviarOrcamentoUseCase {
 
     @Override
     public EnviarOrcamentoOutput executar(EnviarOrcamentoCommand command) {
-        // 1. Busca a OS no banco
+
         OrdemServico ordemServico = ordemServicoCommandGateway.buscarParaAlteracao(command.osId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("OS não encontrada."));
 

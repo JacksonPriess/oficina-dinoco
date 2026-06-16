@@ -20,6 +20,8 @@ public class ExecucaoIniciadaListener {
     /**
      * Este método é acionado automaticamente pelo Spring quando qualquer lugar
      * da aplicação chamar o ApplicationEventPublisher.publishEvent().
+     *
+     * Quando a OS for iniciada pelo mecanico, será realizado baixa no estoque.
      */
     @EventListener
     public void consumirItensDoEstoque(ExecucaoIniciadaEvent event) {
