@@ -3,6 +3,6 @@ package com.dinoco.oficina.metrica.application.usecase.queries.buscarmediaexecuc
 import java.time.LocalDate;
 
 public record BuscarMediaExecucaoServicosQuery(
-        LocalDate inicio,
-        LocalDate fim)
+        LocalDate dataInicio,
+        LocalDate dataFinal)
 {}

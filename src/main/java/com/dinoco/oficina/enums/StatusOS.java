@@ -1,5 +1,5 @@
 package com.dinoco.oficina.enums;
-
+/*
 public enum StatusOS {
     RECEBIDA,
     EM_DIAGNOSTICO,
@@ -12,3 +12,5 @@ public enum StatusOS {
     ENTREGUE,
     REPROVADA
 }
+
+ */

@@ -1,14 +1,14 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.entity.Usuario;
-import com.dinoco.oficina.enums.PerfilUsuario;
+import com.dinoco.oficina.autenticacao.infrastructure.persistence.UsuarioEntity;
+import com.dinoco.oficina.funcionario.domain.PerfilUsuario;
 
 public class UsuarioBuilder {
 
-    private Usuario usuario;
+    private UsuarioEntity usuario;
 
     private UsuarioBuilder() {
-        this.usuario = new Usuario();
+        this.usuario = new UsuarioEntity();
     }
 
     public static UsuarioBuilder umUsuario() {
@@ -27,7 +27,7 @@ public class UsuarioBuilder {
         return this;
     }
 
-    public Usuario build() {
+    public UsuarioEntity build() {
         return this.usuario;
     }
 }

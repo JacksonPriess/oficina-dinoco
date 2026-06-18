@@ -1,5 +1,5 @@
 package com.dinoco.oficina.entity;
-
+/*
 import com.dinoco.oficina.enums.CargoFuncionario;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,3 +33,5 @@ public class Funcionario {
     private Long usuarioId;
 
 }
+
+ */

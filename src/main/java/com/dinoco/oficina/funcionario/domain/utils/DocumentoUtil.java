@@ -1,4 +1,4 @@
-package com.dinoco.oficina.util;
+package com.dinoco.oficina.funcionario.domain.utils;
 
 public class DocumentoUtil {
     public static boolean isCpfValido(String cpf) {

@@ -1,5 +1,5 @@
 package com.dinoco.oficina.controller;
-
+/*
 import com.dinoco.oficina.dto.FuncionarioRequestDto;
 import com.dinoco.oficina.dto.FuncionarioResponseDto;
 import com.dinoco.oficina.dto.SenhaResetadaResponseDto;
@@ -35,12 +35,6 @@ public class FuncionarioController {
         return ResponseEntity.created(uri).body(response);
     }
 
-    @Operation(summary = "Buscar funcionário por código")
-    @GetMapping("/{id}")
-    public ResponseEntity<FuncionarioResponseDto> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
-    }
-
     @Operation(summary = "Atualizar funcionário")
     @PutMapping("/{id}")
     public ResponseEntity<FuncionarioResponseDto> atualizar(@PathVariable Long id, @RequestBody @Valid FuncionarioRequestDto request) {
@@ -63,3 +57,5 @@ public class FuncionarioController {
     }
 
 }
+
+ */

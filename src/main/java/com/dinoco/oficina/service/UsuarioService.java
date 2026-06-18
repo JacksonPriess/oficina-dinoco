@@ -1,5 +1,5 @@
 package com.dinoco.oficina.service;
-
+/*
 import com.dinoco.oficina.entity.Usuario;
 import com.dinoco.oficina.enums.PerfilUsuario;
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
@@ -57,3 +57,5 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 }
+
+ */

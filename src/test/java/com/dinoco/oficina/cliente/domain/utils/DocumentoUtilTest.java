@@ -1,6 +1,7 @@
-package com.dinoco.oficina.util;
+package com.dinoco.oficina.cliente.domain.utils;
 
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class DocumentoUtilTest {

@@ -1,5 +1,6 @@
 package com.dinoco.oficina.service;
 
+/*
 import com.dinoco.oficina.dto.FuncionarioRequestDto;
 import com.dinoco.oficina.dto.FuncionarioResponseDto;
 import com.dinoco.oficina.entity.Funcionario;
@@ -21,30 +22,6 @@ public class FuncionarioService {
     private final UsuarioService usuarioService;
     private static final String MSG_FUNCIONARIO_NAO_ENCONTRADO = "Funcionário não encontrado.";
 
-    @Transactional
-    public FuncionarioResponseDto criar(FuncionarioRequestDto dto) {
-
-        if (repository.existsByCpf(dto.cpf())) {
-            throw new IllegalArgumentException("CPF já cadastrado.");
-        }
-
-        if (!DocumentoUtil.isCpfValido(dto.cpf())) {
-            throw new IllegalArgumentException("CPF inválido.");
-        }
-
-        Funcionario funcionario = new Funcionario();
-        funcionario.setNome(dto.nome());
-        funcionario.setCpf(dto.cpf());
-        funcionario.setCargo(dto.cargo());
-
-        if (dto.criarAcesso()) {
-            PerfilUsuario perfilAcesso = definirPerfilPorCargo(dto.cargo());
-            Usuario usuarioSalvo = usuarioService.criarUsuarioSistema(dto.login(), dto.senha(), perfilAcesso);
-            funcionario.setUsuarioId(usuarioSalvo.getId());
-        }
-        Funcionario funcionarioSalvo = repository.save(funcionario);
-        return mapearParaResponse(funcionarioSalvo);
-    }
 
     private PerfilUsuario definirPerfilPorCargo(CargoFuncionario cargo) {
         return switch (cargo) {
@@ -64,22 +41,7 @@ public class FuncionarioService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Funcionário não encontrado com ID: " + id));
     }
 
-    @Transactional
-    public FuncionarioResponseDto atualizar(Long id, FuncionarioRequestDto dto) {
-        Funcionario funcionario = repository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException(MSG_FUNCIONARIO_NAO_ENCONTRADO));
 
-        if (!funcionario.getCpf().equals(dto.cpf())) {
-            throw new IllegalArgumentException("Não é permitido alterar o cpf de um funcionário já cadastrado.");
-        }
-
-        funcionario.setNome(dto.nome());
-        funcionario.setCpf(dto.cpf());
-        funcionario.setCargo(dto.cargo());
-
-        Funcionario atualizado = repository.save(funcionario);
-        return mapearParaResponse(atualizado);
-    }
 
     @Transactional
     public void desativar(Long id) {
@@ -88,6 +50,8 @@ public class FuncionarioService {
         funcionario.setAtivo(false);
         repository.save(funcionario);
     }
+
+
 
     @Transactional
     public String resetarSenhaFuncionario(Long funcionarioId) {
@@ -101,6 +65,8 @@ public class FuncionarioService {
         return usuarioService.resetarSenhaGerandoTemporaria(funcionario.getUsuarioId());
     }
 
+
+
     private FuncionarioResponseDto mapearParaResponse(Funcionario funcionario) {
         return new FuncionarioResponseDto(
                 funcionario.getId(),
@@ -112,4 +78,9 @@ public class FuncionarioService {
     }
 
 
+
+
 }
+
+
+ */

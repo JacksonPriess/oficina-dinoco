@@ -25,6 +25,7 @@ import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornum
 import com.dinoco.oficina.ordemservico.infrastructure.web.dto.*;
 import jakarta.validation.Valid;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface OrdemServicoWebMapper {
@@ -33,17 +34,16 @@ public interface OrdemServicoWebMapper {
     AbrirOrdemServicoCommand toInput(@Valid OrdemServicoRequestDto request);
 
     //Converte do Output do Core para o DTO da Web
+    @Mapping(source = "osId", target = "id")
     OrdemServicoResponseDto toResponse(AbrirOrdemServicoOutput output);
 
     IniciarDiagnosticoCommand toIniciarDiagnosticoCommand(Long id);
-
 
     AdicionarItemServicoCommand toAdicionarItemServicoCommand(Long id, @Valid ItemOSServicoAdicionarDto request);
 
     AlterarItemServicoCommand toAlterarItemServicoCommand(Long osId, Long itemId, @Valid ItemOSServicoAlterarDto dto);
 
     IniciarExecucaoItemServicoCommand toIniciarExecucaoItemServicoCommand(Long osId, Long itemId);
-
 
     AdicionarItemProdutoCommand toAdicionarItemProdutoCommand(Long id, @Valid ItemOSProdutoAdicionarDto request);
 

@@ -18,7 +18,7 @@ public class CriarServicoHandler implements CriarServicoUseCase {
     public CriarServicoOutput executar(CriarServicoCommand command) {
 
         if (servicoQueryGateway.existePorDescricao(command.descricao())) {
-            throw new IllegalArgumentException("Servico já cadastrado com este documento.");
+            throw new IllegalArgumentException("Servico já cadastrado com esta descrição.");
         }
 
         Servico novoServico = new Servico(

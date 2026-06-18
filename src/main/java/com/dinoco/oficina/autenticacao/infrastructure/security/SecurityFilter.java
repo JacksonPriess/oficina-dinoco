@@ -1,6 +1,6 @@
-package com.dinoco.oficina.infra.security;
+package com.dinoco.oficina.autenticacao.infrastructure.security;
 
-import com.dinoco.oficina.entity.Usuario;
+import com.dinoco.oficina.autenticacao.infrastructure.persistence.UsuarioEntity;
 import com.dinoco.oficina.exception.ErroPadraoDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -40,7 +40,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             if (!subject.isEmpty()) {
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
-                if (userDetails instanceof Usuario usuario) {
+                if (userDetails instanceof UsuarioEntity usuario) {
                     String uri = request.getRequestURI();
                     boolean isRotaTrocaSenha = uri.equals("/api/auth/trocar-senha");
 

@@ -1,5 +1,5 @@
 package com.dinoco.oficina.util.builders;
-
+/*
 import com.dinoco.oficina.entity.Funcionario;
 import com.dinoco.oficina.enums.CargoFuncionario;
 
@@ -41,3 +41,6 @@ public class FuncionarioBuilder {
         return this.funcionario;
     }
 }
+
+
+ */

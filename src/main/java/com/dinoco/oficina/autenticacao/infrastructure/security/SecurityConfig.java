@@ -1,4 +1,4 @@
-package com.dinoco.oficina.infra.security;
+package com.dinoco.oficina.autenticacao.infrastructure.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

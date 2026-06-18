@@ -1,6 +1,6 @@
-package com.dinoco.oficina.service;
+package com.dinoco.oficina.autenticacao.infrastructure.security;
 
-import com.dinoco.oficina.repository.UsuarioRepository;
+import com.dinoco.oficina.autenticacao.infrastructure.persistence.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

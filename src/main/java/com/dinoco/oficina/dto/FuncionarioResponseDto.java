@@ -1,6 +1,7 @@
 package com.dinoco.oficina.dto;
 
-import com.dinoco.oficina.enums.CargoFuncionario;
+/*
+import com.dinoco.oficina.funcionario.domain.CargoFuncionario;
 
 public record FuncionarioResponseDto(
     Long id,
@@ -9,3 +10,5 @@ public record FuncionarioResponseDto(
     CargoFuncionario cargo,
     boolean ativo
 ) {}
+
+ */

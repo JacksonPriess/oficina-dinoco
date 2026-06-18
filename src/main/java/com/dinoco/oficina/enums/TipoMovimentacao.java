@@ -1,5 +1,5 @@
 package com.dinoco.oficina.enums;
-
+/*
 public enum TipoMovimentacao {
     ENTRADA,
     RESERVA_OS,
@@ -7,3 +7,5 @@ public enum TipoMovimentacao {
     AJUSTE_ENTRADA,
     AJUSTE_SAIDA
 }
+
+ */

@@ -1,6 +1,5 @@
 package com.dinoco.oficina.metrica.infrastructure.web.mapper;
 
-
 import com.dinoco.oficina.metrica.application.usecase.queries.buscarmediaexecucao.BuscarMediaExecucaoServicosOutput;
 import com.dinoco.oficina.metrica.application.usecase.queries.buscarmediaexecucao.BuscarMediaExecucaoServicosQuery;
 import com.dinoco.oficina.metrica.infrastructure.web.dto.RelatorioMetricasDTO;

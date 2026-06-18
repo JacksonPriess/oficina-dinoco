@@ -1,5 +1,5 @@
 package com.dinoco.oficina.dto;
-
+/*
 import com.dinoco.oficina.enums.CargoFuncionario;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,3 +19,5 @@ public record FuncionarioRequestDto(
         String login,
         String senha
 ) {}
+
+ */

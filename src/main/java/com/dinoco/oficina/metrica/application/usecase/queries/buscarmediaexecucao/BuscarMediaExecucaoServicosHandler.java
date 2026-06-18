@@ -18,7 +18,7 @@ public class BuscarMediaExecucaoServicosHandler implements BuscarMediaExecucaoSe
     @Override
     public BuscarMediaExecucaoServicosOutput executar(BuscarMediaExecucaoServicosQuery query) {
 
-        List<MetricaServicoData> dadosBrutos = metricaQueryGateway.buscarDadosMetricas(query.inicio(), query.fim());
+        List<MetricaServicoData> dadosBrutos = metricaQueryGateway.buscarDadosMetricas(query.dataInicio(), query.dataFinal());
 
         List<BuscarMediaExecucaoServicosDetalhesOutput> detalhes = dadosBrutos.stream()
                 .map(dado -> {
@@ -46,8 +46,8 @@ public class BuscarMediaExecucaoServicosHandler implements BuscarMediaExecucaoSe
         // 3. Monta o envelope de saída
         var mediaExecucaoServicosOutput = new BuscarMediaExecucaoServicosOutput(
                 LocalDateTime.now(),
-                query.inicio(),
-                query.fim(),
+                query.dataInicio(),
+                query.dataFinal(),
                 detalhes
         );
 

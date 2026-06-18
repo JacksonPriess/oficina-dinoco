@@ -1,5 +1,5 @@
 package com.dinoco.oficina.entity;
-
+/*
 import com.dinoco.oficina.enums.PerfilUsuario;
 import jakarta.persistence.*;
 import lombok.*;
@@ -73,3 +73,5 @@ public class Usuario implements UserDetails {
         return this.ativo;
     }
 }
+
+ */
