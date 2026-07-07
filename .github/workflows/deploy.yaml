@@ -1,0 +1,64 @@
+name: CI/CD Pipeline - Oficina API
+
+# Dispara a esteira automaticamente quando houver um push na branch main (ou master)
+on:
+  push:
+    branches: [ "main", "master" ]
+
+# Variáveis globais do nosso ambiente
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: oficina-api-dev-repo
+  EKS_CLUSTER_NAME: oficina-api-dev-cluster
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 1. Checkout do Código
+      uses: actions/checkout@v3
+
+    - name: 2. Setup Java 21
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven # Acelera o build guardando as dependências do Maven
+
+    - name: 3. Compilar e Testar (CI)
+      run: mvn clean package
+
+    - name: 4. Autenticar na AWS
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} # Essencial para contas de laboratório
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: 5. Login no Amazon ECR (Cofre)
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: 6. Build e Push da imagem Docker para o ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        # Usa o SHA do commit do git como tag da imagem (ex: a1b2c3d)
+        IMAGE_TAG: ${{ github.sha }} 
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: 7. Autenticar no Cluster Kubernetes (EKS)
+      run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+    - name: 8. Deploy (CD) - Atualizar o Kubernetes
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        # Garante que as configurações (Service, HPA, etc) estejam atualizadas
+        kubectl apply -f k8s/
+        # Dá a ordem para o Deployment trocar a imagem vazia pela imagem real que acabamos de compilar
+        kubectl set image deployment/oficina-api-deployment oficina-api=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
