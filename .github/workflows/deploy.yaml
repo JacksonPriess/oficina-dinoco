@@ -3,7 +3,7 @@ name: CI/CD Pipeline - Oficina API
 # Dispara a esteira automaticamente quando houver um push na branch main (ou master)
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master", "develop" ]
 
 # Variáveis globais do nosso ambiente
 env:
