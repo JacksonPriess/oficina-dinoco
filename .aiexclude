@@ -1,0 +1,55 @@
+# ==========================================
+# Configuração .aiexclude para Spring Boot
+# ==========================================
+
+# 1. Binários e Arquivos Compilados (Evita leitura de bytecode)
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+
+# 2. Configurações Locais da IDE (IntelliJ IDEA)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# 3. Segurança e Credenciais (Proteção de chaves JWT e senhas)
+*.pem
+*.key
+*.jks
+*.p12
+*.pkcs12
+.env
+.env.*
+*secret*.yml
+*secret*.properties
+
+# 4. Logs e Dumps de Memória
+*.log
+logs/
+*.hprof
+*.mdmp
+
+# 5. Relatórios de Testes e Análise Estática (SonarQube/ZAP/Jacoco)
+.sonar/
+.scannerwork/
+target/site/
+target/surefire-reports/
+target/failsafe-reports/
+
+# 6. Bancos de Dados Locais e Dumps de Docker
+docker/data/
+docker/mysql/
+docker/postgres/
+*.sql
+*.dump
+*.sqlite
+*.db
+
+# 7. Outros diretórios de infraestrutura e versionamento
+.git/
+.github/
+.gitlab/
