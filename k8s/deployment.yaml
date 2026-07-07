@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oficina-api-deployment
+  labels:
+    app: oficina-api
+spec:
+  replicas: 1 # Iniciamos com 1 pod; o HPA controlará o resto
+  selector:
+    matchLabels:
+      app: oficina-api
+  template:
+    metadata:
+      labels:
+        app: oficina-api
+    spec:
+      containers:
+      - name: oficina-api
+        # Esta imagem é provisória. Na Semana 4 (CI/CD), a esteira irá substituir 
+        # este campo pelo caminho real do repositório AWS ECR.
+        image: oficina-api:latest 
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080 # Porta padrão interna exposta pelo Spring Boot
+        
+        # Injeta automaticamente todas as variáveis do ConfigMap e do Secret
+        envFrom:
+        - configMapRef:
+            name: oficina-api-config
+        - secretRef:
+            name: oficina-api-secret
+            
+        # CRUCIAL PARA O HPA: Sem estas definições, o Kubernetes não consegue calcular o escalonamento
+        resources:
+          requests:
+            cpu: "250m"    # Garante 0.25 de um núcleo de CPU para o arranque estável do Spring
+            memory: "512Mi" # Memória mínima inicial alocada
+          limits:
+            cpu: "500m"    # Teto máximo de utilização de processamento
+            memory: "1Gi"   # Teto máximo de memória para evitar vazamentos (OutOfMemory)

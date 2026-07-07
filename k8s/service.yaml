@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: oficina-api-service
+  labels:
+    app: oficina-api
+spec:
+  type: LoadBalancer # Comunica com a AWS para provisionar um balanceador de carga externo
+  ports:
+  - port: 80          # Porta pública na internet (o utilizador acederá sem precisar digitar :8080)
+    targetPort: 8080  # Porta interna do contêiner para onde o tráfego será direcionado
+    protocol: TCP
+  selector:
+    app: oficina-api  # Encaminha o tráfego apenas para os pods que possuem esta label

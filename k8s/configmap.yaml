@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oficina-api-config
+  labels:
+    app: oficina-api
+data:
+  # O Spring vai ler esta variável para ativar o profile correto
+  SPRING_PROFILES_ACTIVE: "dev"
+
+  # A URL que o Terraform nos devolveu na etapa anterior
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://oficina-api-dev-postgres.c63f9e9ff9kl.us-east-1.rds.amazonaws.com:5432/oficina_db"
+
+  # Fuso horário para garantir que as Ordens de Serviço fiquem com a hora correta
+  TZ: "America/Sao_Paulo"
