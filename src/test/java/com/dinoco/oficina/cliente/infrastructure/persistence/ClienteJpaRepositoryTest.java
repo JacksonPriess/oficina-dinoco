@@ -1,11 +1,11 @@
 package com.dinoco.oficina.cliente.infrastructure.persistence;
 
-import com.dinoco.oficina.BaseIT;
+import com.dinoco.oficina.BaseJpaIT;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ClienteJpaRepositoryTest extends BaseIT {
+class ClienteJpaRepositoryTest extends BaseJpaIT {
 
     @Autowired
     private ClienteJpaRepository repository;
