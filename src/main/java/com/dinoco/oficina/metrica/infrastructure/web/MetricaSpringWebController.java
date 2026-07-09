@@ -28,7 +28,7 @@ public class MetricaSpringWebController {
 
     @Operation(summary = "Média de execução dos serviços")
     @GetMapping("/tempo-execucao")
-    public ResponseEntity<RelatorioMetricasDTO> getMetricas(@RequestBody @Valid RelatorioMetricasRequestDTO request) {
+    public ResponseEntity<RelatorioMetricasDTO> getMetricas(@Valid RelatorioMetricasRequestDTO request) {
         BuscarMediaExecucaoServicosQuery input = mapper.toInput(request);
         BuscarMediaExecucaoServicosOutput buscarMediaExecucaoServicosOutput = controllerClean.buscarMediaExecucaoServicos(input);
         RelatorioMetricasDTO response = mapper.toRelatorioMetricasDTO(buscarMediaExecucaoServicosOutput);
