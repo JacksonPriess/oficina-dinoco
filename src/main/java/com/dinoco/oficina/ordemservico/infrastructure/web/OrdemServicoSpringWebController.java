@@ -4,6 +4,7 @@ import com.dinoco.oficina.ordemservico.adapters.controllers.OrdemServicoControll
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoOutput;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.AprovarOrcamentoCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoOutput;
@@ -124,8 +125,8 @@ public class OrdemServicoSpringWebController {
     @Operation(summary = "Concluir OS")
     @PostMapping("/{id}/concluir")
     public ResponseEntity<Void> concluir(@PathVariable Long id) {
-        FinalizarExecucaoCommand input = mapper.toFinalizarExecucaoCommand(id);
-        controllerClean.finalizarExecucaoOS(input);
+        ConcluirOrdemServicoCommand input = mapper.toConcluirOrdemServicoCommand(id);
+        controllerClean.concluirOS(input);
         return ResponseEntity.noContent().build();
     }
 

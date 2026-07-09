@@ -240,13 +240,17 @@ public class OrdemServico {
 
     public void recalcularTotais() {
 
-        this.valorTotalServicos = itensServico.stream()
-                .map(ItemOSServico::getValorCobrado)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (itensServico != null) {
+            this.valorTotalServicos = itensServico.stream()
+                    .map(ItemOSServico::getValorCobrado)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
 
-        this.valorTotalProdutos = itensProduto.stream()
-                .map(ItemOSProduto::getValorTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (itensProduto != null) {
+            this.valorTotalProdutos = itensProduto.stream()
+                    .map(ItemOSProduto::getValorTotal)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
 
         this.valorTotalOS = this.valorTotalServicos
                 .add(this.valorTotalProdutos)

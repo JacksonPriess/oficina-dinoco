@@ -5,6 +5,8 @@ import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.Abrir
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.AprovarOrcamentoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.AprovarOrcamentoUseCase;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoCommand;
@@ -39,7 +41,7 @@ public class OrdemServicoControllerClean {
     private final VerificarEstoqueUseCase verificarEstoqueUseCase;
     private final IniciarExecucaoUseCase iniciarExecucaoUseCase;
     private final FinalizarExecucaoUseCase finalizarExecucaoUseCase;
-
+    private final ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase;
     private final BuscarOSPorIdUseCase buscarOSPorIdUseCase;
     private final BuscarOSPorCodigoRastreioUseCase buscarOSPorCodigoRastreioUseCase;
 
@@ -54,6 +56,7 @@ public class OrdemServicoControllerClean {
                                        VerificarEstoqueUseCase verificarEstoqueUseCase,
                                        IniciarExecucaoUseCase iniciarExecucaoUseCase,
                                        FinalizarExecucaoUseCase finalizarExecucaoUseCase,
+                                       ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase,
                                        BuscarOSPorIdUseCase buscarOSPorIdUseCase,
                                        BuscarOSPorCodigoRastreioUseCase buscarOSPorCodigoRastreioUseCase) {
         this.abrirOrdemServicoUseCase = abrirOrdemServicoUseCase;
@@ -65,6 +68,7 @@ public class OrdemServicoControllerClean {
         this.verificarEstoqueUseCase = verificarEstoqueUseCase;
         this.iniciarExecucaoUseCase = iniciarExecucaoUseCase;
         this.finalizarExecucaoUseCase = finalizarExecucaoUseCase;
+        this.concluirOrdemServicoUseCase = concluirOrdemServicoUseCase;
         this.buscarOSPorIdUseCase = buscarOSPorIdUseCase;
         this.buscarOSPorCodigoRastreioUseCase = buscarOSPorCodigoRastreioUseCase;
     }
@@ -103,6 +107,10 @@ public class OrdemServicoControllerClean {
 
     public void finalizarExecucaoOS(FinalizarExecucaoCommand command) {
         finalizarExecucaoUseCase.executar(command);
+    }
+
+    public void concluirOS(ConcluirOrdemServicoCommand command ){
+        concluirOrdemServicoUseCase.executar(command);
     }
 
     public BuscarOSPorIdOuput buscarOSPorId(BuscarOSPorIdQuery query) {

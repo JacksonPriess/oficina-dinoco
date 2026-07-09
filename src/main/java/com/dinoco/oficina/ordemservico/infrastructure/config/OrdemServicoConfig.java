@@ -7,6 +7,8 @@ import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.Abrir
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.AprovarOrcamentoHandler;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.AprovarOrcamentoUseCase;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoHandler;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoHandler;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoHandler;
@@ -78,6 +80,11 @@ public class OrdemServicoConfig {
     }
 
     @Bean
+    public ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway) {
+        return new ConcluirOrdemServicoHandler(ordemServicoCommandGateway);
+    }
+
+    @Bean
     public BuscarOSPorIdUseCase buscarOSPorIdUseCase(OrdemServicoQueryGateway ordemServicoQueryGateway) {
         return new BuscarOSPorIdHandler(ordemServicoQueryGateway);
     }
@@ -88,8 +95,29 @@ public class OrdemServicoConfig {
     }
 
     @Bean
-    public OrdemServicoControllerClean ordemServicoControllerClean(AbrirOrdemServicoUseCase abrirOrdemServicoUseCase,IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase, ConcluirDiagnosticoUseCase concluirDiagnosticoUseCase, EnviarOrcamentoUseCase enviarOrcamentoUseCase, ReprovarOrcamentoUseCase reprovarOrcamentoUseCase, AprovarOrcamentoUseCase aprovarOrcamentoUseCase, VerificarEstoqueUseCase verificarEstoqueUseCase, IniciarExecucaoUseCase iniciarExecucaoUseCase, FinalizarExecucaoUseCase finalizarExecucaoUseCase, BuscarOSPorIdUseCase buscarOSPorIdUseCase, BuscarOSPorCodigoRastreioUseCase buscarOSPorCodigoRastreioUseCase) {
-        return new OrdemServicoControllerClean(abrirOrdemServicoUseCase, iniciarDiagnosticoUseCase, concluirDiagnosticoUseCase, enviarOrcamentoUseCase, reprovarOrcamentoUseCase, aprovarOrcamentoUseCase, verificarEstoqueUseCase, iniciarExecucaoUseCase, finalizarExecucaoUseCase, buscarOSPorIdUseCase, buscarOSPorCodigoRastreioUseCase);
-
+    public OrdemServicoControllerClean ordemServicoControllerClean(AbrirOrdemServicoUseCase abrirOrdemServicoUseCase,
+                                                                   IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase,
+                                                                   ConcluirDiagnosticoUseCase concluirDiagnosticoUseCase,
+                                                                   EnviarOrcamentoUseCase enviarOrcamentoUseCase,
+                                                                   ReprovarOrcamentoUseCase reprovarOrcamentoUseCase,
+                                                                   AprovarOrcamentoUseCase aprovarOrcamentoUseCase,
+                                                                   VerificarEstoqueUseCase verificarEstoqueUseCase,
+                                                                   IniciarExecucaoUseCase iniciarExecucaoUseCase,
+                                                                   FinalizarExecucaoUseCase finalizarExecucaoUseCase,
+                                                                   ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase,
+                                                                   BuscarOSPorIdUseCase buscarOSPorIdUseCase,
+                                                                   BuscarOSPorCodigoRastreioUseCase buscarOSPorCodigoRastreioUseCase) {
+        return new OrdemServicoControllerClean(abrirOrdemServicoUseCase,
+                iniciarDiagnosticoUseCase,
+                concluirDiagnosticoUseCase,
+                enviarOrcamentoUseCase,
+                reprovarOrcamentoUseCase,
+                aprovarOrcamentoUseCase,
+                verificarEstoqueUseCase,
+                iniciarExecucaoUseCase,
+                finalizarExecucaoUseCase,
+                concluirOrdemServicoUseCase,
+                buscarOSPorIdUseCase,
+                buscarOSPorCodigoRastreioUseCase);
     }
 }
