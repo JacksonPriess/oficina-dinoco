@@ -38,39 +38,39 @@ public interface OrdemServicoWebMapper {
     @Mapping(source = "osId", target = "id")
     OrdemServicoResponseDto toResponse(AbrirOrdemServicoOutput output);
 
-    IniciarDiagnosticoCommand toIniciarDiagnosticoCommand(Long id);
+    IniciarDiagnosticoCommand toIniciarDiagnosticoCommand(Long osId);
 
-    AdicionarItemServicoCommand toAdicionarItemServicoCommand(Long id, @Valid ItemOSServicoAdicionarDto request);
+    AdicionarItemServicoCommand toAdicionarItemServicoCommand(Long osId, @Valid ItemOSServicoAdicionarDto request);
 
     AlterarItemServicoCommand toAlterarItemServicoCommand(Long osId, Long itemId, @Valid ItemOSServicoAlterarDto dto);
 
     IniciarExecucaoItemServicoCommand toIniciarExecucaoItemServicoCommand(Long osId, Long itemId);
 
-    AdicionarItemProdutoCommand toAdicionarItemProdutoCommand(Long id, @Valid ItemOSProdutoAdicionarDto request);
+    AdicionarItemProdutoCommand toAdicionarItemProdutoCommand(Long osId, @Valid ItemOSProdutoAdicionarDto request);
 
     AlterarItemProdutoCommand toAlterarItemProdutoCommand(Long osId, Long itemId, @Valid ItemOSProdutoAlterarDto dto);
 
-    ConcluirDiagnosticoCommand toConcluirDiagnosticoCommand(Long id, @Valid ConcluirDiagnosticoDto request);
+    ConcluirDiagnosticoCommand toConcluirDiagnosticoCommand(Long osId, @Valid ConcluirDiagnosticoDto request);
 
-    EnviarOrcamentoCommand toEnviarOrcamentoCommand(Long id);
+    EnviarOrcamentoCommand toEnviarOrcamentoCommand(Long osId);
 
     LinkWhatsAppDto toLinkWhatsAppResponse(EnviarOrcamentoOutput enviarOrcamentoOutput);
 
-    ReprovarOrcamentoCommand toReprovarOrcamentoCommand(Long id);
+    ReprovarOrcamentoCommand toReprovarOrcamentoCommand(Long osId);
 
-    AprovarOrcamentoCommand toAprovarOrcamentoCommand(Long id);
+    AprovarOrcamentoCommand toAprovarOrcamentoCommand(Long osId);
 
-    VerificarEstoqueCommand toVerificarEstoqueCommand(Long id);
+    VerificarEstoqueCommand toVerificarEstoqueCommand(Long osId);
 
     VerificarEstoqueResponseDto toVerificarEstoqueResponse(VerificarEstoqueOutput output);
 
-    IniciarExecucaoCommand toIniciarExecucaoCommand(Long id);
+    IniciarExecucaoCommand toIniciarExecucaoCommand(Long osId);
 
     ConcluirExecucaoItemServicoCommand toConcluirExecucaoItemServicoCommand(Long osId, Long itemId, @Valid ConcluirExecucaoItemServicoDto request);
 
-    FinalizarExecucaoCommand toFinalizarExecucaoCommand(Long id);
+    FinalizarExecucaoCommand toFinalizarExecucaoCommand(Long osId);
 
-    BuscarOSPorIdQuery toBuscarOSPorIdQuery(Long id);
+    BuscarOSPorIdQuery toBuscarOSPorIdQuery(Long osId);
 
     BuscarOSPorIdResponseDto toBuscarOSPorIdResponse(BuscarOSPorIdOuput output);
 
@@ -78,5 +78,5 @@ public interface OrdemServicoWebMapper {
 
     BuscarOSPorCodigoRastreioResponseDto toBuscarOSPorCodigoRastreioResponse(BuscarOSPorCodigoRastreioOuput output);
 
-    ConcluirOrdemServicoCommand toConcluirOrdemServicoCommand(Long id);
+    ConcluirOrdemServicoCommand toConcluirOrdemServicoCommand(Long osId);
 }

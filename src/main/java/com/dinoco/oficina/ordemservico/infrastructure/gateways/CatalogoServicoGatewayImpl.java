@@ -25,7 +25,7 @@ public class CatalogoServicoGatewayImpl implements CatalogoServicoGateway {
         """;
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("produtoId", servicoId);
+                .addValue("servicoId", servicoId);
 
         BigDecimal precoPadrao = jdbcTemplate.queryForObject(
                 sql,

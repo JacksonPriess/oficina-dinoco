@@ -1,4 +1,5 @@
 -- 1. Limpeza garantida (Idempotência, respeitando Foreign Keys de baixo para cima)
+DELETE FROM saldo_estoque;
 DELETE FROM movimentacao_estoque;
 DELETE FROM item_os_produto;
 DELETE FROM item_os_servico;
@@ -18,9 +19,8 @@ VALUES (888, 'BRA2E45', 'Volkswagen', 'Gol', '2018', '2019', 'Branco', '9BWZZZ',
 INSERT INTO servico (id, descricao, preco_padrao, tempo_estimado_minutos, ativo, data_criacao)
 VALUES (666, 'Troca de Pastilha de Freio', 120.00, 60, true, current_timestamp);
 
-INSERT INTO produto (id, nome, tipo, quantidade_atual, quantidade_reservada, preco_custo, preco_venda, ativo, version)
-VALUES (777, 'Jogo de Pastilhas', 'PECA', 10.000, 0.000, 40.00, 150.00, true, 0);
-
+INSERT INTO produto (id,nome,tipo,marca,codigo_fabricante,aplicacao,preco_custo,preco_venda,ativo,version
+) VALUES (777, 'Filtro de Óleo','PECA', 'Fram','PH10060','Ford Focus',40.00,150.00,TRUE,0);
 -- ====================================================================================
 -- 3. CENÁRIOS DE ORDENS DE SERVIÇO PARA CADA TESTE
 -- ====================================================================================

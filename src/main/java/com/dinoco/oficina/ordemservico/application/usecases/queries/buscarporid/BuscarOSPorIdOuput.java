@@ -3,7 +3,7 @@ package com.dinoco.oficina.ordemservico.application.usecases.queries.buscarporid
 import java.math.BigDecimal;
 
 public record BuscarOSPorIdOuput(
-        Long id,
+        Long osId,
         String codigoRastreio,
         Long clienteId,
         Long veiculoId,

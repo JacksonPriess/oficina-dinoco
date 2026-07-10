@@ -3,7 +3,7 @@ package com.dinoco.oficina.ordemservico.infrastructure.web.dto;
 import java.math.BigDecimal;
 
 public record BuscarOSPorIdResponseDto(
-        Long id,
+        Long osId,
         String codigoRastreio,
         Long clienteId,
         Long veiculoId,

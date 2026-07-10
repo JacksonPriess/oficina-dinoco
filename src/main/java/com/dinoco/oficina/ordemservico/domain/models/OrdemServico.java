@@ -68,6 +68,9 @@ public class OrdemServico {
         this.valorTotalProdutos = valorTotalProdutos;
         this.valorTotalOS = valorTotalOS;
         this.dataEntrada = dataEntrada;
+
+        this.itensServico = new ArrayList<>();
+        this.itensProduto = new ArrayList<>();
     }
 
     public void iniciarDiagnostico() {
@@ -81,6 +84,10 @@ public class OrdemServico {
 
         if (this.status != StatusOS.EM_DIAGNOSTICO && this.status != StatusOS.AGUARDANDO_ORCAMENTO) {
             throw new RegraNegocioOSException("A OS não permite adição de produtos no status atual: " + this.status);
+        }
+
+        if (this.itensProduto == null) {
+            this.itensProduto = new ArrayList<>();
         }
 
         boolean produtoJaExiste = this.itensProduto.stream()
@@ -97,6 +104,10 @@ public class OrdemServico {
     public void adicionarServico(ItemOSServico novoServico) {
         if (this.status != StatusOS.EM_DIAGNOSTICO && this.status != StatusOS.AGUARDANDO_ORCAMENTO) {
             throw new RegraNegocioOSException("A OS não permite adição de serviços no status atual: " + this.status);
+        }
+
+        if (this.itensServico == null) {
+            this.itensServico = new ArrayList<>();
         }
 
         boolean servicoJaExiste = this.itensServico.stream()

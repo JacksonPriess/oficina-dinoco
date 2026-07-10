@@ -57,83 +57,83 @@ public class OrdemServicoSpringWebController {
     }
 
     @Operation(summary = "Iniciar diagnóstico")
-    @PostMapping("/{id}/iniciar-diagnostico")
-    public ResponseEntity<Void> iniciarDiagnostico(@PathVariable Long id) {
-        IniciarDiagnosticoCommand input = mapper.toIniciarDiagnosticoCommand(id);
+    @PostMapping("/{osId}/iniciar-diagnostico")
+    public ResponseEntity<Void> iniciarDiagnostico(@PathVariable Long osId) {
+        IniciarDiagnosticoCommand input = mapper.toIniciarDiagnosticoCommand(osId);
         controllerClean.iniciarDiagnostico(input);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Concluir diagnóstico", description = "Informar o laudo técnico final e encaminhar para Orçamento")
-    @PostMapping("/{id}/concluir-diagnostico")
-    public ResponseEntity<Void> concluirDiagnostico(@PathVariable Long id, @Valid @RequestBody ConcluirDiagnosticoDto request) {
-        ConcluirDiagnosticoCommand input = mapper.toConcluirDiagnosticoCommand(id, request);
+    @PostMapping("/{osId}/concluir-diagnostico")
+    public ResponseEntity<Void> concluirDiagnostico(@PathVariable Long osId, @Valid @RequestBody ConcluirDiagnosticoDto request) {
+        ConcluirDiagnosticoCommand input = mapper.toConcluirDiagnosticoCommand(osId, request);
         controllerClean.concluirDiagnostico(input);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Enviar orçamento ao cliente")
-    @PostMapping("/{id}/enviar-orcamento")
-    public ResponseEntity<LinkWhatsAppDto> enviarOrcamento(@PathVariable Long id) {
-        EnviarOrcamentoCommand input = mapper.toEnviarOrcamentoCommand(id);
+    @PostMapping("/{osId}/enviar-orcamento")
+    public ResponseEntity<LinkWhatsAppDto> enviarOrcamento(@PathVariable Long osId) {
+        EnviarOrcamentoCommand input = mapper.toEnviarOrcamentoCommand(osId);
         EnviarOrcamentoOutput enviarOrcamentoOutput = controllerClean.enviarOrcamento(input);
         LinkWhatsAppDto response = mapper.toLinkWhatsAppResponse(enviarOrcamentoOutput);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Reprovar orçamento", description = "Reprovar o orçamento enviado ao cliente")
-    @PostMapping("/{id}/reprovar")
-    public ResponseEntity<Void> reprovarOrcamento(@PathVariable Long id) {
-        ReprovarOrcamentoCommand input = mapper.toReprovarOrcamentoCommand(id);
+    @PostMapping("/{osId}/reprovar")
+    public ResponseEntity<Void> reprovarOrcamento(@PathVariable Long osId) {
+        ReprovarOrcamentoCommand input = mapper.toReprovarOrcamentoCommand(osId);
         controllerClean.reprovarOrcamento(input);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Aprovar orçamento")
-    @PostMapping("/{id}/aprovar")
-    public ResponseEntity<Void> aprovarOrcamento(@PathVariable Long id) {
-        AprovarOrcamentoCommand input = mapper.toAprovarOrcamentoCommand(id);
+    @PostMapping("/{osId}/aprovar")
+    public ResponseEntity<Void> aprovarOrcamento(@PathVariable Long osId) {
+        AprovarOrcamentoCommand input = mapper.toAprovarOrcamentoCommand(osId);
         controllerClean.aprovarOrcamento(input);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Verificar disponibilidade de peças no estoque")
-    @PostMapping("/{id}/verificar-estoque")
-    public ResponseEntity<VerificarEstoqueResponseDto> verificarEstoque(@PathVariable Long id) {
-        VerificarEstoqueCommand command = mapper.toVerificarEstoqueCommand(id);
+    @PostMapping("/{osId}/verificar-estoque")
+    public ResponseEntity<VerificarEstoqueResponseDto> verificarEstoque(@PathVariable Long osId) {
+        VerificarEstoqueCommand command = mapper.toVerificarEstoqueCommand(osId);
         VerificarEstoqueOutput output = controllerClean.verificarEstoque(command);
         VerificarEstoqueResponseDto response = mapper.toVerificarEstoqueResponse(output);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Iniciar execução dos serviços da OS")
-    @PostMapping("/{id}/iniciar-execucao")
-    public ResponseEntity<Void> iniciarExecucao(@PathVariable Long id) {
-        IniciarExecucaoCommand input = mapper.toIniciarExecucaoCommand(id);
+    @PostMapping("/{osId}/iniciar-execucao")
+    public ResponseEntity<Void> iniciarExecucao(@PathVariable Long osId) {
+        IniciarExecucaoCommand input = mapper.toIniciarExecucaoCommand(osId);
         controllerClean.iniciarExecucaoOS(input);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Finalizar execução dos serviços")
-    @PostMapping("/{id}/finalizar-execucao")
-    public ResponseEntity<Void> finalizarExecucao(@PathVariable Long id) {
-        FinalizarExecucaoCommand input = mapper.toFinalizarExecucaoCommand(id);
+    @PostMapping("/{osId}/finalizar-execucao")
+    public ResponseEntity<Void> finalizarExecucao(@PathVariable Long osId) {
+        FinalizarExecucaoCommand input = mapper.toFinalizarExecucaoCommand(osId);
         controllerClean.finalizarExecucaoOS(input);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Concluir OS")
-    @PostMapping("/{id}/concluir")
-    public ResponseEntity<Void> concluir(@PathVariable Long id) {
-        ConcluirOrdemServicoCommand input = mapper.toConcluirOrdemServicoCommand(id);
+    @PostMapping("/{osId}/concluir")
+    public ResponseEntity<Void> concluir(@PathVariable Long osId) {
+        ConcluirOrdemServicoCommand input = mapper.toConcluirOrdemServicoCommand(osId);
         controllerClean.concluirOS(input);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Buscar OS por id")
-    @GetMapping("/{id}")
-    public ResponseEntity<BuscarOSPorIdResponseDto> buscarPorId(@PathVariable Long id) {
-        BuscarOSPorIdQuery query = mapper.toBuscarOSPorIdQuery(id);
+    @GetMapping("/{osId}")
+    public ResponseEntity<BuscarOSPorIdResponseDto> buscarPorId(@PathVariable Long osId) {
+        BuscarOSPorIdQuery query = mapper.toBuscarOSPorIdQuery(osId);
         BuscarOSPorIdOuput output = controllerClean.buscarOSPorId(query);
         BuscarOSPorIdResponseDto response = mapper.toBuscarOSPorIdResponse(output);
         return ResponseEntity.ok(response);
