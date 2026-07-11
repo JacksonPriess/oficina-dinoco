@@ -145,12 +145,16 @@ public class OrdemServico {
         boolean temItemServicoSemValor = this.getItensServico().stream()
                 .anyMatch(item -> item.getValorCobrado().compareTo(BigDecimal.ZERO) <= 0);
 
-        if ( temItemProdutoSemPreco || temItemServicoSemValor ) {
-            //INFO - Na prática, se o valor de serviço estiver zerado, a equipe da Oficina informará um valor devido para o item.
-            // E caso algum produto esteja sem valor no item da OS, é porque não se sabe o preço do produto, então será necessário realizar uma cotação com fornecedor
-            // e após obter o preço de custo, o usuário vai atualizar o preco unitário do item da OS, para que o orçamento possa ser enviado.
-            throw new RegraNegocioOSException("Existem itens da OS sem valor R$.");
+        // Na prática, se o valor de serviço estiver zerado, a equipe da Oficina informará um valor devido para o item.
+        // E caso algum produto esteja sem valor no item da OS, é porque não se sabe o preço do produto, então será necessário realizar uma cotação com fornecedor
+        // e após obter o preço de custo, o usuário vai atualizar o preco unitário do item da OS, para que o orçamento possa ser enviado.
+        if ( temItemProdutoSemPreco ) {
+            throw new RegraNegocioOSException("Existem itens de produto da OS sem valor unitário de venda R$.");
         }
+        if ( temItemServicoSemValor ) {
+            throw new RegraNegocioOSException("Existem itens de serviço da OS sem valor da mão de obra R$.");
+        }
+
         this.status = StatusOS.AGUARDANDO_APROVACAO;
     }
 

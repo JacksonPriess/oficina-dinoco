@@ -40,7 +40,7 @@ public class OrcamentoAprovadoListener {
                     itemOSProduto.getProdutoId(),
                     TipoMovimentacao.RESERVA_OS,
                     itemOSProduto.getQuantidade(),
-                    "Reserva OS: " + event.osId()
+                    "Reservado para a OS: " + event.osId()
             );
 
             estoqueGateway.salvar(saldo, movimentacao);

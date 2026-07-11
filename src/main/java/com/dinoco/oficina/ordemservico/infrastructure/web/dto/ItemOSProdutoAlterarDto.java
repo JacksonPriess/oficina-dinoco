@@ -13,5 +13,5 @@ public record ItemOSProdutoAlterarDto(
 
         @NotNull
         @PositiveOrZero(message = "O valor não pode ser negativo")
-        BigDecimal valorUnitarioVenda
+        BigDecimal precoVenda
 ) {}

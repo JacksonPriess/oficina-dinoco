@@ -5,7 +5,9 @@ import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoEventPub
 import com.dinoco.oficina.ordemservico.application.gateways.VerificadorEstoqueGateway;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
 import com.dinoco.oficina.shared.events.OrcamentoAprovadoEvent;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class AprovarOrcamentoHandler implements AprovarOrcamentoUseCase {
 
     private final OrdemServicoCommandGateway ordemServicoCommandGateway;
@@ -29,8 +31,10 @@ public class AprovarOrcamentoHandler implements AprovarOrcamentoUseCase {
 
         boolean temEstoqueParaTudo = verificadorEstoqueGateway.todasAsPecasEstaoDisponiveis(os.getItensProduto());
         if ( temEstoqueParaTudo ) {
+            log.info("Tem estoque para todos os produtos da OS. Marcando como AGUARDANDO_EXECUCAO");
             os.marcarProntaParaExecucao(); // Vai para AGUARDANDO_EXECUCAO
         } else {
+            log.warn("Não tem estoque para todos os produtos da OS. Marcando como AGUARDANDO_FORNECEDOR");
             os.marcarAguardandoFornecedor(); // Vai para AGUARDANDO_FORNECEDOR
         }
 
