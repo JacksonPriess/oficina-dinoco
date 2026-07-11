@@ -1,7 +1,7 @@
 package com.dinoco.oficina.ordemservico.application.usecases.commands.iniciardiagnostico;
 
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoCommandGateway;
-import com.dinoco.oficina.ordemservico.domain.exceptions.RecursoNaoEncontradoException;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
 
 public class IniciarDiagnosticoHandler implements IniciarDiagnosticoUseCase {

@@ -57,7 +57,9 @@ class AlterarItemProdutoHandlerTest {
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.ZERO,
-                java.time.LocalDateTime.now()
+                java.time.LocalDateTime.now(),
+                null,
+                null
         );
         osExistente.setItensProduto(itensProduto);
         osExistente.setItensServico(new ArrayList<>());

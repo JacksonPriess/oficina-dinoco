@@ -1,7 +1,7 @@
 package com.dinoco.oficina.ordemservico.application.usecases.commands.concluirexecucaoitemservico;
 
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoCommandGateway;
-import com.dinoco.oficina.ordemservico.domain.exceptions.RecursoNaoEncontradoException;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
 
 public class ConcluirExecucaoItemServicoHandler implements ConcluirExecucaoItemServicoUseCase {
@@ -17,7 +17,7 @@ public class ConcluirExecucaoItemServicoHandler implements ConcluirExecucaoItemS
         OrdemServico ordemServico = ordemServicoCommandGateway.buscarParaAlteracao(command.osId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("OS não encontrada."));
 
-        ordemServico.concluirExecucaoItemServico(command.itemId(), command.dataFim());
+        ordemServico.concluirExecucaoItemServico(command.itemId(), command.dataHoraFim());
         ordemServicoCommandGateway.salvar(ordemServico);
     }
 }

@@ -2,7 +2,7 @@ package com.dinoco.oficina.ordemservico.application.usecases.commands.adicionari
 
 import com.dinoco.oficina.ordemservico.application.gateways.CatalogoServicoGateway;
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoCommandGateway;
-import com.dinoco.oficina.ordemservico.domain.exceptions.RecursoNaoEncontradoException;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.ordemservico.domain.models.ItemOSServico;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
 import java.math.BigDecimal;

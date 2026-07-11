@@ -3,7 +3,7 @@ package com.dinoco.oficina.ordemservico.application.usecases.commands.verificare
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoCommandGateway;
 import com.dinoco.oficina.ordemservico.application.gateways.VerificadorEstoqueGateway;
 import com.dinoco.oficina.ordemservico.domain.enums.StatusOS;
-import com.dinoco.oficina.ordemservico.domain.exceptions.RecursoNaoEncontradoException;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.ordemservico.domain.exceptions.RegraNegocioOSException;
 import com.dinoco.oficina.ordemservico.domain.models.ItemOSProduto;
 import com.dinoco.oficina.ordemservico.domain.models.ItemOSServico;
@@ -69,7 +69,9 @@ class VerificarEstoqueHandlerTest {
                 java.math.BigDecimal.valueOf(100),
                 java.math.BigDecimal.valueOf(100),
                 java.math.BigDecimal.valueOf(200),
-                java.time.LocalDateTime.now()
+                java.time.LocalDateTime.now(),
+                null,
+                null
         );
         osExistente.setItensProduto(itensProduto);
         osExistente.setItensServico(itensServico);
@@ -119,7 +121,9 @@ class VerificarEstoqueHandlerTest {
                 java.math.BigDecimal.valueOf(100),
                 java.math.BigDecimal.valueOf(100),
                 java.math.BigDecimal.valueOf(200),
-                java.time.LocalDateTime.now()
+                java.time.LocalDateTime.now(),
+                null,
+                null
         );
         osExistente.setItensProduto(itensProduto);
 
@@ -179,7 +183,9 @@ class VerificarEstoqueHandlerTest {
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.ZERO,
-                java.time.LocalDateTime.now()
+                java.time.LocalDateTime.now(),
+                null,
+                null
         );
 
         when(ordemServicoCommandGateway.buscarParaAlteracao(1L))

@@ -56,7 +56,9 @@ class AbrirOrdemServicoHandlerTest {
                 BigDecimal.ZERO,
                 BigDecimal.ZERO,
                 BigDecimal.ZERO,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                null,
+                null
         );
 
         when(ordemServicoCommandGateway.salvar(any(OrdemServico.class)))

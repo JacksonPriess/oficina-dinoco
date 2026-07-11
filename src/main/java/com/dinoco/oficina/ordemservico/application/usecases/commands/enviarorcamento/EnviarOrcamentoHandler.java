@@ -3,7 +3,7 @@ package com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorca
 import com.dinoco.oficina.ordemservico.application.gateways.ClienteContatoGateway;
 import com.dinoco.oficina.ordemservico.application.gateways.ClienteContatoOutput;
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoCommandGateway;
-import com.dinoco.oficina.ordemservico.domain.exceptions.RecursoNaoEncontradoException;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

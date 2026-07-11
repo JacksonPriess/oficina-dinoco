@@ -61,7 +61,9 @@ class FinalizarExecucaoHandlerTest {
                 java.math.BigDecimal.valueOf(100),
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.valueOf(100),
-                java.time.LocalDateTime.now()
+                java.time.LocalDateTime.now(),
+                null,
+                null
         );
         osExistente.setItensServico(itensServico);
 

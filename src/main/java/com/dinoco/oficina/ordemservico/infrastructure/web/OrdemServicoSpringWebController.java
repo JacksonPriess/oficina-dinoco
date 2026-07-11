@@ -106,7 +106,7 @@ public class OrdemServicoSpringWebController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Iniciar execução dos serviços da OS")
+    @Operation(summary = "Iniciar execução da OS.")
     @PostMapping("/{osId}/iniciar-execucao")
     public ResponseEntity<Void> iniciarExecucao(@PathVariable Long osId) {
         IniciarExecucaoCommand input = mapper.toIniciarExecucaoCommand(osId);
@@ -114,7 +114,7 @@ public class OrdemServicoSpringWebController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Finalizar execução dos serviços")
+    @Operation(summary = "Finalizar execução da OS")
     @PostMapping("/{osId}/finalizar-execucao")
     public ResponseEntity<Void> finalizarExecucao(@PathVariable Long osId) {
         FinalizarExecucaoCommand input = mapper.toFinalizarExecucaoCommand(osId);

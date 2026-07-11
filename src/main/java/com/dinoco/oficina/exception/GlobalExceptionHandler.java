@@ -1,6 +1,7 @@
 package com.dinoco.oficina.exception;
 
-
+import com.dinoco.oficina.ordemservico.domain.exceptions.RegraNegocioOSException;
+import com.dinoco.oficina.ordemservico.domain.exceptions.TransicaoStatusInvalidaException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -33,7 +34,7 @@ public class GlobalExceptionHandler {
         ErroPadraoDto erroPadrao = new ErroPadraoDto(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
-                "Erro de Validação de Campos",
+                "Erro de validação de campos",
                 erros
         );
 
@@ -42,13 +43,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroPadrao);
     }
 
-    @ExceptionHandler({ IllegalArgumentException.class, IllegalStateException.class })
+    @ExceptionHandler({ RegraNegocioOSException.class, TransicaoStatusInvalidaException.class, IllegalArgumentException.class, IllegalStateException.class })
     public ResponseEntity<ErroPadraoDto> handleBusinessErrors(RuntimeException ex) {
 
         ErroPadraoDto erroPadrao = new ErroPadraoDto(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
-                "Regra de Negócio Violada",
+                "Regra de negócio violada",
                 List.of(ex.getMessage())
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroPadrao);

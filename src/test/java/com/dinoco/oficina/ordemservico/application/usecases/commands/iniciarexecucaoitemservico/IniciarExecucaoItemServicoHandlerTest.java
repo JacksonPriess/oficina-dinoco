@@ -3,7 +3,7 @@ package com.dinoco.oficina.ordemservico.application.usecases.commands.iniciarexe
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoCommandGateway;
 import com.dinoco.oficina.ordemservico.domain.enums.StatusItemServico;
 import com.dinoco.oficina.ordemservico.domain.enums.StatusOS;
-import com.dinoco.oficina.ordemservico.domain.exceptions.RecursoNaoEncontradoException;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.ordemservico.domain.models.ItemOSServico;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
 import org.junit.jupiter.api.DisplayName;
@@ -60,7 +60,9 @@ class IniciarExecucaoItemServicoHandlerTest {
                 java.math.BigDecimal.valueOf(100),
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.valueOf(100),
-                java.time.LocalDateTime.now()
+                java.time.LocalDateTime.now(),
+                null,
+                null
         );
         osExistente.setItensServico(itensServico);
 

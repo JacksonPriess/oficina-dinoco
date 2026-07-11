@@ -5,5 +5,5 @@ import java.time.LocalDateTime;
 public record ConcluirExecucaoItemServicoCommand(
         Long osId,
         Long itemId,
-        LocalDateTime dataFim
+        LocalDateTime dataHoraFim
 ) {}

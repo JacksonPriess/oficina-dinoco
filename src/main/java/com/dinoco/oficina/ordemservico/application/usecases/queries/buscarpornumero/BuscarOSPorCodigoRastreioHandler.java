@@ -1,7 +1,7 @@
 package com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero;
 
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoQueryGateway;
-import com.dinoco.oficina.ordemservico.domain.exceptions.RecursoNaoEncontradoException;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 
 public class BuscarOSPorCodigoRastreioHandler implements BuscarOSPorCodigoRastreioUseCase {
 

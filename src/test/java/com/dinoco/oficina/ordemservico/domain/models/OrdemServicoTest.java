@@ -62,7 +62,8 @@ class OrdemServicoTest {
                     1L, "OS-TEST123", CLIENTE_ID, VEICULO_ID, StatusOS.EM_DIAGNOSTICO,
                     RECLAMACAO, "Laudo técnico", QUILOMETRAGEM, BigDecimal.ZERO,
                     BigDecimal.valueOf(100), BigDecimal.valueOf(50), BigDecimal.valueOf(150),
-                    dataEntrada
+                    dataEntrada,null,
+                    null
             );
 
             assertEquals(1L, os.getId());

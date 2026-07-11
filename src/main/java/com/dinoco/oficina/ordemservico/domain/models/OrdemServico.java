@@ -54,7 +54,7 @@ public class OrdemServico {
 
     public OrdemServico(Long id, String codigoRastreio, Long clienteId, Long veiculoId, StatusOS status,
                         String reclamacaoCliente, String laudoTecnico, Integer quilometragemEntrada, BigDecimal valorDesconto,
-                        BigDecimal valorTotalServicos, BigDecimal valorTotalProdutos, BigDecimal valorTotalOS, LocalDateTime dataEntrada) {
+                        BigDecimal valorTotalServicos, BigDecimal valorTotalProdutos, BigDecimal valorTotalOS, LocalDateTime dataEntrada, LocalDateTime dataSaida, LocalDateTime dataReprovacao) {
         this.id = id;
         this.codigoRastreio = codigoRastreio;
         this.clienteId = clienteId;
@@ -68,7 +68,8 @@ public class OrdemServico {
         this.valorTotalProdutos = valorTotalProdutos;
         this.valorTotalOS = valorTotalOS;
         this.dataEntrada = dataEntrada;
-
+        this.dataSaida = dataSaida;
+        this.dataReprovacao = dataReprovacao;
         this.itensServico = new ArrayList<>();
         this.itensProduto = new ArrayList<>();
     }
@@ -180,7 +181,7 @@ public class OrdemServico {
         itemOSServico.iniciarExecucao();
     }
 
-    public void concluirExecucaoItemServico(Long itemId, LocalDateTime dataFimManual) {
+    public void concluirExecucaoItemServico(Long itemId, LocalDateTime dataHoraFim) {
         if (this.status != StatusOS.EM_EXECUCAO) {
             throw new RegraNegocioOSException("A OS não permite alteração de serviços no status atual: " + this.status);
         }
@@ -190,7 +191,7 @@ public class OrdemServico {
                 .findFirst()
                 .orElseThrow(() -> new RegraNegocioOSException("Item de serviço não encontrado nesta OS."));
 
-        itemOSServico.concluirExecucao(dataFimManual);
+        itemOSServico.concluirExecucao(dataHoraFim);
     }
 
     public void alterarItemProduto(Long itemId, BigDecimal novoPrecoVenda, BigDecimal novaQuantidade) {

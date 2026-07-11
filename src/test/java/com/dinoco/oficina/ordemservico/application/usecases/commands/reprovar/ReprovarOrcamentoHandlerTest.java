@@ -2,7 +2,7 @@ package com.dinoco.oficina.ordemservico.application.usecases.commands.reprovar;
 
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoCommandGateway;
 import com.dinoco.oficina.ordemservico.domain.enums.StatusOS;
-import com.dinoco.oficina.ordemservico.domain.exceptions.RecursoNaoEncontradoException;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,6 +50,8 @@ class ReprovarOrcamentoHandlerTest {
                 java.math.BigDecimal.valueOf(100),
                 java.math.BigDecimal.valueOf(100),
                 java.math.BigDecimal.valueOf(200),
+                java.time.LocalDateTime.now(),
+                null,
                 java.time.LocalDateTime.now()
         );
 

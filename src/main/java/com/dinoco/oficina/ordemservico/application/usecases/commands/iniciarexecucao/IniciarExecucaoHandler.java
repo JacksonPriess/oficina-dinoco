@@ -2,7 +2,7 @@ package com.dinoco.oficina.ordemservico.application.usecases.commands.iniciarexe
 
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoCommandGateway;
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoEventPublisher;
-import com.dinoco.oficina.ordemservico.domain.exceptions.RecursoNaoEncontradoException;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
 import com.dinoco.oficina.shared.events.ExecucaoIniciadaEvent;
 

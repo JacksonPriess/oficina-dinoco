@@ -48,6 +48,8 @@ public class OrdemServicoCommandGatewayImpl implements OrdemServicoCommandGatewa
         entity.setValorTotalServicos(dominio.getValorTotalServicos());
         entity.setValorTotalProdutos(dominio.getValorTotalProdutos());
         entity.setValorTotalOS(dominio.getValorTotalOS());
+        entity.setDataSaida(dominio.getDataSaida());
+        entity.setDataReprovacao(dominio.getDataReprovacao());
 
         if (dominio.getItensProduto() != null) {
             for (ItemOSProduto itemDominio : dominio.getItensProduto()) {
@@ -94,7 +96,9 @@ public class OrdemServicoCommandGatewayImpl implements OrdemServicoCommandGatewa
                 entity.getValorTotalServicos(),
                 entity.getValorTotalProdutos(),
                 entity.getValorTotalOS(),
-                entity.getDataEntrada()
+                entity.getDataEntrada(),
+                entity.getDataSaida(),
+                entity.getDataReprovacao()
         );
 
         if (entity.getItensProduto() != null) {

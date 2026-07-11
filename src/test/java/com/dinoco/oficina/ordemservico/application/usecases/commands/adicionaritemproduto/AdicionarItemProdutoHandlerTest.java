@@ -3,7 +3,7 @@ package com.dinoco.oficina.ordemservico.application.usecases.commands.adicionari
 import com.dinoco.oficina.ordemservico.application.gateways.CatalogoProdutoGateway;
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoCommandGateway;
 import com.dinoco.oficina.ordemservico.domain.enums.StatusOS;
-import com.dinoco.oficina.ordemservico.domain.exceptions.RecursoNaoEncontradoException;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,7 +56,9 @@ class AdicionarItemProdutoHandlerTest {
                 BigDecimal.ZERO,
                 BigDecimal.ZERO,
                 BigDecimal.ZERO,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                null,
+                null
         );
         osExistente.setItensProduto(new java.util.ArrayList<>());
         osExistente.setItensServico(new java.util.ArrayList<>());

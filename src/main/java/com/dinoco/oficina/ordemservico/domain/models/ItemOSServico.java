@@ -1,10 +1,12 @@
 package com.dinoco.oficina.ordemservico.domain.models;
 
 import com.dinoco.oficina.ordemservico.domain.enums.StatusItemServico;
+
 import com.dinoco.oficina.ordemservico.domain.exceptions.RegraNegocioOSException;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 public class ItemOSServico {
@@ -61,6 +63,9 @@ public class ItemOSServico {
     }
 
     public void iniciarExecucao() {
+        if (this.statusItem == StatusItemServico.EM_ANDAMENTO) {
+            throw new IllegalStateException("Serviço já está em andamento.");
+        }
         if (this.statusItem != StatusItemServico.PENDENTE) {
             throw new IllegalStateException("Só é possível iniciar um serviço pendente.");
         }
@@ -68,12 +73,25 @@ public class ItemOSServico {
         this.dataInicio = LocalDateTime.now();
     }
 
-    public void concluirExecucao(LocalDateTime dataFimManual) {
+    public void concluirExecucao(LocalDateTime dataHoraFim) {
         if (this.statusItem != StatusItemServico.EM_ANDAMENTO) {
             throw new IllegalStateException("Só é possível concluir um serviço em andamento.");
         }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+        if (dataHoraFim != null && dataHoraFim.isBefore(this.dataInicio)) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "A data/hora de conclusão (%s) não pode ser anterior à data/hora de início (%s).",
+                            dataHoraFim.format(formatter),
+                            this.dataInicio.format(formatter)
+                    )
+            );
+        }
+
         this.statusItem = StatusItemServico.CONCLUIDO;
-        this.dataFim = dataFimManual != null ? dataFimManual : LocalDateTime.now();
+        this.dataFim = dataHoraFim != null ? dataHoraFim : LocalDateTime.now();
     }
 
 }

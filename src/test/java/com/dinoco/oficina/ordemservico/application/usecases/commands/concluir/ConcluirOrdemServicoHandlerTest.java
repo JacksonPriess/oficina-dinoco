@@ -50,7 +50,9 @@ class ConcluirOrdemServicoHandlerTest {
                 java.math.BigDecimal.valueOf(100),
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.valueOf(100),
-                java.time.LocalDateTime.now()
+                java.time.LocalDateTime.now(),
+                null,
+                null
         );
 
         when(ordemServicoCommandGateway.buscarParaAlteracao(1L))

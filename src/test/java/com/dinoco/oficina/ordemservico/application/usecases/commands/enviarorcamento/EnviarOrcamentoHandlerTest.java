@@ -4,7 +4,7 @@ import com.dinoco.oficina.ordemservico.application.gateways.ClienteContatoGatewa
 import com.dinoco.oficina.ordemservico.application.gateways.ClienteContatoOutput;
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoCommandGateway;
 import com.dinoco.oficina.ordemservico.domain.enums.StatusOS;
-import com.dinoco.oficina.ordemservico.domain.exceptions.RecursoNaoEncontradoException;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.ordemservico.domain.models.ItemOSServico;
 import com.dinoco.oficina.ordemservico.domain.models.ItemOSProduto;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
@@ -65,7 +65,9 @@ class EnviarOrcamentoHandlerTest {
                 BigDecimal.valueOf(100),
                 BigDecimal.valueOf(100),
                 BigDecimal.valueOf(200),
-                java.time.LocalDateTime.now()
+                java.time.LocalDateTime.now(),
+                null,
+                null
         );
         osExistente.setItensServico(itensServico);
         osExistente.setItensProduto(itensProduto);

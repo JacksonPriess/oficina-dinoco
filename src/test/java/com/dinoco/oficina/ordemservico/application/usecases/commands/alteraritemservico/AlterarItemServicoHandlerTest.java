@@ -62,7 +62,9 @@ class AlterarItemServicoHandlerTest {
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.ZERO,
-                java.time.LocalDateTime.now()
+                java.time.LocalDateTime.now(),
+                null,
+                null
         );
         osExistente.setItensServico(itensServico);
         osExistente.setItensProduto(new ArrayList<>());
@@ -105,7 +107,9 @@ class AlterarItemServicoHandlerTest {
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.ZERO,
-                java.time.LocalDateTime.now()
+                java.time.LocalDateTime.now(),
+                null,
+                null
         );
 
         when(ordemServicoCommandGateway.buscarParaAlteracao(1L))
