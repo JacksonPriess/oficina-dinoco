@@ -307,15 +307,6 @@ class OrdemServicoTest {
         }
 
         @Test
-        @DisplayName("Deve lançar exceção ao adicionar serviço com status inválido")
-        void deveLancarExcecaoAoAdicionarServicoComStatusInvalido() {
-            ItemOSServico servico = new ItemOSServico(1L, 1L, BigDecimal.valueOf(100));
-            assertThrows(RegraNegocioOSException.class,
-                    () -> ordemServico.adicionarServico(servico),
-                    "Não deve permitir adicionar serviço quando status é RECEBIDA");
-        }
-
-        @Test
         @DisplayName("Deve alterar dados do item de serviço")
         void deveAlterarDadosItemServico() {
             ordemServico.iniciarDiagnostico();
@@ -394,15 +385,6 @@ class OrdemServicoTest {
             assertThrows(RegraNegocioOSException.class,
                     () -> ordemServico.adicionarProduto(produto2),
                     "Não deve permitir adicionar produto duplicado");
-        }
-
-        @Test
-        @DisplayName("Deve lançar exceção ao adicionar produto com status inválido")
-        void deveLancarExcecaoAoAdicionarProdutoComStatusInvalido() {
-            ItemOSProduto produto = new ItemOSProduto(1L, BigDecimal.ONE, BigDecimal.valueOf(50));
-            assertThrows(RegraNegocioOSException.class,
-                    () -> ordemServico.adicionarProduto(produto),
-                    "Não deve permitir adicionar produto quando status é RECEBIDA");
         }
 
         @Test

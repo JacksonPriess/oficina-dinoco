@@ -13,6 +13,8 @@ import com.dinoco.oficina.estoque.application.usecases.commands.registrarentrada
 import com.dinoco.oficina.estoque.application.usecases.commands.registrarentrada.RegistrarEntradaUseCase;
 import com.dinoco.oficina.funcionario.application.gateways.FuncionarioCommandGateway;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoItemProdutoCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoItemServicoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.adicionaritemproduto.AdicionarItemProdutoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.adicionaritemproduto.AdicionarItemProdutoUseCase;
@@ -52,6 +54,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -345,21 +348,26 @@ public class DataSeedRunner implements CommandLineRunner {
     }
 
     private Long abrirOsComItens(Long clienteId, Long veiculoId, int km, String defeito, List<Long> produtos, List<Long> servicos) {
-        var osCmd = new AbrirOrdemServicoCommand(clienteId, veiculoId, km, defeito);
-        Long osId = abrirOrdemServicoUseCase.executar(osCmd).osId();
+        List<AbrirOrdemServicoItemProdutoCommand> produtoCommands = produtos != null ?
+                produtos.stream()
+                        .map(produtoId -> new AbrirOrdemServicoItemProdutoCommand(produtoId, BigDecimal.ONE))
+                        .collect(Collectors.toList()) :
+                new ArrayList<>();
 
-        if (servicos != null) {
-            servicos.forEach(servicoId -> adicionarItemServicoUseCase.executar(new AdicionarItemServicoCommand(osId, servicoId, null)));
-        }
-        if (produtos != null) {
-            produtos.forEach(produtoId -> adicionarItemProdutoUseCase.executar(new AdicionarItemProdutoCommand(osId, produtoId, BigDecimal.ONE)));
-        }
+        List<AbrirOrdemServicoItemServicoCommand> servicoCommands = servicos != null ?
+                servicos.stream()
+                        .map(servicoId -> new AbrirOrdemServicoItemServicoCommand(servicoId, null))
+                        .collect(Collectors.toList()) :
+                new ArrayList<>();
+
+        var osCmd = new AbrirOrdemServicoCommand(clienteId, veiculoId, km, defeito, produtoCommands, servicoCommands);
+        Long osId = abrirOrdemServicoUseCase.executar(osCmd).osId();
 
         return osId;
     }
 
     private Long abrirOsSemItens(Long clienteId, Long veiculoId, int km, String defeito) {
-        var osCmd = new AbrirOrdemServicoCommand(clienteId, veiculoId, km, defeito);
+        var osCmd = new AbrirOrdemServicoCommand(clienteId, veiculoId, km, defeito, null,null);
         Long osId = abrirOrdemServicoUseCase.executar(osCmd).osId();
         return osId;
     }

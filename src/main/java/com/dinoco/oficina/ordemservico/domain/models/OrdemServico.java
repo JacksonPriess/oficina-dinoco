@@ -83,7 +83,7 @@ public class OrdemServico {
 
     public void adicionarProduto(ItemOSProduto novoProduto) {
 
-        if (this.status != StatusOS.EM_DIAGNOSTICO && this.status != StatusOS.AGUARDANDO_ORCAMENTO) {
+        if (this.status != StatusOS.EM_DIAGNOSTICO && this.status != StatusOS.AGUARDANDO_ORCAMENTO && this.status != StatusOS.RECEBIDA) {
             throw new RegraNegocioOSException("A OS não permite adição de produtos no status atual: " + this.status);
         }
 
@@ -103,7 +103,7 @@ public class OrdemServico {
     }
 
     public void adicionarServico(ItemOSServico novoServico) {
-        if (this.status != StatusOS.EM_DIAGNOSTICO && this.status != StatusOS.AGUARDANDO_ORCAMENTO) {
+        if (this.status != StatusOS.EM_DIAGNOSTICO && this.status != StatusOS.AGUARDANDO_ORCAMENTO && this.status != StatusOS.RECEBIDA) {
             throw new RegraNegocioOSException("A OS não permite adição de serviços no status atual: " + this.status);
         }
 

@@ -28,6 +28,6 @@ public class OrdemServicoRequestDtoBuilder {
     }
 
     public OrdemServicoRequestDto build() {
-        return new OrdemServicoRequestDto(clienteId, veiculoId, quilometragemEntrada, reclamacaoCliente);
+        return new OrdemServicoRequestDto(clienteId, veiculoId, quilometragemEntrada, reclamacaoCliente, null, null);
     }
 }

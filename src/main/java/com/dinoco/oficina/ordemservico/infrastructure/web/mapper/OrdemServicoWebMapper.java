@@ -1,6 +1,8 @@
 package com.dinoco.oficina.ordemservico.infrastructure.web.mapper;
 
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoItemProdutoCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoItemServicoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoOutput;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.adicionaritemproduto.AdicionarItemProdutoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.adicionaritemservico.AdicionarItemServicoCommand;
@@ -31,10 +33,14 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface OrdemServicoWebMapper {
 
-    //Converte do DTO da Web para o Input do Core
+    @Mapping(target = "produtos", source = "request.produtos")
+    @Mapping(target = "servicos", source = "request.servicos")
     AbrirOrdemServicoCommand toInput(@Valid OrdemServicoRequestDto request);
 
-    //Converte do Output do Core para o DTO da Web
+    AbrirOrdemServicoItemProdutoCommand toAbrirOrdemServicoItemProdutoCommand(ItemOSProdutoAdicionarDto dto);
+
+    AbrirOrdemServicoItemServicoCommand toAbrirOrdemServicoItemServicoCommand(ItemOSServicoAdicionarDto dto);
+
     @Mapping(source = "osId", target = "id")
     OrdemServicoResponseDto toResponse(AbrirOrdemServicoOutput output);
 

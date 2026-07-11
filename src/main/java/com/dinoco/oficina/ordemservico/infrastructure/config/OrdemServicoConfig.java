@@ -35,8 +35,11 @@ import org.springframework.context.annotation.Configuration;
 public class OrdemServicoConfig {
 
     @Bean
-    public AbrirOrdemServicoUseCase abrirOrdemServicoUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway, ClienteQueryGateway clienteQueryGateway) {
-        return new AbrirOrdemServicoHandler(ordemServicoCommandGateway, clienteQueryGateway);
+    public AbrirOrdemServicoUseCase abrirOrdemServicoUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway,
+                                                             ClienteQueryGateway clienteQueryGateway,
+                                                             CatalogoProdutoGateway catalogoProdutoGateway,
+                                                             CatalogoServicoGateway catalogoServicoGateway) {
+        return new AbrirOrdemServicoHandler(ordemServicoCommandGateway, clienteQueryGateway, catalogoProdutoGateway, catalogoServicoGateway);
     }
 
     @Bean

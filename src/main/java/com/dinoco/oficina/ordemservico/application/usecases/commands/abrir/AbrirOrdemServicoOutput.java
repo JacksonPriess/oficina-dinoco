@@ -1,6 +1,7 @@
 package com.dinoco.oficina.ordemservico.application.usecases.commands.abrir;
 
 import com.dinoco.oficina.ordemservico.domain.enums.StatusOS;
+import java.math.BigDecimal;
 
 public record AbrirOrdemServicoOutput(
         Long osId,
@@ -9,7 +10,9 @@ public record AbrirOrdemServicoOutput(
         Long veiculoId,
         StatusOS status,
         String reclamacaoCliente,
-        Integer quilometragemEntrada
+        Integer quilometragemEntrada,
+        BigDecimal valorTotalServicos,
+        BigDecimal valorTotalProdutos,
+        BigDecimal valorTotalOS,
+        BigDecimal valorDesconto
 ) {}
-
-

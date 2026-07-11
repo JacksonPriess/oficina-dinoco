@@ -40,7 +40,9 @@ class AbrirOrdemServicoHandlerTest {
                 1L,
                 2L,
                 85000,
-                "Barulho no motor"
+                "Barulho no motor",
+                null,
+                null
         );
 
         var ordemServicoMockSalva = new OrdemServico(
