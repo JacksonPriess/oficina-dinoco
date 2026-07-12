@@ -29,6 +29,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.GET, "/api/ordens-servico/rastreio/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/ordens-servico/webhooks/orcamentos/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers("/api/funcionarios/**").hasRole("ADMIN")
                 .requestMatchers(

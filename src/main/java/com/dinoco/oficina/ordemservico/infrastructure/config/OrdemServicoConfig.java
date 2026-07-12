@@ -11,6 +11,8 @@ import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.Co
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoHandler;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoUseCase;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteHandler;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoHandler;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.finalizarexecucao.FinalizarExecucaoHandler;
@@ -68,6 +70,13 @@ public class OrdemServicoConfig {
     }
 
     @Bean
+    public DecisaoClienteUseCase decisaoClienteUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway,
+                                                       AprovarOrcamentoUseCase aprovarOrcamentoUseCase,
+                                                       ReprovarOrcamentoUseCase reprovarOrcamentoUseCase) {
+        return new DecisaoClienteHandler(ordemServicoCommandGateway, aprovarOrcamentoUseCase, reprovarOrcamentoUseCase);
+    }
+
+    @Bean
     public VerificarEstoqueUseCase verificarEstoqueUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway, VerificadorEstoqueGateway verificadorEstoqueGateway) {
         return new VerificarEstoqueHandler(verificadorEstoqueGateway, ordemServicoCommandGateway);
     }
@@ -104,6 +113,7 @@ public class OrdemServicoConfig {
                                                                    EnviarOrcamentoUseCase enviarOrcamentoUseCase,
                                                                    ReprovarOrcamentoUseCase reprovarOrcamentoUseCase,
                                                                    AprovarOrcamentoUseCase aprovarOrcamentoUseCase,
+                                                                   DecisaoClienteUseCase decisaoClienteUseCase,
                                                                    VerificarEstoqueUseCase verificarEstoqueUseCase,
                                                                    IniciarExecucaoUseCase iniciarExecucaoUseCase,
                                                                    FinalizarExecucaoUseCase finalizarExecucaoUseCase,
@@ -116,6 +126,7 @@ public class OrdemServicoConfig {
                 enviarOrcamentoUseCase,
                 reprovarOrcamentoUseCase,
                 aprovarOrcamentoUseCase,
+                decisaoClienteUseCase,
                 verificarEstoqueUseCase,
                 iniciarExecucaoUseCase,
                 finalizarExecucaoUseCase,

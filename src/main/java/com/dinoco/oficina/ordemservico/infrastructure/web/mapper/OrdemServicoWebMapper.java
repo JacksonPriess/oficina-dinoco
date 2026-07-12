@@ -12,6 +12,7 @@ import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.Apr
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirexecucaoitemservico.ConcluirExecucaoItemServicoCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoOutput;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.finalizarexecucao.FinalizarExecucaoCommand;
@@ -85,4 +86,6 @@ public interface OrdemServicoWebMapper {
     BuscarOSPorCodigoRastreioResponseDto toBuscarOSPorCodigoRastreioResponse(BuscarOSPorCodigoRastreioOuput output);
 
     ConcluirOrdemServicoCommand toConcluirOrdemServicoCommand(Long osId);
+
+    DecisaoClienteCommand toProcessarDecisaoClienteCommand(String codigoRastreio, @Valid DecisaoClienteRequestDto request);
 }

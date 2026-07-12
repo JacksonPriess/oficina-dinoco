@@ -9,4 +9,6 @@ public interface OrdemServicoCommandGateway {
 
     Optional<OrdemServico> buscarParaAlteracao(Long id);
 
+    Optional<OrdemServico> buscarPorCodigoRastreioParaAlteracao(String codigoRastreio);
+
 }

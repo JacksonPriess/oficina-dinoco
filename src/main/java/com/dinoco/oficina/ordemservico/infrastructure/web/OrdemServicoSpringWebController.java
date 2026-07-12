@@ -6,6 +6,7 @@ import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.Abrir
 import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.AprovarOrcamentoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoOutput;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.finalizarexecucao.FinalizarExecucaoCommand;
@@ -94,6 +95,23 @@ public class OrdemServicoSpringWebController {
     public ResponseEntity<Void> aprovarOrcamento(@PathVariable Long osId) {
         AprovarOrcamentoCommand input = mapper.toAprovarOrcamentoCommand(osId);
         controllerClean.aprovarOrcamento(input);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Webhook: Receber decisão do cliente",
+            description = "Recebe notificações externas de aprovação ou recusa do orçamento (Integração WhatsApp/Email)")
+    @PostMapping("/webhooks/orcamentos/{codigoRastreio}")
+    public ResponseEntity<Void> receberDecisaoClienteExterna(
+            @PathVariable String codigoRastreio,
+            @RequestHeader(value = "X-Dinoco-Secret", required = false) String secret,
+            @RequestBody @Valid DecisaoClienteRequestDto request) {
+
+        if (!"dinoco_webhook_secret_2026".equals(secret)) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
+        }
+
+        DecisaoClienteCommand input = mapper.toProcessarDecisaoClienteCommand(codigoRastreio, request);
+        controllerClean.decisaoCliente(input);
         return ResponseEntity.noContent().build();
     }
 

@@ -9,6 +9,8 @@ import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.Co
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoUseCase;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoOutput;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoUseCase;
@@ -38,6 +40,7 @@ public class OrdemServicoControllerClean {
     private final EnviarOrcamentoUseCase enviarOrcamentoUseCase;
     private final ReprovarOrcamentoUseCase reprovarOrcamentoUseCase;
     private final AprovarOrcamentoUseCase aprovarOrcamentoUseCase;
+    private final DecisaoClienteUseCase decisaoClienteUseCase;
     private final VerificarEstoqueUseCase verificarEstoqueUseCase;
     private final IniciarExecucaoUseCase iniciarExecucaoUseCase;
     private final FinalizarExecucaoUseCase finalizarExecucaoUseCase;
@@ -45,14 +48,12 @@ public class OrdemServicoControllerClean {
     private final BuscarOSPorIdUseCase buscarOSPorIdUseCase;
     private final BuscarOSPorCodigoRastreioUseCase buscarOSPorCodigoRastreioUseCase;
 
-
-
     public OrdemServicoControllerClean(AbrirOrdemServicoUseCase abrirOrdemServicoUseCase,
                                        IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase,
                                        ConcluirDiagnosticoUseCase concluirDiagnosticoUseCase,
                                        EnviarOrcamentoUseCase enviarOrcamentoUseCase,
                                        ReprovarOrcamentoUseCase reprovarOrcamentoUseCase,
-                                       AprovarOrcamentoUseCase aprovarOrcamentoUseCase,
+                                       AprovarOrcamentoUseCase aprovarOrcamentoUseCase, DecisaoClienteUseCase decisaoClienteUseCase,
                                        VerificarEstoqueUseCase verificarEstoqueUseCase,
                                        IniciarExecucaoUseCase iniciarExecucaoUseCase,
                                        FinalizarExecucaoUseCase finalizarExecucaoUseCase,
@@ -65,6 +66,7 @@ public class OrdemServicoControllerClean {
         this.enviarOrcamentoUseCase = enviarOrcamentoUseCase;
         this.reprovarOrcamentoUseCase = reprovarOrcamentoUseCase;
         this.aprovarOrcamentoUseCase = aprovarOrcamentoUseCase;
+        this.decisaoClienteUseCase = decisaoClienteUseCase;
         this.verificarEstoqueUseCase = verificarEstoqueUseCase;
         this.iniciarExecucaoUseCase = iniciarExecucaoUseCase;
         this.finalizarExecucaoUseCase = finalizarExecucaoUseCase;
@@ -95,6 +97,10 @@ public class OrdemServicoControllerClean {
 
     public void aprovarOrcamento(AprovarOrcamentoCommand command) {
         aprovarOrcamentoUseCase.executar(command);
+    }
+
+    public void decisaoCliente(DecisaoClienteCommand command) {
+        decisaoClienteUseCase.executar(command);
     }
 
     public VerificarEstoqueOutput verificarEstoque(VerificarEstoqueCommand command) {
