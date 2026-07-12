@@ -3,6 +3,7 @@ package com.dinoco.oficina.ordemservico.infrastructure.gateways;
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoQueryGateway;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarporid.BuscarOSPorIdOuput;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero.BuscarOSPorCodigoRastreioOuput;
+import com.dinoco.oficina.ordemservico.application.usecases.queries.listarfilatrabalho.ListarFilaTrabalhoDetalhesOutput;
 import com.dinoco.oficina.ordemservico.infrastructure.persistence.OrdemServicoEntity;
 import com.dinoco.oficina.ordemservico.infrastructure.persistence.OrdemServicoJpaRepository;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -78,6 +79,44 @@ public class OrdemServicoQueryGatewayImpl implements OrdemServicoQueryGateway {
 
         // Como o código de rastreio é único, a lista terá 0 ou 1 elemento.
         return resultado.stream().findFirst();
+    }
+
+    @Override
+    public List<ListarFilaTrabalhoDetalhesOutput> listarFilaDeTrabalho() {
+        String sql = """
+            SELECT 
+                os.id, 
+                os.codigo_rastreio, 
+                os.cliente_id, 
+                os.veiculo_id, 
+                os.status,
+                os.data_entrada,
+                os.valor_total_os
+            FROM ordem_servico os
+            WHERE os.status NOT IN ('FINALIZADA', 'ENTREGUE', 'REPROVADA' )
+            ORDER BY 
+                CASE os.status
+                    WHEN 'EM_EXECUCAO' THEN 1
+                    WHEN 'AGUARDANDO_APROVACAO' THEN 2
+                    WHEN 'EM_DIAGNOSTICO' THEN 3
+                    WHEN 'RECEBIDA' THEN 4
+                    ELSE 5 -- Cobre status como AGUARDANDO_ORCAMENTO, AGUARDANDO_FORNECEDOR, AGUARDANDO_EXECUCAO
+                END ASC,
+                os.data_entrada ASC
+        """;
+
+        return jdbcTemplate.query(
+                sql,
+                (rs, rowNum) -> new ListarFilaTrabalhoDetalhesOutput(
+                        rs.getLong("id"),
+                        rs.getString("codigo_rastreio"),
+                        rs.getLong("cliente_id"),
+                        rs.getLong("veiculo_id"),
+                        rs.getString("status"),
+                        rs.getTimestamp("data_entrada") != null ? rs.getTimestamp("data_entrada").toLocalDateTime() : null,
+                        rs.getBigDecimal("valor_total_os")
+                )
+        );
     }
 
 

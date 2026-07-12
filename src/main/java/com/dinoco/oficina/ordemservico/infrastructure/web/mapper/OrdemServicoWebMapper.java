@@ -27,6 +27,7 @@ import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarporid.
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarporid.BuscarOSPorIdQuery;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero.BuscarOSPorCodigoRastreioOuput;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero.BuscarOSPorCodigoRastreioQuery;
+import com.dinoco.oficina.ordemservico.application.usecases.queries.listarfilatrabalho.ListarFilaTrabalhoOutput;
 import com.dinoco.oficina.ordemservico.infrastructure.web.dto.*;
 import jakarta.validation.Valid;
 import org.mapstruct.Mapper;
@@ -91,4 +92,6 @@ public interface OrdemServicoWebMapper {
     DecisaoClienteCommand toProcessarDecisaoClienteCommand(String codigoRastreio, @Valid DecisaoClienteRequestDto request);
 
     AtualizarStatusCommand toAtualizarStatusCommand(String codigoRastreio, @Valid AtualizarStatusDto request);
+
+    FilaTrabalhosResponseDto toListarAtivasRespose(ListarFilaTrabalhoOutput output);
 }

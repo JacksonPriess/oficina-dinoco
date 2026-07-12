@@ -33,6 +33,9 @@ import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarporid.
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero.BuscarOSPorCodigoRastreioOuput;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero.BuscarOSPorCodigoRastreioQuery;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero.BuscarOSPorCodigoRastreioUseCase;
+import com.dinoco.oficina.ordemservico.application.usecases.queries.listarfilatrabalho.ListarFilaTrabalhoOutput;
+import com.dinoco.oficina.ordemservico.application.usecases.queries.listarfilatrabalho.ListarFilaTrabalhoQuery;
+import com.dinoco.oficina.ordemservico.application.usecases.queries.listarfilatrabalho.ListarFilaTrabalhoUseCase;
 
 public class OrdemServicoControllerClean {
 
@@ -50,6 +53,7 @@ public class OrdemServicoControllerClean {
     private final ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase;
     private final BuscarOSPorIdUseCase buscarOSPorIdUseCase;
     private final BuscarOSPorCodigoRastreioUseCase buscarOSPorCodigoRastreioUseCase;
+    private final ListarFilaTrabalhoUseCase listarFilaTrabalhoUseCase;
 
     public OrdemServicoControllerClean(AbrirOrdemServicoUseCase abrirOrdemServicoUseCase,
                                        IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase,
@@ -64,7 +68,8 @@ public class OrdemServicoControllerClean {
                                        FinalizarExecucaoUseCase finalizarExecucaoUseCase,
                                        ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase,
                                        BuscarOSPorIdUseCase buscarOSPorIdUseCase,
-                                       BuscarOSPorCodigoRastreioUseCase buscarOSPorCodigoRastreioUseCase) {
+                                       BuscarOSPorCodigoRastreioUseCase buscarOSPorCodigoRastreioUseCase,
+                                       ListarFilaTrabalhoUseCase listarFilaTrabalhoUseCase) {
         this.abrirOrdemServicoUseCase = abrirOrdemServicoUseCase;
         this.iniciarDiagnosticoUseCase = iniciarDiagnosticoUseCase;
         this.concluirDiagnosticoUseCase = concluirDiagnosticoUseCase;
@@ -79,6 +84,7 @@ public class OrdemServicoControllerClean {
         this.concluirOrdemServicoUseCase = concluirOrdemServicoUseCase;
         this.buscarOSPorIdUseCase = buscarOSPorIdUseCase;
         this.buscarOSPorCodigoRastreioUseCase = buscarOSPorCodigoRastreioUseCase;
+        this.listarFilaTrabalhoUseCase = listarFilaTrabalhoUseCase;
     }
 
     public AbrirOrdemServicoOutput abrirOrdemServico(AbrirOrdemServicoCommand command) {
@@ -135,5 +141,8 @@ public class OrdemServicoControllerClean {
 
     public BuscarOSPorCodigoRastreioOuput buscarOSPorCodigoRastreio(BuscarOSPorCodigoRastreioQuery query) {
         return buscarOSPorCodigoRastreioUseCase.executar(query);
+    }
+    public ListarFilaTrabalhoOutput listarFilaDeTrabalhos(ListarFilaTrabalhoQuery query) {
+        return listarFilaTrabalhoUseCase.executar(query);
     }
 }

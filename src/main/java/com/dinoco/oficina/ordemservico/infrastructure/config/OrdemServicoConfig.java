@@ -32,6 +32,8 @@ import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarporid.
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero.BuscarOSPorCodigoRastreioHandler;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero.BuscarOSPorCodigoRastreioUseCase;
 import com.dinoco.oficina.cliente.application.gateways.ClienteQueryGateway;
+import com.dinoco.oficina.ordemservico.application.usecases.queries.listarfilatrabalho.ListarFilaTrabalhoHandler;
+import com.dinoco.oficina.ordemservico.application.usecases.queries.listarfilatrabalho.ListarFilaTrabalhoUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -121,6 +123,11 @@ public class OrdemServicoConfig {
     }
 
     @Bean
+    ListarFilaTrabalhoUseCase listarAtivasUseCase(OrdemServicoQueryGateway ordemServicoQueryGateway){
+        return new ListarFilaTrabalhoHandler(ordemServicoQueryGateway);
+    }
+
+    @Bean
     public OrdemServicoControllerClean ordemServicoControllerClean(AbrirOrdemServicoUseCase abrirOrdemServicoUseCase,
                                                                    IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase,
                                                                    ConcluirDiagnosticoUseCase concluirDiagnosticoUseCase,
@@ -134,7 +141,8 @@ public class OrdemServicoConfig {
                                                                    FinalizarExecucaoUseCase finalizarExecucaoUseCase,
                                                                    ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase,
                                                                    BuscarOSPorIdUseCase buscarOSPorIdUseCase,
-                                                                   BuscarOSPorCodigoRastreioUseCase buscarOSPorCodigoRastreioUseCase) {
+                                                                   BuscarOSPorCodigoRastreioUseCase buscarOSPorCodigoRastreioUseCase,
+                                                                   ListarFilaTrabalhoUseCase listarFilaTrabalhoUseCase) {
         return new OrdemServicoControllerClean(abrirOrdemServicoUseCase,
                 iniciarDiagnosticoUseCase,
                 concluirDiagnosticoUseCase,
@@ -148,6 +156,7 @@ public class OrdemServicoConfig {
                 finalizarExecucaoUseCase,
                 concluirOrdemServicoUseCase,
                 buscarOSPorIdUseCase,
-                buscarOSPorCodigoRastreioUseCase);
+                buscarOSPorCodigoRastreioUseCase,
+                listarFilaTrabalhoUseCase);
     }
 }

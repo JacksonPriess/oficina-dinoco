@@ -20,6 +20,8 @@ import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarporid.
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarporid.BuscarOSPorIdQuery;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero.BuscarOSPorCodigoRastreioOuput;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero.BuscarOSPorCodigoRastreioQuery;
+import com.dinoco.oficina.ordemservico.application.usecases.queries.listarfilatrabalho.ListarFilaTrabalhoOutput;
+import com.dinoco.oficina.ordemservico.application.usecases.queries.listarfilatrabalho.ListarFilaTrabalhoQuery;
 import com.dinoco.oficina.ordemservico.infrastructure.web.dto.*;
 import com.dinoco.oficina.ordemservico.infrastructure.web.mapper.OrdemServicoWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -184,4 +186,11 @@ public class OrdemServicoSpringWebController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Listagem fila de trabalho")
+    @GetMapping("/listagem")
+    public ResponseEntity<FilaTrabalhosResponseDto> listarFilaDeTrabalho() {
+        ListarFilaTrabalhoOutput output = controllerClean.listarFilaDeTrabalhos(new ListarFilaTrabalhoQuery());
+        FilaTrabalhosResponseDto response = mapper.toListarAtivasRespose(output);
+        return ResponseEntity.ok(response);
+    }
 }
