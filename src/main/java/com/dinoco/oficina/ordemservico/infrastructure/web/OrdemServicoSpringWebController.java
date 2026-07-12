@@ -4,6 +4,7 @@ import com.dinoco.oficina.ordemservico.adapters.controllers.OrdemServicoControll
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoOutput;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.AprovarOrcamentoCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.atualizarstatus.AtualizarStatusCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteCommand;
@@ -24,6 +25,7 @@ import com.dinoco.oficina.ordemservico.infrastructure.web.mapper.OrdemServicoWeb
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -107,11 +109,27 @@ public class OrdemServicoSpringWebController {
             @RequestBody @Valid DecisaoClienteRequestDto request) {
 
         if (!"dinoco_webhook_secret_2026".equals(secret)) {
-            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         DecisaoClienteCommand input = mapper.toProcessarDecisaoClienteCommand(codigoRastreio, request);
         controllerClean.decisaoCliente(input);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Webhook: Atualização de status da OS",
+            description = "Recebe requisições de sistemas externos (ex: link no e-mail) para avançar a máquina de estados da OS")
+    @PostMapping("/webhooks/status/{codigoRastreio}")
+    public ResponseEntity<Void> atualizarStatusExterna(
+            @PathVariable String codigoRastreio,
+            @RequestHeader(value = "X-Dinoco-Secret", required = false) String secret,
+            @RequestBody @Valid AtualizarStatusDto request) {
+
+        if (!"dinoco_webhook_secret_2026".equals(secret)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        AtualizarStatusCommand input = mapper.toAtualizarStatusCommand(codigoRastreio, request);
+        controllerClean.atualizarStatus(input);
         return ResponseEntity.noContent().build();
     }
 

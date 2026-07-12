@@ -7,6 +7,8 @@ import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.Abrir
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.AprovarOrcamentoHandler;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.AprovarOrcamentoUseCase;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.atualizarstatus.AtualizarStatusHandler;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.atualizarstatus.AtualizarStatusUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoHandler;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoHandler;
@@ -77,6 +79,18 @@ public class OrdemServicoConfig {
     }
 
     @Bean
+    public AtualizarStatusUseCase atualizarStatusUseCaseUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway,
+                                                                IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase,
+                                                                ConcluirDiagnosticoUseCase concluirDiagnosticoUseCase,
+                                                                EnviarOrcamentoUseCase enviarOrcamentoUseCase,
+                                                                IniciarExecucaoUseCase iniciarExecucaoUseCase,
+                                                                FinalizarExecucaoUseCase finalizarExecucaoUseCase,
+                                                                ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase) {
+        return new AtualizarStatusHandler(ordemServicoCommandGateway,iniciarDiagnosticoUseCase,concluirDiagnosticoUseCase,
+                enviarOrcamentoUseCase, iniciarExecucaoUseCase, finalizarExecucaoUseCase, concluirOrdemServicoUseCase);
+    }
+
+    @Bean
     public VerificarEstoqueUseCase verificarEstoqueUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway, VerificadorEstoqueGateway verificadorEstoqueGateway) {
         return new VerificarEstoqueHandler(verificadorEstoqueGateway, ordemServicoCommandGateway);
     }
@@ -114,6 +128,7 @@ public class OrdemServicoConfig {
                                                                    ReprovarOrcamentoUseCase reprovarOrcamentoUseCase,
                                                                    AprovarOrcamentoUseCase aprovarOrcamentoUseCase,
                                                                    DecisaoClienteUseCase decisaoClienteUseCase,
+                                                                   AtualizarStatusUseCase atualizarStatusUseCase,
                                                                    VerificarEstoqueUseCase verificarEstoqueUseCase,
                                                                    IniciarExecucaoUseCase iniciarExecucaoUseCase,
                                                                    FinalizarExecucaoUseCase finalizarExecucaoUseCase,
@@ -127,6 +142,7 @@ public class OrdemServicoConfig {
                 reprovarOrcamentoUseCase,
                 aprovarOrcamentoUseCase,
                 decisaoClienteUseCase,
+                atualizarStatusUseCase,
                 verificarEstoqueUseCase,
                 iniciarExecucaoUseCase,
                 finalizarExecucaoUseCase,

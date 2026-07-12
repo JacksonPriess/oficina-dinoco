@@ -30,6 +30,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.GET, "/api/ordens-servico/rastreio/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/ordens-servico/webhooks/orcamentos/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/ordens-servico/webhooks/status/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers("/api/funcionarios/**").hasRole("ADMIN")
                 .requestMatchers(
