@@ -49,7 +49,12 @@ jobs:
             echo "Bucket já existe. Tudo pronto para prosseguir."
           fi
 
-      - name: 7. eploy via Terraform ( IaC Cria VPC, EKS, RDS, ECR e o YAML no K8s)
+      - name: 6.7. Instalar e Configurar o Terraform CLI
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "1.5.7"
+
+      - name: 7. Deploy via Terraform ( IaC - Cria VPC, EKS, RDS, ECR e o YAML no K8s )
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
