@@ -1,11 +1,9 @@
 name: CI/CD Pipeline - Oficina API
 
-# Dispara a esteira automaticamente quando houver um push na branch main (ou master)
 on:
   push:
     branches: [ "main", "master", "develop" ]
 
-# Variáveis globais do nosso ambiente
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: oficina-api-dev-repo
@@ -17,55 +15,54 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 1. Checkout do Código
-      uses: actions/checkout@v3
+      - name: 1. Checkout do Código
+        uses: actions/checkout@v3
 
-    - name: 2. Setup Java 21
-      uses: actions/setup-java@v3
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: maven # Acelera o build guardando as dependências do Maven
+      - name: 2. Setup Java 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
 
-    - name: 3. Compilar e Testar (CI)
-      run: mvn clean package
+      - name: 3. Compilar e Testar (CI)
+        run: mvn clean package
 
-    - name: 4. Autenticar na AWS
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: ${{ env.AWS_REGION }}
+      - name: 4. Autenticar na AWS
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
 
-    - name: 5. Login no Amazon ECR (Cofre)
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+      - name: 5. Login no Amazon ECR (Cofre)
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-    - name: 6. Build e Push da imagem Docker para o ECR
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }} 
-      run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - name: 6. Garantir que o Cofre do Terraform (S3) existe
+        run: |
+          if ! aws s3api head-bucket --bucket ${{ env.TF_STATE_BUCKET }} 2>/dev/null; then
+            echo "Bucket não encontrado. A criar o bucket ${{ env.TF_STATE_BUCKET }}..."
+            aws s3 mb s3://${{ env.TF_STATE_BUCKET }} --region ${{ env.AWS_REGION }}
+          else
+            echo "Bucket já existe. Tudo pronto para prosseguir."
+          fi
 
-    - name: 7. Garantir que o Cofre do Terraform (S3) existe
-      run: |
-        if ! aws s3api head-bucket --bucket ${{ env.TF_STATE_BUCKET }} 2>/dev/null; then
-          echo "Bucket não encontrado. A criar o bucket ${{ env.TF_STATE_BUCKET }}..."
-          aws s3 mb s3://${{ env.TF_STATE_BUCKET }} --region ${{ env.AWS_REGION }}
-        else
-          echo "Bucket já existe. Tudo pronto para prosseguir."
-        fi
+      - name: 7. eploy via Terraform ( IaC Cria VPC, EKS, RDS, ECR e o YAML no K8s)
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+          TF_VAR_api_image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+        working-directory: ./infra
+        run: |
+          terraform init
+          terraform apply -auto-approve
 
-    - name: 8. Deploy via Terraform (IaC + K8s)
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }}
-        # Passa a URL exata da nova imagem gerada para o Terraform injetar no Kubernetes
-        TF_VAR_api_image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-      working-directory: ./infra
-      run: |
-        terraform init
-        terraform apply -auto-approve
+      - name: 8. Build e Push da imagem Docker para o ECR recém-criado
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
