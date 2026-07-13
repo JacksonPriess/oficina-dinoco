@@ -9,7 +9,8 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: oficina-api-dev-repo
-  EKS_CLUSTER_NAME: oficina-api-dev-cluster
+  # Nome do bucket do Terraform S3. Está no seu backend.tf
+  TF_STATE_BUCKET: oficina-state-priess951
 
 jobs:
   build-and-deploy:
@@ -34,7 +35,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} # Essencial para contas de laboratório
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws-region: ${{ env.AWS_REGION }}
 
     - name: 5. Login no Amazon ECR (Cofre)
@@ -44,21 +45,27 @@ jobs:
     - name: 6. Build e Push da imagem Docker para o ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        # Usa o SHA do commit do git como tag da imagem (ex: a1b2c3d)
         IMAGE_TAG: ${{ github.sha }} 
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-    - name: 7. Autenticar no Cluster Kubernetes (EKS)
-      run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+    - name: 7. Garantir que o Cofre do Terraform (S3) existe
+      run: |
+        if ! aws s3api head-bucket --bucket ${{ env.TF_STATE_BUCKET }} 2>/dev/null; then
+          echo "Bucket não encontrado. A criar o bucket ${{ env.TF_STATE_BUCKET }}..."
+          aws s3 mb s3://${{ env.TF_STATE_BUCKET }} --region ${{ env.AWS_REGION }}
+        else
+          echo "Bucket já existe. Tudo pronto para prosseguir."
+        fi
 
-    - name: 8. Deploy (CD) - Atualizar o Kubernetes
+    - name: 8. Deploy via Terraform (IaC + K8s)
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
+        # Passa a URL exata da nova imagem gerada para o Terraform injetar no Kubernetes
+        TF_VAR_api_image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+      working-directory: ./infra
       run: |
-        # Garante que as configurações (Service, HPA, etc) estejam atualizadas
-        kubectl apply -f k8s/
-        # Dá a ordem para o Deployment trocar a imagem vazia pela imagem real que acabamos de compilar
-        kubectl set image deployment/oficina-api-deployment oficina-api=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        terraform init
+        terraform apply -auto-approve

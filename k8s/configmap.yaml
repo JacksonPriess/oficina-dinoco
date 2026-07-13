@@ -8,8 +8,8 @@ data:
   # O Spring vai ler esta variável para ativar o profile correto
   SPRING_PROFILES_ACTIVE: "dev"
 
-  # A URL que o Terraform nos devolveu na etapa anterior
-  SPRING_DATASOURCE_URL: "jdbc:postgresql://oficina-api-dev-postgres.c63f9e9ff9kl.us-east-1.rds.amazonaws.com:5432/oficina_db"
+  # O Terraform vai injetar o endpoint dinamicamente aqui, mantendo a porta e o nome do banco
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://${DB_ENDPOINT}/oficina_db"
 
   # Fuso horário para garantir que as Ordens de Serviço fiquem com a hora correta
   TZ: "America/Sao_Paulo"

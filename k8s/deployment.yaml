@@ -16,9 +16,8 @@ spec:
     spec:
       containers:
       - name: oficina-api
-        # Esta imagem é provisória. Na Semana 4 (CI/CD), a esteira irá substituir 
-        # este campo pelo caminho real do repositório AWS ECR.
-        image: oficina-api:latest 
+        # O Terraform vai injetar o valor real nesta variável
+        image: ${DOCKER_IMAGE}
         imagePullPolicy: Always
         ports:
         - containerPort: 8080 # Porta padrão interna exposta pelo Spring Boot

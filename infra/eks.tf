@@ -6,7 +6,7 @@ locals {
   lab_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LabRole"
 }
 
-# 2. Cluster EKS (O "Cérebro" (Control Plane) gerido pela AWS)
+# 2. Cluster EKS - Control Plane - gerido pela AWS
 resource "aws_eks_cluster" "eks_cluster" {
   name     = "${local.prefix}-cluster"
   role_arn = local.lab_role_arn
