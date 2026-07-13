@@ -40,6 +40,7 @@ resource "kubectl_manifest" "deployment" {
     DOCKER_IMAGE = var.api_image
   })
   depends_on = [kubectl_manifest.configmap, kubectl_manifest.secret]
+  wait_for_rollout = false
 }
 
 resource "kubectl_manifest" "service" {
