@@ -12,5 +12,5 @@ terraform {
 # Configuração do provedor de nuvem com o perfil "pos" e a região "us-east-1", trava de segurança
 provider "aws" {
   region  = "us-east-1"
-  profile = "pos"
+  # profile = "pos"
 }

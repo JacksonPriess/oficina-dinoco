@@ -52,7 +52,7 @@ jobs:
       - name: 6.7. Instalar e Configurar o Terraform CLI
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: "1.5.7"
+          terraform_version: "latest"
 
       - name: 7. Deploy via Terraform ( IaC - Cria VPC, EKS, RDS, ECR e o YAML no K8s )
         env:
