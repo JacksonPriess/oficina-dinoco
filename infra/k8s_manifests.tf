@@ -1,11 +1,3 @@
-terraform {
-  required_providers {
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.14.0"
-    }
-  }
-}
 
 # Autenticação do Terraform no Cluster EKS recém-criado
 data "aws_eks_cluster_auth" "cluster" {
