@@ -1,6 +1,6 @@
 package com.dinoco.oficina;
 
-import com.dinoco.oficina.infra.security.TokenService;
+import com.dinoco.oficina.autenticacao.infrastructure.security.TokenService;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;

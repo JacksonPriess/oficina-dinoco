@@ -1,6 +1,8 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.entity.Servico;
+
+import com.dinoco.oficina.catalogoservico.domain.Servico;
+
 import java.math.BigDecimal;
 
 public class ServicoBuilder {
@@ -8,7 +10,7 @@ public class ServicoBuilder {
     private Servico servico;
 
     private ServicoBuilder() {
-        this.servico = new Servico();
+
     }
 
     public static ServicoBuilder umServico() {

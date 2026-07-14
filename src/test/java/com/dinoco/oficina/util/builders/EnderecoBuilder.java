@@ -1,13 +1,13 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.entity.Endereco;
+import com.dinoco.oficina.cliente.infrastructure.persistence.EnderecoEntity;
 
 public class EnderecoBuilder {
 
-    private Endereco endereco;
+    private EnderecoEntity endereco;
 
     private EnderecoBuilder() {
-        this.endereco = new Endereco();
+        this.endereco = new EnderecoEntity();
     }
 
     public static EnderecoBuilder umEndereco() {
@@ -65,7 +65,7 @@ public class EnderecoBuilder {
         return this;
     }
 
-    public Endereco build() {
+    public EnderecoEntity build() {
         return this.endereco;
     }
 }

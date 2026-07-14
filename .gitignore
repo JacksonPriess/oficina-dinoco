@@ -4,6 +4,13 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
 ### STS ###
 .apt_generated
 .classpath
@@ -31,3 +38,5 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.aiexclude

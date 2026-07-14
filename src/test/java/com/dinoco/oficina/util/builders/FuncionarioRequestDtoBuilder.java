@@ -1,7 +1,8 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.dto.FuncionarioRequestDto;
-import com.dinoco.oficina.enums.CargoFuncionario;
+
+import com.dinoco.oficina.funcionario.domain.CargoFuncionario;
+import com.dinoco.oficina.funcionario.infrastructure.web.dto.FuncionarioRequestDto;
 
 public class FuncionarioRequestDtoBuilder {
 

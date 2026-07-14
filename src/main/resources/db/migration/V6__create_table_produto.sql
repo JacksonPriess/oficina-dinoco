@@ -5,8 +5,6 @@ CREATE TABLE produto (
     marca VARCHAR(100),
     codigo_fabricante VARCHAR(100),
     aplicacao TEXT,
-    quantidade_atual DECIMAL(10,3) NOT NULL DEFAULT 0.000,
-    quantidade_reservada DECIMAL(10,3) NOT NULL DEFAULT 0.000,
     preco_custo DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     preco_venda DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,

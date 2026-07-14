@@ -1,7 +1,8 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.dto.ProdutoRequestDto;
-import com.dinoco.oficina.enums.TipoProduto;
+import com.dinoco.oficina.catalogoproduto.domain.TipoProduto;
+import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoRequestDto;
+
 import java.math.BigDecimal;
 
 public class ProdutoRequestDtoBuilder {

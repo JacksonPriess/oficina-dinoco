@@ -1,0 +1,14 @@
+package com.dinoco.oficina.ordemservico.domain.enums;
+
+public enum StatusOS {
+    RECEBIDA,
+    EM_DIAGNOSTICO,
+    AGUARDANDO_ORCAMENTO,
+    AGUARDANDO_APROVACAO,
+    REPROVADA,
+    AGUARDANDO_FORNECEDOR,
+    AGUARDANDO_EXECUCAO,
+    EM_EXECUCAO,
+    FINALIZADA,
+    ENTREGUE
+}

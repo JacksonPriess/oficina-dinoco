@@ -1,14 +1,14 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.entity.Produto;
-import com.dinoco.oficina.enums.TipoProduto;
+import com.dinoco.oficina.catalogoproduto.domain.Produto;
+import com.dinoco.oficina.catalogoproduto.domain.TipoProduto;
 import java.math.BigDecimal;
 
 public class ProdutoBuilder {
     private Produto produto;
 
     private ProdutoBuilder() {
-        this.produto = new Produto();
+
     }
 
     public static ProdutoBuilder umProduto() {
@@ -19,8 +19,6 @@ public class ProdutoBuilder {
         builder.produto.setMarca("Bosch");
         builder.produto.setCodigoFabricante("B12345");
         builder.produto.setAplicacao("Gol, Fox, Voyage");
-        builder.produto.setQuantidadeAtual(BigDecimal.ZERO);
-        builder.produto.setQuantidadeReservada(BigDecimal.ZERO);
         builder.produto.setPrecoCusto(new BigDecimal("20.00"));
         builder.produto.setPrecoVenda(new BigDecimal("45.00"));
         builder.produto.setAtivo(true);
@@ -32,10 +30,7 @@ public class ProdutoBuilder {
         return this;
     }
 
-    public ProdutoBuilder comQuantidadeAtual(BigDecimal quantidade) {
-        this.produto.setQuantidadeAtual(quantidade);
-        return this;
-    }
+
 
     public ProdutoBuilder comPrecoVenda(BigDecimal preco) {
         this.produto.setPrecoVenda(preco);

@@ -1,6 +1,6 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.dto.EnderecoDto;
+import com.dinoco.oficina.cliente.infrastructure.web.dto.EnderecoDto;
 
 public class EnderecoDtoBuilder {
 

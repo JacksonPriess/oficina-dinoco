@@ -33,8 +33,8 @@
 
 * **RECEBIDA:** O veículo deu entrada na oficina, foram registrados dados do cliente, veículo e a reclamação, mas nenhum mecânico foi alocado ou iniciou o diagnóstico inicial.
 * **EM_DIAGNOSTICO:** O veículo está no elevador/pátio sob avaliação do mecânico para descobrir a causa do problema relatado.
-* **AGUARDANDO_ORCAMENTO:** O diagnóstico foi concluído. O atendente está levantando o custo das horas de serviço e checando a disponibilidade das peças no estoque.
-* **AGUARDANDO_APROVACAO:** O orçamento está com o cliente. A oficina aguarda o "Aprovar" ou "Reprovar" do cliente.
+* **AGUARDANDO_ORCAMENTO:** O diagnóstico foi concluído. O atendente está levantando o custo das horas de serviço e checando a disponibilidade das peças no estoque e se necessário cotando peças com fornecedores. O orçamento ainda não foi enviado para o cliente.
+* **AGUARDANDO_APROVACAO:** Todos os itens da OS's estão com seus valores informados, e o orçamento está com o cliente. A oficina aguarda o "Aprovar" ou "Reprovar" do cliente.
 * **REPROVADA:** O cliente não aceitou o orçamento. A OS é encerrada sem execução de serviço.
 * **AGUARDANDO_FORNECEDOR:** O orçamento foi aprovado, mas a execução da OS não pode começar porque peças necessárias não estão no estoque físico e foram encomendadas de fornecedores.
 * **AGUARDANDO_EXECUCAO:** Tudo está pronto (orçamento aprovado e peças separadas no estoque), esperando apenas a disponibilidade do mecânico para colocar a mão na massa.

@@ -1,16 +1,16 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.entity.Cliente;
-import com.dinoco.oficina.entity.Endereco;
+import com.dinoco.oficina.cliente.infrastructure.persistence.ClienteEntity;
+import com.dinoco.oficina.cliente.infrastructure.persistence.EnderecoEntity;
 
 import java.time.LocalDateTime;
 
 public class ClienteBuilder {
 
-    private Cliente cliente;
+    private ClienteEntity cliente;
 
     private ClienteBuilder() {
-        this.cliente = new Cliente();
+        this.cliente = new ClienteEntity();
     }
 
     public static ClienteBuilder umClientePF() {
@@ -91,12 +91,12 @@ public class ClienteBuilder {
         return this;
     }
 
-    public ClienteBuilder comEndereco(Endereco endereco) {
+    public ClienteBuilder comEndereco(EnderecoEntity endereco) {
         this.cliente.addEndereco(endereco);
         return this;
     }
 
-    public Cliente build() {
+    public ClienteEntity build() {
         return this.cliente;
     }
 }

@@ -1,7 +1,9 @@
 package com.dinoco.oficina.util.builders;
 
-import com.dinoco.oficina.dto.ProdutoUpdateRequestDto;
-import com.dinoco.oficina.enums.TipoProduto;
+
+import com.dinoco.oficina.catalogoproduto.domain.TipoProduto;
+import com.dinoco.oficina.catalogoproduto.infrastructure.web.dto.ProdutoUpdateRequestDto;
+
 import java.math.BigDecimal;
 
 public class ProdutoUpdateRequestDtoBuilder {
@@ -27,10 +29,10 @@ public class ProdutoUpdateRequestDtoBuilder {
                 TipoProduto.PECA,
                 "Cobreq",
                 "C999",
-                "Freio",
+                "Freio dianteiro",
                 null,
-                new BigDecimal("55.00"),
-                new BigDecimal("130.00")
+                null,
+                null
         );
     }
 }

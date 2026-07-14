@@ -34,8 +34,6 @@ class OrdemServicoControllerIT extends BaseIT {
                 .body("clienteId", equalTo(999))
                 .body("veiculoId", equalTo(888))
                 .body("quilometragemEntrada", equalTo(45000))
-                .body("nomeCliente", equalTo("João da Silva"))
-                .body("placaVeiculo", equalTo("BRA2E45"))
                 .body("id", notNullValue())
                 .body("codigoRastreio", notNullValue())
                 .body("status", equalTo("RECEBIDA"));
