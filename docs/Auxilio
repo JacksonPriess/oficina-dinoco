@@ -1,7 +1,0 @@
-terraform init -> Para inicializar o Terraform e baixar os provedores necessários.
-
-terraform plan -> Para visualizar o plano de execução e verificar quais recursos serão criados, modificados ou destruídos.
-
-terraform apply -> Para aplicar as mudanças e criar os recursos definidos no código Terraform.
-
-terraform destroy -> Para destruir os recursos criados pelo Terraform, removendo-os da infraestrutura.
