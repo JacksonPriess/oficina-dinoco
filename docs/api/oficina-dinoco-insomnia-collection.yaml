@@ -1,17 +1,17 @@
 type: collection.insomnia.rest/5.0
 schema_version: "5.1"
-name: Oficina dinoco 12/07
+name: Oficina dinoco 14/07
 meta:
   id: wrk_e56bb46c56ea4557ac97b2930ea18058
   created: 1778636136119
-  modified: 1783873261273
+  modified: 1784073711829
   description: ""
 collection:
-  - name: Serviço - OK
+  - name: Serviço
     meta:
       id: fld_e4b522e127f94445970a6ba99392d09b
       created: 1776294754568
-      modified: 1781745689043
+      modified: 1784073671576
       sortKey: -1776294974731.875
       description: ""
     children:
@@ -139,11 +139,11 @@ collection:
             send: true
             store: true
           rebuildPath: true
-  - name: Authorize - OK
+  - name: Authorize
     meta:
       id: fld_de0e04871345408d86d63780d81c8618
       created: 1776295081364
-      modified: 1783889667909
+      modified: 1784073690825
       sortKey: -1776295106829
       description: ""
     children:
@@ -152,7 +152,7 @@ collection:
         meta:
           id: req_212c49b1838d4e868ec8d0d4e98da8ff
           created: 1775843100934
-          modified: 1783561085680
+          modified: 1783948801587
           isPrivate: false
           description: >-
             Input do ADMIN
@@ -253,11 +253,11 @@ collection:
             send: true
             store: true
           rebuildPath: true
-  - name: Cliente - OK
+  - name: Cliente
     meta:
       id: fld_fc332172f1d843219dbab4e6e6d2b9da
       created: 1776296344559
-      modified: 1781745512934
+      modified: 1784073683780
       sortKey: -1776295062796.625
       description: ""
     children:
@@ -399,12 +399,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/clientes/1"
+      - url: "{{ _.URLAPI }}/api/clientes/10"
         name: Buscar por Id
         meta:
           id: req_a14bca86743a43769780aa8cfc2be8b1
           created: 1776296344559
-          modified: 1783473410855
+          modified: 1783948932862
           isPrivate: false
           description: ""
           sortKey: -1776294763923
@@ -477,11 +477,11 @@ collection:
             send: true
             store: true
           rebuildPath: true
-  - name: Veículo - OK
+  - name: Veículo
     meta:
       id: fld_c1f76e6540c247a18251a10d9e9af1b0
       created: 1776296619434
-      modified: 1781745553508
+      modified: 1784073678283
       sortKey: -1776295018764.25
       description: ""
     children:
@@ -761,7 +761,7 @@ collection:
     meta:
       id: fld_150de821226d4a03a50b6e740e8b539b
       created: 1776575995862
-      modified: 1783889991153
+      modified: 1784072238266
       sortKey: -1776295084812.8125
       description: ""
     children:
@@ -806,7 +806,7 @@ collection:
         meta:
           id: req_6d4aa5d534d94719bf246f761059a5d5
           created: 1776575995862
-          modified: 1783653042335
+          modified: 1783995157599
           isPrivate: false
           description: ""
           sortKey: -1776294764019.875
@@ -1031,7 +1031,7 @@ collection:
         meta:
           id: req_882e28d58fca4078979489267b0eb0fb
           created: 1777142840978
-          modified: 1783873054611
+          modified: 1783995322457
           isPrivate: false
           description: ""
           sortKey: -1776294764018.3125
@@ -1399,7 +1399,7 @@ collection:
         meta:
           id: req_0cedcc414dda43ef8add8dae0fca23b2
           created: 1783802618944
-          modified: 1783807944771
+          modified: 1784066570689
           isPrivate: false
           description: ""
           sortKey: -1776294764022.6094
@@ -1416,26 +1416,12 @@ collection:
             		{
             			"produtoId": 5,
             			"quantidade": 2
-            		},
-            		{
-            			"produtoId": 6,
-            			"quantidade": 3
             		}
             	],
             	"servicos": [
             		{
             			"servicoId": 5
-            		},
-            		{
-            			"servicoId": 6
-            		},
-            		{
-            			"servicoId": 7
-            		},
-            		{
-            			"servicoId": 8
-            		}
-            		
+            		}		
             	]
             }
         headers:
@@ -1469,7 +1455,7 @@ collection:
         meta:
           id: req_ed0245fa5ca642919615a51b28ec715b
           created: 1783871233081
-          modified: 1783882755282
+          modified: 1784072342976
           isPrivate: false
           description: |-
             {
@@ -1998,11 +1984,11 @@ collection:
             send: true
             store: true
           rebuildPath: true
-  - name: Saldo Estoque - Ajustar
+  - name: Saldo Estoque
     meta:
       id: fld_af4f5c92460a48ebbba0c7b8583de2e7
       created: 1781234843179
-      modified: 1783474079474
+      modified: 1784073665850
       sortKey: -1776294853592.8438
       description: ""
     children:
@@ -2082,7 +2068,7 @@ cookieJar:
   meta:
     id: jar_3f7032a884154d66981a35ac18e55db1
     created: 1775838824338
-    modified: 1783889991139
+    modified: 1784072238253
   cookies:
     - id: c6d107d5-e5ef-4148-b645-c967e75d0fb0
       key: JSESSIONID
@@ -2097,11 +2083,11 @@ environments:
   meta:
     id: env_b7443c2737f34ce2a2c5cae67d2208e9
     created: 1775838824324
-    modified: 1783889991145
+    modified: 1784072238257
     isPrivate: false
   data:
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJvZmljaW5hLWFwaSIsInN1YiI6ImFkbWluIiwiZXhwIjoxNzgzODk2ODY3fQ.Nujn7Nq_XoTJ7sja7PagDIcVgEG5HJ4z8bmL-N8Lr4I
-    URLAPI: http://localhost:8080
-    URLAPI_OLD: http://a0769ff6854004449bc8f061d00f2ece-276379298.us-east-1.elb.amazonaws.com
-    os_rastreio: OS-6158B588
-    os_id: 18
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJvZmljaW5hLWFwaSIsInN1YiI6ImFkbWluIiwiZXhwIjoxNzg0MDc5MzQxfQ.4AFycKYi4x49JTVAmC8JI5g2mBXpM75CoZjo2-AHXAo
+    URLAPI: http://a5c355aaf27b44b02af91b06b2e24464-399174240.us-east-1.elb.amazonaws.com
+    URLAPI_OLD: http://localhost:8080
+    os_rastreio: OS-ADA024D6
+    os_id: 12

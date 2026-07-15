@@ -2,7 +2,7 @@ name: CI/CD Pipeline - Oficina API
 
 on:
   push:
-    branches: [ "main", "master", "develop" ]
+    branches: [ "main" ]
 
 env:
   AWS_REGION: us-east-1
