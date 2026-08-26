@@ -26,7 +26,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # 2. Sobrescrevemos as variáveis do application.properties para usar a rede do Docker
+      # Credenciais exclusivas do ambiente local via Docker Compose
       SPRING_PROFILES_ACTIVE: dev
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/oficina_db
       SPRING_DATASOURCE_USERNAME: dbadmin

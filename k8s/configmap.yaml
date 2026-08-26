@@ -5,11 +5,9 @@ metadata:
   labels:
     app: oficina-api
 data:
-  # O Spring vai ler esta variável para ativar o profile correto
   SPRING_PROFILES_ACTIVE: "dev"
 
-  # O Terraform vai injetar o endpoint dinamicamente aqui, mantendo a porta e o nome do banco
-  SPRING_DATASOURCE_URL: "jdbc:postgresql://${DB_ENDPOINT}/oficina_db"
+  # DB_ENDPOINT será substituído pela pipeline durante o deploy
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://${DB_ENDPOINT}:5432/oficina_db"
 
-  # Fuso horário para garantir que as Ordens de Serviço fiquem com a hora correta
   TZ: "America/Sao_Paulo"

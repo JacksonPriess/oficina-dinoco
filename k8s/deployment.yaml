@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: oficina-api
-        # O Terraform vai injetar o valor real nesta variável
+        # Substituído pela pipeline durante o deploy
         image: ${DOCKER_IMAGE}
         imagePullPolicy: Always
         ports:

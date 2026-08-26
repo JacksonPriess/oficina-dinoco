@@ -15,14 +15,14 @@ Uma API RESTful desenvolvida para gerenciar o fluxo principal de uma oficina mec
 * Listagem e detalhamento de ordens de serviço;
 * Relatório para monitoramento do tempo médio de execução dos serviços dentro de uma OS.
 
-## Features adicionadas - TC Fase 02
+## Features adicionadas
 * Abertura de Ordem de Serviço (OS): receber os dados do cliente, veículo, serviços e peças;
 * Consulta de status da OS;
 * Aprovação de orçamento - Externo;
 * Listagem de ordens de serviço;
 * Atualização de status da OS - Externo;
 
-## Documentações / Diagramas - TC Fase 02
+## Documentações / Diagramas
 
 *  **Componentes da aplicação:** [Visualizar](docs/diagramas-fase2/DiagramaComponentesArquitetura.png)
 * ️ **Infraestrutura provisionada:** [Visualizar](docs/diagramas-fase2/InfraestruturaProvisionada.png)
@@ -30,7 +30,7 @@ Uma API RESTful desenvolvida para gerenciar o fluxo principal de uma oficina mec
 
 ## Tecnologias Utilizadas
 
-### Arquitetura de Software (Clean Architecture) - TC Fase 02
+### Arquitetura de Software (Clean Architecture) 
 
 Refatorado para seguir as diretrizes da **Clean Architecture**, visando o baixo acoplamento e a alta coesão, separando claramente as responsabilidades:
 
@@ -57,28 +57,34 @@ Refatorado para seguir as diretrizes da **Clean Architecture**, visando o baixo 
 - **Testcontainers** (Testes de integração com PostgreSQL real)
 - **Padrão AAA** (Arrange, Act, Assert)
 
-### Cloud, DevOps e Infraestrutura como Código (IaC) - TC Fase 02
-- **Docker & Docker Compose** (Ambiente de desenvolvimento local)
+### Cloud, DevOps e Infraestrutura como Código (IaC) 
+- **Docker & Docker Compose** para execução do ambiente local.
+> O Docker Compose utiliza um PostgreSQL local e não depende do RDS da AWS.
 - **AWS (Amazon Web Services):**
-    - **EKS** (Elastic Kubernetes Service) para orquestração de containers.
-    - **RDS** (Relational Database Service) para banco de dados PostgreSQL gerenciado.
-    - **ECR** (Elastic Container Registry) para armazenamento de imagens Docker.
-    - **S3** para armazenamento seguro do estado do Terraform.
-- **Terraform:** Provisionamento 100% automatizado da infraestrutura (VPC, Subnets, Security Groups, RDS, EKS).
-- **Kubernetes:** Manifestos declarativos (Deployment, Service, HPA, ConfigMap, Secret).
-- **GitHub Actions:** Esteira de CI/CD completa automatizando build, testes, provisionamento (IaC) e deploy.
+  - **EKS** para orquestração dos containers.
+  - **EC2** através dos Node Groups do EKS.
+  - **RDS PostgreSQL** como banco de dados gerenciado.
+  - **ECR** para armazenamento das imagens Docker.
+  - **S3** para armazenamento remoto dos estados do Terraform.
+  - **AWS Secrets Manager** para gerenciamento seguro das credenciais do banco.
+- **Terraform** para provisionamento da infraestrutura AWS.
+- **Kubernetes** com Deployment, Service, HPA e ConfigMap.
+- **GitHub Actions** para CI/CD, build da aplicação, publicação da imagem no ECR e deploy no EKS.
 
-###  Provisionamento de Infraestrutura na AWS (Terraform) - TC Fase 02
+### Separação da Infraestrutura - TC Fase 03
 
-Toda a infraestrutura em nuvem do projeto é provisionada e gerenciada via código (IaC) utilizando o Terraform. A organização estrutural foi dividida em módulos lógicos para facilitar a manutenção e leitura:
+A infraestrutura da solução foi separada em repositórios independentes, cada um com sua própria pipeline de CI/CD:
 
-- **Rede e Topologia (`network.tf`):** Criação de uma VPC dedicada (Virtual Private Cloud), Internet Gateway, Tabelas de Roteamento e Sub-redes Públicas distribuídas em múltiplas Zonas de Disponibilidade (us-east-1a e us-east-1b) para garantir resiliência.
-- **Banco de Dados (`database.tf`):** Provisionamento de uma instância Amazon RDS (PostgreSQL 16) associada a um *Subnet Group* próprio. É blindada por um Security Group que restringe o tráfego da porta 5432 estritamente ao escopo da VPC.
-- **Orquestração de Containers (`eks.tf`):** Criação do *Control Plane* do Amazon EKS e do *Node Group* responsável pelo processamento, já com regras de *auto-scaling* (limites mínimo e máximo de instâncias) para suportar a carga da API.
-- **Registro de Imagens (`ecr.tf`):** Criação do repositório privado no Amazon ECR, configurado com varredura de vulnerabilidades habilitada (`scan_on_push = true`) para assegurar a integridade das imagens Docker.
-- **Estado e Provedores (`backend.tf` & `providers.tf`):** Implementação de *Remote State*. O arquivo `terraform.tfstate` é salvo de forma remota em um Bucket S3 da AWS. Isso permite que a esteira CI/CD no GitHub Actions execute operações de infraestrutura sem perder o histórico.
-- **Injeção de Manifestos Dinâmicos (`k8s_manifests.tf`):** Atua como ponte entre a infraestrutura recém-criada e a aplicação. O Terraform utiliza o provedor do Kubectl para se autenticar no EKS e aplicar os manifestos YAML (Deployment, HPA, Service, ConfigMap e Secret), injetando dinamicamente valores gerados em tempo de execução, como o *endpoint* do RDS que é entregue ao Spring Boot.
- 
+- **`oficina-dinoco`**  
+  Aplicação principal Java/Spring Boot, Dockerfile, migrations Flyway e manifestos Kubernetes.
+
+- **`oficina-infra-k8s`**  
+  Provisionamento via Terraform da VPC, Subnets, Internet Gateway, EKS, Node Groups EC2 e ECR.
+
+- **`oficina-infra-db`**  
+  Provisionamento via Terraform do RDS PostgreSQL, DB Subnet Group, Security Group e integração com AWS Secrets Manager.
+
+A separação permite que infraestrutura, banco de dados e aplicação tenham ciclos de deploy independentes.
 ---
 
 ## 📚 Documentação e Testes da API
@@ -136,22 +142,53 @@ A API estará disponível em: http://localhost:8080
 
 ---
 
-## Arquitetura Cloud e CI/CD (Ambiente de Produção/Lab) - TC Fase 02
+## Arquitetura Cloud e CI/CD - TC Fase 03
 
-Este projeto utiliza uma abordagem moderna de GitOps e Infraestrutura como Código (IaC) para garantir que todo o ambiente de nuvem seja construído, 
-atualizado e versionado de forma automática e segura.
+A solução utiliza repositórios separados para infraestrutura e aplicação, permitindo maior isolamento de responsabilidades e pipelines independentes.
 
-### Fluxo da Esteira (GitHub Actions)
-A cada `push` nas branches principais, a nossa pipeline executa os seguintes passos:
-1. **Continuous Integration (CI):** Validação de código e execução de testes automatizados via Maven.
-2. **Resiliência de Estado:** Verificação e criação automática do bucket S3 (`oficina-state-***`) para armazenar o `terraform.tfstate`, garantindo que o cofre de infraestrutura sobreviva a resets do laboratório.
-3. **Continuous Deployment (CD) - Infraestrutura:** O Terraform assume o controle e cria do zero (ou atualiza) toda a topologia de rede (VPC), o banco de dados (RDS) e o cluster Kubernetes (EKS).
-4. **Continuous Deployment (CD) - Aplicação:** O Docker constrói a nova imagem da API com o SHA do commit e a envia para o AWS ECR. Em seguida, o Kubernetes puxa essa imagem e realiza o *rolling update* sem tempo de inatividade (*downtime*).
+### Fluxo de Provisionamento
 
-### Gestão do Kubernetes (Manifestos)
-Toda a aplicação é orquestrada no Amazon EKS utilizando manifestos declarativos, garantindo escalabilidade e segurança para a API (Spring Boot):
+A infraestrutura deve ser criada na seguinte ordem:
 
-- **Deployment (`deployment.yaml`):** Mantém os Pods da aplicação rodando com injeção dinâmica da imagem Docker gerada pela esteira CI/CD. Também define estritamente as requisições e limites de recursos (CPU: 250m a 500m / Memória: 512Mi a 1Gi) para garantir a estabilidade do container.
-- **Service (`service.yaml`):** Expõe a aplicação externamente utilizando um *Load Balancer* provisionado automaticamente na AWS, mapeando o tráfego da porta 80 (pública internet) para a porta interna 8080.
-- **ConfigMap & Secrets (`configmap.yaml` e `secret.yaml`):** Isolam as configurações e credenciais do código-fonte. O Terraform descobre dinamicamente o *endpoint* do RDS na AWS e o injeta no ConfigMap (`SPRING_DATASOURCE_URL`), enquanto o Secret protege o usuário e senha do banco de dados em Base64.
-- **HPA - Autoscaling (`hpa.yaml`):** Configuração do *Horizontal Pod Autoscaler* para monitoramento de recursos. Caso a média de utilização de CPU dos pods ultrapasse 70%, o cluster é instruído a escalar automaticamente a aplicação de 1 para até 3 réplicas, garantindo alta disponibilidade durante picos de carga.
+1. `oficina-infra-k8s`
+2. `oficina-infra-db`
+3. `oficina-dinoco`
+
+O repositório `oficina-infra-k8s` cria a infraestrutura base da AWS, incluindo VPC, Subnets, EKS e ECR.
+
+O repositório `oficina-infra-db` utiliza o Remote State do Terraform para obter informações da VPC e Subnets e provisionar o RDS PostgreSQL na mesma rede.
+
+A senha do usuário master do banco é gerenciada automaticamente pelo AWS Secrets Manager.
+
+### Fluxo da Aplicação
+
+A pipeline do `oficina-dinoco` é responsável por:
+
+1. Executar build e testes automatizados com Maven.
+2. Criar a imagem Docker da aplicação.
+3. Publicar a imagem no Amazon ECR utilizando o SHA do commit como versão.
+4. Configurar o acesso ao cluster EKS.
+5. Consultar o endpoint do RDS.
+6. Consultar as credenciais do banco no AWS Secrets Manager.
+7. Criar ou atualizar o Kubernetes Secret.
+8. Aplicar os manifestos Kubernetes através do `kubectl`.
+9. Aguardar o rollout do Deployment.
+
+### Gestão do Kubernetes
+
+Os manifestos Kubernetes permanecem no repositório da aplicação:
+
+- **Deployment (`deployment.yaml`)**  
+  Define a execução da aplicação, imagem Docker, recursos de CPU e memória.
+
+- **Service (`service.yaml`)**  
+  Expõe temporariamente a aplicação através de um Load Balancer AWS.
+
+- **ConfigMap (`configmap.yaml`)**  
+  Armazena configurações não sensíveis, como profile Spring e endereço do banco.
+
+- **Kubernetes Secret**  
+  Não é versionado no Git. É criado dinamicamente durante o deploy utilizando as credenciais obtidas do AWS Secrets Manager.
+
+- **HPA (`hpa.yaml`)**  
+  Escala automaticamente a aplicação entre 1 e 3 réplicas quando a utilização média de CPU ultrapassa 70%.
