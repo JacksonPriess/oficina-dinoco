@@ -96,21 +96,30 @@ jobs:
       - name: 9. Criar/atualizar Secret do Kubernetes
         if: github.event_name == 'push'
         run: |
-          SECRET_VALUE=$(aws secretsmanager get-secret-value \
+          # Credenciais do PostgreSQL
+          DB_SECRET_VALUE=$(aws secretsmanager get-secret-value \
             --secret-id "$DB_SECRET_ARN" \
             --query SecretString \
             --output text)
 
-          DB_USERNAME=$(echo "$SECRET_VALUE" | jq -r '.username')
-          DB_PASSWORD=$(echo "$SECRET_VALUE" | jq -r '.password')
+          DB_USERNAME=$(echo "$DB_SECRET_VALUE" | jq -r '.username')
+          DB_PASSWORD=$(echo "$DB_SECRET_VALUE" | jq -r '.password')
+
+          # Chave utilizada para assinatura/validação dos JWTs
+          JWT_SECRET=$(aws secretsmanager get-secret-value \
+          --secret-id oficina-auth-jwt-secret \
+          --query SecretString \
+          --output text)
 
           # Evita que as credenciais apareçam nos logs
           echo "::add-mask::$DB_USERNAME"
           echo "::add-mask::$DB_PASSWORD"
+          echo "::add-mask::$JWT_SECRET"
 
           kubectl create secret generic oficina-api-secret \
             --from-literal=SPRING_DATASOURCE_USERNAME="$DB_USERNAME" \
             --from-literal=SPRING_DATASOURCE_PASSWORD="$DB_PASSWORD" \
+            --from-literal=JWT_SECRET="$JWT_SECRET" \
             --dry-run=client \
             -o yaml | kubectl apply -f -
 
