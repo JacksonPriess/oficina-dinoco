@@ -83,7 +83,7 @@ public interface OrdemServicoWebMapper {
 
     BuscarOSPorIdResponseDto toBuscarOSPorIdResponse(BuscarOSPorIdOuput output);
 
-    BuscarOSPorCodigoRastreioQuery toBuscarOSPorCodigoRastreioQuery(String codigoRastreio);
+    BuscarOSPorCodigoRastreioQuery toBuscarOSPorCodigoRastreioQuery(String codigoRastreio, Long clienteId);
 
     BuscarOSPorCodigoRastreioResponseDto toBuscarOSPorCodigoRastreioResponse(BuscarOSPorCodigoRastreioOuput output);
 

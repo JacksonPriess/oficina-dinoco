@@ -1,5 +1,6 @@
 package com.dinoco.oficina.ordemservico.infrastructure.web;
 
+import com.dinoco.oficina.autenticacao.infrastructure.security.ClientePrincipal;
 import com.dinoco.oficina.ordemservico.adapters.controllers.OrdemServicoControllerClean;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoOutput;
@@ -29,6 +30,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
@@ -179,8 +181,8 @@ public class OrdemServicoSpringWebController {
 
     @Operation(summary = "Buscar resumo OS por código de rastreio")
     @GetMapping("/rastreio/{codigoRastreio}")
-    public ResponseEntity<BuscarOSPorCodigoRastreioResponseDto> buscarPorCodigoRastreio(@PathVariable String codigoRastreio) {
-        BuscarOSPorCodigoRastreioQuery query = mapper.toBuscarOSPorCodigoRastreioQuery(codigoRastreio);
+    public ResponseEntity<BuscarOSPorCodigoRastreioResponseDto> buscarPorCodigoRastreio(@PathVariable String codigoRastreio, @AuthenticationPrincipal ClientePrincipal cliente) {
+        BuscarOSPorCodigoRastreioQuery query = mapper.toBuscarOSPorCodigoRastreioQuery(codigoRastreio, cliente.clienteId());
         BuscarOSPorCodigoRastreioOuput output = controllerClean.buscarOSPorCodigoRastreio(query);
         BuscarOSPorCodigoRastreioResponseDto response = mapper.toBuscarOSPorCodigoRastreioResponse(output);
         return ResponseEntity.ok(response);

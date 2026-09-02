@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Optional;
 
 @Service
 public class TokenService {
@@ -30,21 +31,28 @@ public class TokenService {
         }
     }
 
-    public String validarToken(String token) {
+    public Optional<TokenAutenticado> validarToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.require(algorithm)
+
+            var decodedJWT = JWT.require(algorithm)
                     .withIssuer("oficina-api")
                     .build()
-                    .verify(token)
-                    .getSubject(); // Retorna o username se o token for válido
+                    .verify(token);
+
+            return Optional.of(
+                    new TokenAutenticado(
+                            decodedJWT.getSubject(),
+                            decodedJWT.getClaim("tipo").asString()
+                    )
+            );
+
         } catch (JWTVerificationException exception) {
-            return ""; // Retorna string vazia se for inválido ou expirado
+            return Optional.empty();
         }
     }
 
     private Instant gerarDataExpiracao() {
-        // Token expira em 2 horas
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 }

@@ -1,5 +1,6 @@
 package com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero;
 
 public record BuscarOSPorCodigoRastreioQuery(
-        String codigoRastreio
+        String codigoRastreio,
+        Long clienteId
 ) {}
