@@ -31,7 +31,7 @@ public class OrdemServicoQueryGatewayImpl implements OrdemServicoQueryGateway {
     }
 
     @Override
-    public Optional<BuscarOSPorCodigoRastreioOuput> buscarPorCodigoRastreio(String codigoRastreio) {
+    public Optional<BuscarOSPorCodigoRastreioOuput> buscarPorCodigoRastreio(String codigoRastreio, Long clienteId) {
         String sql = """
             SELECT 
                 os.id, 
@@ -52,9 +52,12 @@ public class OrdemServicoQueryGatewayImpl implements OrdemServicoQueryGateway {
             INNER JOIN cliente c ON os.cliente_id = c.id
             INNER JOIN veiculo v ON os.veiculo_id = v.id
             WHERE os.codigo_rastreio = :codigoRastreio
+            AND os.cliente_id = :clienteId
         """;
 
-        MapSqlParameterSource params = new MapSqlParameterSource("codigoRastreio", codigoRastreio);
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                        .addValue("codigoRastreio", codigoRastreio)
+                        .addValue("clienteId", clienteId);
 
         List<BuscarOSPorCodigoRastreioOuput> resultado = jdbcTemplate.query(
                 sql,

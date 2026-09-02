@@ -14,8 +14,8 @@ public class BuscarOSPorCodigoRastreioHandler implements BuscarOSPorCodigoRastre
     @Override
     public BuscarOSPorCodigoRastreioOuput executar(BuscarOSPorCodigoRastreioQuery query) {
 
-        return ordemServicoQueryGateway.buscarPorCodigoRastreio(query.codigoRastreio())
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de Serviço não encontrada para o código de rastreio: " + query.codigoRastreio()));
+        return ordemServicoQueryGateway.buscarPorCodigoRastreio(query.codigoRastreio(), query.clienteId())
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de Serviço não encontrada."));
 
     }
 }

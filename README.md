@@ -16,11 +16,15 @@ Uma API RESTful desenvolvida para gerenciar o fluxo principal de uma oficina mec
 * Relatório para monitoramento do tempo médio de execução dos serviços dentro de uma OS.
 
 ## Features adicionadas
-* Abertura de Ordem de Serviço (OS): receber os dados do cliente, veículo, serviços e peças;
+* Abertura de Ordem de Serviço (OS);
 * Consulta de status da OS;
-* Aprovação de orçamento - Externo;
+* Aprovação e reprovação de orçamento;
 * Listagem de ordens de serviço;
-* Atualização de status da OS - Externo;
+* Atualização de status da OS;
+* Autenticação de funcionários com e-mail/senha;
+* Autenticação de clientes via CPF utilizando AWS Lambda;
+* Autorização da consulta de rastreio por cliente autenticado;
+* Integração com AWS API Gateway como ponto de entrada da solução.
 
 ## Documentações / Diagramas
 
@@ -54,37 +58,46 @@ Refatorado para seguir as diretrizes da **Clean Architecture**, visando o baixo 
 ### Build, Qualidade e Testes
 - **Maven**
 - **JUnit 5, Mockito & Rest Assured**
-- **Testcontainers** (Testes de integração com PostgreSQL real)
+- **Testcontainers** para testes de integração com banco PostgreSQL real.
 - **Padrão AAA** (Arrange, Act, Assert)
 
-### Cloud, DevOps e Infraestrutura como Código (IaC) 
-- **Docker & Docker Compose** para execução do ambiente local.
-> O Docker Compose utiliza um PostgreSQL local e não depende do RDS da AWS.
-- **AWS (Amazon Web Services):**
-  - **EKS** para orquestração dos containers.
-  - **EC2** através dos Node Groups do EKS.
-  - **RDS PostgreSQL** como banco de dados gerenciado.
-  - **ECR** para armazenamento das imagens Docker.
-  - **S3** para armazenamento remoto dos estados do Terraform.
-  - **AWS Secrets Manager** para gerenciamento seguro das credenciais do banco.
-- **Terraform** para provisionamento da infraestrutura AWS.
+### Cloud, DevOps e Infraestrutura como Código (IaC)
+
+- **Docker & Docker Compose** para desenvolvimento local.
+- **AWS EKS** para orquestração dos containers.
+- **EC2** através dos Node Groups do EKS.
+- **RDS PostgreSQL** como banco de dados gerenciado.
+- **ECR** para armazenamento das imagens Docker.
+- **S3** para armazenamento remoto dos estados Terraform.
+- **AWS Secrets Manager** para credenciais do banco e chave JWT.
+- **AWS Lambda** para autenticação serverless dos clientes via CPF.
+- **AWS API Gateway** como ponto de entrada e roteamento da solução.
+- **Terraform** para provisionamento da infraestrutura.
 - **Kubernetes** com Deployment, Service, HPA e ConfigMap.
-- **GitHub Actions** para CI/CD, build da aplicação, publicação da imagem no ECR e deploy no EKS.
+- **GitHub Actions** para CI/CD.
 
-### Separação da Infraestrutura - TC Fase 03
+> O Docker Compose utiliza PostgreSQL local e não depende do RDS da AWS.
 
-A infraestrutura da solução foi separada em repositórios independentes, cada um com sua própria pipeline de CI/CD:
+---
+
+## Separação da Infraestrutura - TC Fase 03
+
+A solução foi separada em repositórios independentes:
 
 - **`oficina-dinoco`**  
-  Aplicação principal Java/Spring Boot, Dockerfile, migrations Flyway e manifestos Kubernetes.
+  Aplicação principal Java/Spring Boot, regras de negócio, autenticação dos funcionários, Dockerfile, migrations Flyway e manifestos Kubernetes.
 
 - **`oficina-infra-k8s`**  
-  Provisionamento via Terraform da VPC, Subnets, Internet Gateway, EKS, Node Groups EC2 e ECR.
+  Provisionamento da VPC, Subnets, Internet Gateway, EKS, Node Groups EC2, ECR e API Gateway.
 
 - **`oficina-infra-db`**  
-  Provisionamento via Terraform do RDS PostgreSQL, DB Subnet Group, Security Group e integração com AWS Secrets Manager.
+  Provisionamento do RDS PostgreSQL, DB Subnet Group, Security Group e integração com AWS Secrets Manager.
 
-A separação permite que infraestrutura, banco de dados e aplicação tenham ciclos de deploy independentes.
+- **`oficina-auth-lambda`**  
+  Function Serverless responsável pela autenticação dos clientes via CPF, consulta do cliente na base, verificação de status e emissão do JWT.
+
+A separação permite ciclos de deploy independentes para infraestrutura, banco, autenticação serverless e aplicação.
+
 ---
 
 ## 📚 Documentação e Testes da API
@@ -92,7 +105,8 @@ A separação permite que infraestrutura, banco de dados e aplicação tenham ci
 * [Linguagem Ubíqua e Dicionário de Dados](./docs/negocio/linguagem_ubiqua.md)
 * [Swagger UI - Oficina Dinoco](http://localhost:8080/swagger-ui/index.html) *(Disponível após subir a aplicação)*
 
-### 🚀 Insomnia Collection (Recomendado para Avaliação)
+### 🚀 Insomnia Collection
+
 Para facilitar os testes e a avaliação do fluxo completo da aplicação, disponibilizamos uma collection do Insomnia com todas as requisições organizadas na ordem lógica de execução:
 Autenticação, Abrir OS, Iniciar diagnóstico, Adicionar Itens de Produto na OS, Adicionar Itens de Serviço na OS, Concluir Diagnóstico, Enviar Orçamento, Aprovar Orçamento, Verificar Estoque (Condicional), Iniciar Execução da OS, Iniciar Execução dos Itens de Serviços, Concluir Execução dos Itens de Serviços, Finalizar execução da OS, e por fim, Concluir a OS. 
 
@@ -102,18 +116,146 @@ Autenticação, Abrir OS, Iniciar diagnóstico, Adicionar Itens de Produto na OS
 
 ---
 
-### 🔐 Autenticação (Acesso Inicial)
+## 🔐 Autenticação de Funcionários
 
-A API é protegida por JWT (Spring Security). Para facilitar os testes, ao subir a aplicação, o **Flyway** executa um script de *seed* que já cria um usuário administrador padrão (com a senha devidamente criptografada em BCrypt).
+Funcionários continuam utilizando o fluxo já existente:
 
-Para gerar seu token de acesso no endpoint de Login, utilize as seguintes credenciais:
+```text
+Funcionário
+   ↓
+e-mail + senha
+   ↓
+Spring Boot
+   ↓
+validação no banco
+   ↓
+JWT funcionário
+```
+
+A API utiliza Spring Security e JWT para proteger as rotas administrativas.
+
+Para facilitar testes locais, o seed cria um usuário administrador padrão:
 
 * **Usuário:** `admin`
 * **Senha:** `123456`
 
-> 💡 **Dica:** Na collection do Insomnia disponibilizada acima, a primeira requisição (Login) já está salva com esse payload. Basta executá-la para se autenticar! E o token será reaproveitado nas demais requisições.
+---
+
+## 🔐 Autenticação de Clientes via CPF
+
+A Fase 3 adicionou um segundo fluxo de autenticação, destinado exclusivamente aos **clientes da oficina**.
+
+```text
+Cliente
+   ↓
+CPF
+   ↓
+API Gateway
+   ↓
+AWS Lambda
+   ↓
+validação do CPF
+   ↓
+consulta no PostgreSQL
+   ↓
+verificação de existência e status
+   ↓
+JWT CLIENTE
+```
+
+O JWT do cliente possui estrutura semelhante a:
+
+```json
+{
+  "iss": "oficina-api",
+  "sub": "11",
+  "tipo": "CLIENTE",
+  "iat": 1788141203,
+  "exp": 1788148403
+}
+```
+
+O campo `sub` contém o **ID interno do cliente**. O CPF não é colocado no token.
+
+Esse desenho permite que a aplicação identifique o cliente autenticado utilizando apenas o `clienteId` confiável presente no JWT.
 
 ---
+
+## 🔒 Consulta de Ordem de Serviço pelo Cliente
+
+Um dos requisitos da Fase 3 é proteger as rotas utilizadas pelo cliente.
+
+A rota:
+
+```http
+GET /api/ordens-servico/rastreio/{codigoRastreio}
+```
+
+antes era pública. Agora exige um JWT válido do tipo `CLIENTE`:
+
+```http
+Authorization: Bearer <JWT_CLIENTE>
+```
+
+### Fluxo de autorização
+
+```text
+JWT CLIENTE
+sub = clienteId
+tipo = CLIENTE
+        ↓
+Spring Security
+        ↓
+ClientePrincipal
+        ↓
+Controller Web
+        ↓
+BuscarOSPorCodigoRastreioQuery
+codigoRastreio + clienteId
+        ↓
+Use Case
+        ↓
+OrdemServicoQueryGateway
+        ↓
+PostgreSQL
+```
+
+A consulta considera simultaneamente o código de rastreio e o cliente autenticado:
+
+Assim, possuir um JWT válido não é suficiente: o cliente precisa ser o proprietário da OS consultada.
+
+### Comportamentos esperados
+
+```text
+Cliente dono da OS
+→ 200 OK
+
+Cliente autenticado tentando consultar OS de outro cliente
+→ 404 Not Found
+
+Funcionário tentando utilizar a rota exclusiva de cliente
+→ 403 Forbidden
+
+Requisição sem JWT válido
+→ acesso negado
+```
+
+Essa estratégia implementa **autorização por propriedade do recurso**, evitando que um cliente consulte informações pertencentes a outro cliente.
+
+Conceitualmente:
+
+```text
+Autenticação
+→ Quem é o cliente?
+
+Autorização
+→ Este cliente pode acessar esta OS?
+```
+
+O CPF é utilizado apenas para o fluxo inicial de autenticação serverless. Após a emissão do token, a aplicação utiliza o `clienteId` presente no JWT.
+
+---
+
 ## 🚀 Como Executar Local (Desenvolvimento)
 
 ### Pré-requisitos
@@ -142,37 +284,78 @@ A API estará disponível em: http://localhost:8080
 
 ---
 
-## Arquitetura Cloud e CI/CD - TC Fase 03
+# Arquitetura Cloud e CI/CD - TC Fase 03
 
-A solução utiliza repositórios separados para infraestrutura e aplicação, permitindo maior isolamento de responsabilidades e pipelines independentes.
+## API Gateway como ponto de entrada
 
-### Fluxo de Provisionamento
+O AWS API Gateway recebe as requisições e direciona o fluxo conforme a rota:
 
-A infraestrutura deve ser criada na seguinte ordem:
+```text
+                         Internet
+                            |
+                            v
+                      API Gateway
+                      /         \
+                     /           \
+        POST /auth/cliente      Demais rotas
+                |                    |
+                v                    v
+          Auth Lambda          Load Balancer
+                                    |
+                                    v
+                                   EKS
+                                    |
+                                    v
+                               Spring Boot
+```
 
-1. `oficina-infra-k8s`
-2. `oficina-infra-db`
-3. `oficina-dinoco`
+Exemplo:
 
-O repositório `oficina-infra-k8s` cria a infraestrutura base da AWS, incluindo VPC, Subnets, EKS e ECR.
+```text
+POST /auth/cliente
+→ Lambda de autenticação
 
-O repositório `oficina-infra-db` utiliza o Remote State do Terraform para obter informações da VPC e Subnets e provisionar o RDS PostgreSQL na mesma rede.
+POST /api/auth/login
+→ Spring Boot
 
-A senha do usuário master do banco é gerenciada automaticamente pelo AWS Secrets Manager.
+GET /api/ordens-servico/rastreio/{codigo}
+→ Spring Boot
+```
 
-### Fluxo da Aplicação
+A Lambda é acionada apenas quando a rota exige o fluxo serverless de autenticação do cliente.
+
+---
+
+## Fluxo de Provisionamento
+
+Após iniciar ou resetar o AWS LAB, a ordem recomendada é:
+
+1. `oficina-infra-k8s` — VPC, Subnets, EKS e ECR.
+2. `oficina-infra-db` — PostgreSQL RDS e Secrets Manager.
+3. `oficina-auth-lambda` — Lambda, integração com VPC e autenticação do cliente.
+4. `oficina-dinoco` — build, ECR e deploy no EKS.
+5. Workflow do **API Gateway** no `oficina-infra-k8s`.
+
+O API Gateway é aplicado após a aplicação porque sua integração HTTP utiliza o Load Balancer criado pelo Service Kubernetes.
+
+---
+
+## Fluxo da Aplicação
 
 A pipeline do `oficina-dinoco` é responsável por:
 
 1. Executar build e testes automatizados com Maven.
-2. Criar a imagem Docker da aplicação.
-3. Publicar a imagem no Amazon ECR utilizando o SHA do commit como versão.
-4. Configurar o acesso ao cluster EKS.
+2. Criar a imagem Docker.
+3. Publicar a imagem no Amazon ECR usando o SHA do commit.
+4. Configurar acesso ao EKS.
 5. Consultar o endpoint do RDS.
 6. Consultar as credenciais do banco no AWS Secrets Manager.
-7. Criar ou atualizar o Kubernetes Secret.
-8. Aplicar os manifestos Kubernetes através do `kubectl`.
-9. Aguardar o rollout do Deployment.
+7. Consultar a chave JWT compartilhada com a Auth Lambda.
+8. Criar/atualizar o Kubernetes Secret com credenciais e `JWT_SECRET`.
+9. Aplicar os manifestos Kubernetes via `kubectl`.
+10. Aguardar o rollout do Deployment.
+
+---
 
 ### Gestão do Kubernetes
 

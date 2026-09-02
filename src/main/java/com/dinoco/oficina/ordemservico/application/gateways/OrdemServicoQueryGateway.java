@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface OrdemServicoQueryGateway {
 
     Optional<BuscarOSPorIdOuput> buscarPorId(Long id);
-    Optional<BuscarOSPorCodigoRastreioOuput> buscarPorCodigoRastreio(String codigoRastreio);
+    Optional<BuscarOSPorCodigoRastreioOuput> buscarPorCodigoRastreio(String codigoRastreio, Long clienteId);
     List<ListarFilaTrabalhoDetalhesOutput> listarFilaDeTrabalho();
 }
