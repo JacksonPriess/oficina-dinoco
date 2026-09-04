@@ -7,4 +7,8 @@ public interface OrdemServicoJpaRepository extends JpaRepository<OrdemServicoEnt
 
     Optional<OrdemServicoEntity> findByCodigoRastreio(String codigoRastreio);
 
+    Optional<OrdemServicoEntity> findByCodigoRastreioAndClienteId(
+            String codigoRastreio,
+            Long clienteId
+    );
 }

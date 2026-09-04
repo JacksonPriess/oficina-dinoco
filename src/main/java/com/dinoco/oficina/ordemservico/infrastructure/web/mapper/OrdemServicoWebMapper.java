@@ -13,6 +13,7 @@ import com.dinoco.oficina.ordemservico.application.usecases.commands.atualizarst
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirexecucaoitemservico.ConcluirExecucaoItemServicoCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteautenticado.DecisaoClienteAutenticadoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoOutput;
@@ -94,4 +95,6 @@ public interface OrdemServicoWebMapper {
     AtualizarStatusCommand toAtualizarStatusCommand(String codigoRastreio, @Valid AtualizarStatusDto request);
 
     FilaTrabalhosResponseDto toListarAtivasRespose(ListarFilaTrabalhoOutput output);
+
+    DecisaoClienteAutenticadoCommand toProcessarDecisaoClienteAutenticado(String codigoRastreio, Long clienteId, @Valid DecisaoClienteRequestDto request);
 }

@@ -32,6 +32,11 @@ public class OrdemServicoCommandGatewayImpl implements OrdemServicoCommandGatewa
     }
 
     @Override
+    public Optional<OrdemServico> buscarPorCodigoRastreioEClienteParaAlteracao(String codigoRastreio, Long clienteId) {
+        return jpaRepository.findByCodigoRastreioAndClienteId(codigoRastreio, clienteId).map(this::mapearParaDominio);
+    }
+
+    @Override
     @Transactional
     public OrdemServico salvar(OrdemServico ordemServico) {
         OrdemServicoEntity entity = mapearParaEntity(ordemServico);
