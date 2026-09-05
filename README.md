@@ -277,7 +277,31 @@ POST /api/ordens-servico/webhooks/status/{codigoRastreio}
 
 ---
 
+## Autorização por Perfil
 
+Após a autenticação do funcionário, o JWT é validado pelo Spring Security e o perfil do usuário é convertido em uma `role`.
+
+Os perfis atualmente suportados são:
+
+- `ADMIN`
+- `MECANICO`
+- `ATENDENTE`
+
+Internamente, o Spring Security trabalha com as authorities:
+
+- `ROLE_ADMIN`
+- `ROLE_MECANICO`
+- `ROLE_ATENDENTE`
+
+### Regras de acesso
+
+As rotas internas da aplicação exigem que o usuário autenticado possua um dos perfis de funcionário.
+
+Exemplo:
+
+"ADMIN", "MECANICO", "ATENDENTE"  
+
+---
 ## 🚀 Como Executar Local (Desenvolvimento)
 
 ### Pré-requisitos
