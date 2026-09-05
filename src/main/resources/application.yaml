@@ -37,6 +37,7 @@ api:
       secret: ${JWT_SECRET:minha-chave-secreta-de-desenvolvimento-local-1234567890}
 
 springdoc:
+  server-url: ${OPENAPI_SERVER_URL:http://localhost:8080}
   swagger-ui:
     persistAuthorization: true
     tagsSorter: "alpha"
