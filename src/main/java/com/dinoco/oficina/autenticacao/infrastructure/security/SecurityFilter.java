@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
@@ -36,23 +38,20 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = recuperarToken(request);
         if (token != null) {
-            tokenService.validarToken(token)
-                    .ifPresent(tokenAutenticado -> {
-                        if (tokenAutenticado.isCliente()) {
-                            autenticarCliente(tokenAutenticado);
-                        } else {
-                            autenticarFuncionario(
-                                    tokenAutenticado,
-                                    request,
-                                    response
-                            );
-                        }
-                    });
+            var tokenValidado = tokenService.validarToken(token);
+            if (tokenValidado.isPresent()) {
+                var tokenAutenticado = tokenValidado.get();
+                if (tokenAutenticado.isCliente()) {
+                    autenticarCliente(tokenAutenticado);
+                } else {
+                    boolean autenticado = autenticarFuncionario(tokenAutenticado, request, response);
+                    if (!autenticado) {
+                        return;
+                    }
+                }
+            }
         }
-
-        if (!response.isCommitted()) {
-            filterChain.doFilter(request, response);
-        }
+        filterChain.doFilter(request, response);
     }
 
     private String recuperarToken(HttpServletRequest request) {
@@ -63,16 +62,18 @@ public class SecurityFilter extends OncePerRequestFilter {
         return authHeader.replace("Bearer ", "");
     }
 
-    private void autenticarFuncionario(TokenAutenticado token, HttpServletRequest request, HttpServletResponse response) {
+    private boolean autenticarFuncionario(TokenAutenticado token, HttpServletRequest request, HttpServletResponse response) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(token.subject());
         if (userDetails instanceof UsuarioEntity usuario) {
             String uri = request.getRequestURI();
             boolean isRotaTrocaSenha = uri.equals("/api/auth/trocar-senha");
 
             if (Boolean.TRUE.equals(usuario.getPrecisaTrocarSenha()) && !isRotaTrocaSenha) {
+                log.warn("Acesso bloqueado por senha provisória. usuario={}, uri={}", token.subject(), uri);
                 try {
                     response.setStatus(HttpStatus.FORBIDDEN.value());
-                    response.setContentType("application/json; charset=UTF-8");
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
                     ErroPadraoDto erroDto =
                             new ErroPadraoDto(
                                     LocalDateTime.now(),
@@ -81,15 +82,18 @@ public class SecurityFilter extends OncePerRequestFilter {
                                     List.of("Acesso negado. É obrigatório redefinir a senha provisória antes de continuar."));
 
                     response.getWriter().write(objectMapper.writeValueAsString(erroDto));
+                    response.getWriter().flush();
 
+                    return false;
                 } catch (IOException e) {
+                    log.error("Erro ao escrever resposta de acesso bloqueado", e);
                     throw new RuntimeException(e);
                 }
-                return;
             }
         }
         var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        return true;
     }
 
     private void autenticarCliente(TokenAutenticado token) {

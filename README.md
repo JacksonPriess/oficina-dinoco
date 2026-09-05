@@ -258,7 +258,7 @@ O CPF é utilizado apenas para o fluxo inicial de autenticação serverless. Ap�
 Criado também uma rota nova para aprovação/recusa de orçamento pelo cliente autenticado:
 
 ```http
-GET /api/ordens-servico/rastreio/{codigoRastreio}/decisao
+POST /api/ordens-servico/rastreio/{codigoRastreio}/decisao
 ```
 
 Exige um JWT válido do tipo `CLIENTE`:
