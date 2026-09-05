@@ -7,6 +7,7 @@ metadata:
 data:
   SPRING_PROFILES_ACTIVE: "dev"
   OPENAPI_SERVER_URL: "https://wgpvt7ytj0.execute-api.us-east-1.amazonaws.com"
+  NEW_RELIC_APP_NAME: "oficina-api"
 
   # DB_ENDPOINT será substituído pela pipeline durante o deploy
   SPRING_DATASOURCE_URL: "jdbc:postgresql://${DB_ENDPOINT}:5432/oficina_db"

@@ -9,7 +9,16 @@ RUN mvn clean package -DskipTests
 # Estágio 2: Imagem final de execução
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-# Copia o JAR gerado no estágio anterior
+# Copia a aplicação
 COPY --from=build /app/target/*.jar app.jar
+# Copia o agente New Relic
+COPY newrelic/newrelic.jar /app/newrelic/newrelic.jar
+COPY newrelic/newrelic.yml /app/newrelic/newrelic.yml
+
+# Define variável de ambiente, específica do agente newrelic
+# Significa Standard Output (Saída Padrão).
+# Em vez de gravar os logs em um arquivo físico no disco (como /var/log/newrelic.log), isso obriga o agente a imprimir os logs diretamente na tela/console do sistema.
+ENV NEW_RELIC_LOG_FILE_NAME=STDOUT
+
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-javaagent:/app/newrelic/newrelic.jar","-jar","app.jar"]
