@@ -181,9 +181,9 @@ Esse desenho permite que a aplicação identifique o cliente autenticado utiliza
 
 ---
 
-## 🔒 Consulta de Ordem de Serviço pelo Cliente
+## 🔒 Rotas Utilizadas por cliente protegidas por JWT
 
-Um dos requisitos da Fase 3 é proteger as rotas utilizadas pelo cliente.
+Um dos requisitos da Fase 3 é proteger as rotas utilizadas pelo cliente. 
 
 A rota:
 
@@ -255,6 +255,28 @@ Autorização
 O CPF é utilizado apenas para o fluxo inicial de autenticação serverless. Após a emissão do token, a aplicação utiliza o `clienteId` presente no JWT.
 
 ---
+Criado também uma rota nova para aprovação/recusa de orçamento pelo cliente autenticado:
+
+```http
+GET /api/ordens-servico/rastreio/{codigoRastreio}/decisao
+```
+
+Exige um JWT válido do tipo `CLIENTE`:
+
+```http
+Authorization: Bearer <JWT_CLIENTE>
+```
+---
+
+## Rotas que simulam um WebHook, não exigirão autenticação, mas são protegidas com header específico 
+
+```http
+POST /api/ordens-servico/webhooks/orcamentos/{codigoRastreio}
+POST /api/ordens-servico/webhooks/status/{codigoRastreio}                        
+```
+
+---
+
 
 ## 🚀 Como Executar Local (Desenvolvimento)
 

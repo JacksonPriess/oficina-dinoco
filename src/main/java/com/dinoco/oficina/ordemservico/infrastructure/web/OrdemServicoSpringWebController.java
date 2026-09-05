@@ -8,6 +8,7 @@ import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.Apr
 import com.dinoco.oficina.ordemservico.application.usecases.commands.atualizarstatus.AtualizarStatusCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteautenticado.DecisaoClienteAutenticadoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoOutput;
@@ -186,6 +187,17 @@ public class OrdemServicoSpringWebController {
         BuscarOSPorCodigoRastreioOuput output = controllerClean.buscarOSPorCodigoRastreio(query);
         BuscarOSPorCodigoRastreioResponseDto response = mapper.toBuscarOSPorCodigoRastreioResponse(output);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Cliente decide se vai aprovar ou recusar orçamento da OS")
+    @PostMapping("/rastreio/{codigoRastreio}/decisao")
+    public ResponseEntity<Void> decisaoClienteAutenticado(
+            @PathVariable String codigoRastreio,
+            @RequestBody @Valid DecisaoClienteRequestDto request,
+            @AuthenticationPrincipal ClientePrincipal cliente) {
+        DecisaoClienteAutenticadoCommand input = mapper.toProcessarDecisaoClienteAutenticado(codigoRastreio, cliente.clienteId(), request);
+        controllerClean.decisaoClienteAutenticado(input);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Listagem fila de trabalho")

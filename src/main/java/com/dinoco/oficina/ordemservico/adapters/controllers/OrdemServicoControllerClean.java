@@ -11,6 +11,8 @@ import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.Co
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoUseCase;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteautenticado.DecisaoClienteAutenticadoCommand;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteautenticado.DecisaoClienteAutenticadoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoCommand;
@@ -46,6 +48,7 @@ public class OrdemServicoControllerClean {
     private final ReprovarOrcamentoUseCase reprovarOrcamentoUseCase;
     private final AprovarOrcamentoUseCase aprovarOrcamentoUseCase;
     private final DecisaoClienteUseCase decisaoClienteUseCase;
+    private final DecisaoClienteAutenticadoUseCase decisaoClienteAutenticadoUseCase;
     private final AtualizarStatusUseCase atualizarStatusUseCase;
     private final VerificarEstoqueUseCase verificarEstoqueUseCase;
     private final IniciarExecucaoUseCase iniciarExecucaoUseCase;
@@ -62,6 +65,7 @@ public class OrdemServicoControllerClean {
                                        ReprovarOrcamentoUseCase reprovarOrcamentoUseCase,
                                        AprovarOrcamentoUseCase aprovarOrcamentoUseCase,
                                        DecisaoClienteUseCase decisaoClienteUseCase,
+                                       DecisaoClienteAutenticadoUseCase decisaoClienteAutenticadoUseCase,
                                        AtualizarStatusUseCase atualizarStatusUseCase,
                                        VerificarEstoqueUseCase verificarEstoqueUseCase,
                                        IniciarExecucaoUseCase iniciarExecucaoUseCase,
@@ -77,6 +81,7 @@ public class OrdemServicoControllerClean {
         this.reprovarOrcamentoUseCase = reprovarOrcamentoUseCase;
         this.aprovarOrcamentoUseCase = aprovarOrcamentoUseCase;
         this.decisaoClienteUseCase = decisaoClienteUseCase;
+        this.decisaoClienteAutenticadoUseCase = decisaoClienteAutenticadoUseCase;
         this.atualizarStatusUseCase = atualizarStatusUseCase;
         this.verificarEstoqueUseCase = verificarEstoqueUseCase;
         this.iniciarExecucaoUseCase = iniciarExecucaoUseCase;
@@ -113,6 +118,10 @@ public class OrdemServicoControllerClean {
 
     public void decisaoCliente(DecisaoClienteCommand command) {
         decisaoClienteUseCase.executar(command);
+    }
+
+    public void decisaoClienteAutenticado(DecisaoClienteAutenticadoCommand command) {
+        decisaoClienteAutenticadoUseCase.executar(command);
     }
 
     public void atualizarStatus(AtualizarStatusCommand command){

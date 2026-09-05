@@ -13,6 +13,8 @@ import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.Co
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoHandler;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoUseCase;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteautenticado.DecisaoClienteAutenticadoHandler;
+import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteautenticado.DecisaoClienteAutenticadoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteHandler;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.decisaoclienteorcamento.DecisaoClienteUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.enviarorcamento.EnviarOrcamentoHandler;
@@ -81,6 +83,13 @@ public class OrdemServicoConfig {
     }
 
     @Bean
+    public DecisaoClienteAutenticadoUseCase decisaoClienteAutenticadoUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway,
+                                                                          AprovarOrcamentoUseCase aprovarOrcamentoUseCase,
+                                                                          ReprovarOrcamentoUseCase reprovarOrcamentoUseCase) {
+        return new DecisaoClienteAutenticadoHandler(ordemServicoCommandGateway, aprovarOrcamentoUseCase, reprovarOrcamentoUseCase);
+    }
+
+    @Bean
     public AtualizarStatusUseCase atualizarStatusUseCaseUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway,
                                                                 IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase,
                                                                 ConcluirDiagnosticoUseCase concluirDiagnosticoUseCase,
@@ -135,6 +144,7 @@ public class OrdemServicoConfig {
                                                                    ReprovarOrcamentoUseCase reprovarOrcamentoUseCase,
                                                                    AprovarOrcamentoUseCase aprovarOrcamentoUseCase,
                                                                    DecisaoClienteUseCase decisaoClienteUseCase,
+                                                                   DecisaoClienteAutenticadoUseCase decisaoClienteAutenticadoUseCase,
                                                                    AtualizarStatusUseCase atualizarStatusUseCase,
                                                                    VerificarEstoqueUseCase verificarEstoqueUseCase,
                                                                    IniciarExecucaoUseCase iniciarExecucaoUseCase,
@@ -150,6 +160,7 @@ public class OrdemServicoConfig {
                 reprovarOrcamentoUseCase,
                 aprovarOrcamentoUseCase,
                 decisaoClienteUseCase,
+                decisaoClienteAutenticadoUseCase,
                 atualizarStatusUseCase,
                 verificarEstoqueUseCase,
                 iniciarExecucaoUseCase,
