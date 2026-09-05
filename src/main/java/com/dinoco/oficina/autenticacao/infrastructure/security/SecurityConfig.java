@@ -29,6 +29,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.GET, "/api/ordens-servico/rastreio/**").hasRole("CLIENTE")
+                .requestMatchers(HttpMethod.POST, "/api/ordens-servico/rastreio/*/decisao").hasRole("CLIENTE")
                 .requestMatchers(HttpMethod.POST, "/api/ordens-servico/webhooks/orcamentos/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/ordens-servico/webhooks/status/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
@@ -38,7 +39,11 @@ public class SecurityConfig {
                 "/swagger-ui/**",
                 "/swagger-ui.html"
                 ).permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().hasAnyRole(
+                            "ADMIN",
+                            "MECANICO",
+                            "ATENDENTE"
+                    )
         )
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 

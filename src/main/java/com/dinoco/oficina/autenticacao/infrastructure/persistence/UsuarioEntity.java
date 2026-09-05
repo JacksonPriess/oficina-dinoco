@@ -40,7 +40,6 @@ public class UsuarioEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // O Spring Security EXIGE que as roles comecem com "ROLE_"
         return List.of(new SimpleGrantedAuthority("ROLE_" + this.perfil.name()));
     }
 
