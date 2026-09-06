@@ -27,6 +27,12 @@ spring:
     # Indica onde os scripts do Flyway ficarão (este é o padrão, mas é bom deixar explícito)
     locations: classpath:db/migration
 
+# Logging estruturado em JSON
+logging:
+  structured:
+    format:
+      console: logstash
+
 # Configuração da porta da sua API (opcional, 8080 é o padrão)
 server:
   port: 8080
