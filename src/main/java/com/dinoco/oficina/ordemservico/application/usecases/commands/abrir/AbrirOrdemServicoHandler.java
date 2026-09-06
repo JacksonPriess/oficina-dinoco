@@ -8,10 +8,12 @@ import com.dinoco.oficina.ordemservico.domain.models.ItemOSProduto;
 import com.dinoco.oficina.ordemservico.domain.models.ItemOSServico;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
 import com.dinoco.oficina.cliente.application.gateways.ClienteQueryGateway;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
+@Slf4j
 public class AbrirOrdemServicoHandler implements AbrirOrdemServicoUseCase {
 
     private final OrdemServicoCommandGateway ordemServicoCommandGateway;
@@ -31,6 +33,13 @@ public class AbrirOrdemServicoHandler implements AbrirOrdemServicoUseCase {
 
     public AbrirOrdemServicoOutput executar(AbrirOrdemServicoCommand command) {
 
+        int quantidadeProdutos = command.produtos() != null ? command.produtos().size() : 0;
+
+        int quantidadeServicos = command.servicos() != null ? command.servicos().size() : 0;
+
+        log.info("Iniciando abertura de ordem de serviço. clienteId={}, veiculoId={}, quantidadeProdutos={}, quantidadeServicos={}",
+                command.clienteId(), command.veiculoId(), quantidadeProdutos, quantidadeServicos);
+
         OrdemServico novaOs = new OrdemServico(
                 command.clienteId(),
                 command.veiculoId(),
@@ -42,6 +51,12 @@ public class AbrirOrdemServicoHandler implements AbrirOrdemServicoUseCase {
             command.produtos().forEach(itemProdutoCommand -> {
                 BigDecimal precoVenda = catalogoProdutoGateway.buscarPrecoVendaAtual(itemProdutoCommand.produtoId());
                 if (precoVenda == null) {
+                    log.warn(
+                            "Falha ao abrir ordem de serviço. Produto não encontrado. produtoId={}, clienteId={}, veiculoId={}",
+                            itemProdutoCommand.produtoId(),
+                            command.clienteId(),
+                            command.veiculoId()
+                    );
                     throw new RecursoNaoEncontradoException("Produto com ID " + itemProdutoCommand.produtoId() + " não encontrado.");
                 }
                 ItemOSProduto itemOSProduto = new ItemOSProduto(itemProdutoCommand.produtoId(), itemProdutoCommand.quantidade(), precoVenda);
@@ -52,13 +67,25 @@ public class AbrirOrdemServicoHandler implements AbrirOrdemServicoUseCase {
         if (command.servicos() != null && !command.servicos().isEmpty()) {
             command.servicos().forEach(itemServicoCommand -> {
                 Optional<BigDecimal> precoPadraoOptional = catalogoServicoGateway.buscarPrecoPadrao(itemServicoCommand.servicoId());
-                BigDecimal precoPadrao = precoPadraoOptional.orElseThrow(() -> new RecursoNaoEncontradoException("Serviço com ID " + itemServicoCommand.servicoId() + " não encontrado."));
+
+                BigDecimal precoPadrao =
+                        precoPadraoOptional.orElseThrow(() -> {
+                            log.warn(
+                                    "Falha ao abrir ordem de serviço. Serviço não encontrado. servicoId={}, clienteId={}, veiculoId={}",
+                                    itemServicoCommand.servicoId(), command.clienteId(), command.veiculoId()
+                            );
+                            return new RecursoNaoEncontradoException("Serviço com ID " + itemServicoCommand.servicoId() + " não encontrado.");
+                        });
+
                 ItemOSServico itemOSServico = new ItemOSServico(itemServicoCommand.servicoId(), itemServicoCommand.mecanicoId(), precoPadrao);
                 novaOs.adicionarServico(itemOSServico);
             });
         }
 
         OrdemServico osSalva = ordemServicoCommandGateway.salvar(novaOs);
+
+        log.info("Ordem de serviço criada com sucesso. osId={}, codigoRastreio={}, clienteId={}, veiculoId={}, status={}",
+                osSalva.getId(), osSalva.getCodigoRastreio(), osSalva.getClienteId(), osSalva.getVeiculoId(), osSalva.getStatus());
 
         return new AbrirOrdemServicoOutput(
                 osSalva.getId(),

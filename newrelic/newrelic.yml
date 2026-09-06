@@ -11,3 +11,12 @@ common: &default_settings
 
   distributed_tracing:
     enabled: true
+
+  application_logging:
+    enabled: true
+
+    forwarding:
+      enabled: true
+
+      context_data:
+        enabled: true
