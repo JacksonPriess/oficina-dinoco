@@ -33,72 +33,85 @@ public class AbrirOrdemServicoHandler implements AbrirOrdemServicoUseCase {
 
     public AbrirOrdemServicoOutput executar(AbrirOrdemServicoCommand command) {
 
-        int quantidadeProdutos = command.produtos() != null ? command.produtos().size() : 0;
+        log.info("evento=os_criacao_iniciada clienteId={} veiculoId={}", command.clienteId(), command.veiculoId());
 
-        int quantidadeServicos = command.servicos() != null ? command.servicos().size() : 0;
+        try {
+            int quantidadeProdutos = command.produtos() != null ? command.produtos().size() : 0;
+            int quantidadeServicos = command.servicos() != null ? command.servicos().size() : 0;
 
-        log.info("Iniciando abertura de ordem de serviço. clienteId={}, veiculoId={}, quantidadeProdutos={}, quantidadeServicos={}",
-                command.clienteId(), command.veiculoId(), quantidadeProdutos, quantidadeServicos);
+            log.info("Iniciando abertura de ordem de serviço. clienteId={}, veiculoId={}, quantidadeProdutos={}, quantidadeServicos={}",
+                    command.clienteId(), command.veiculoId(), quantidadeProdutos, quantidadeServicos);
 
-        OrdemServico novaOs = new OrdemServico(
-                command.clienteId(),
-                command.veiculoId(),
-                command.quilometragemEntrada(),
-                command.reclamacaoCliente()
-        );
+            OrdemServico novaOs = new OrdemServico(
+                    command.clienteId(),
+                    command.veiculoId(),
+                    command.quilometragemEntrada(),
+                    command.reclamacaoCliente()
+            );
 
-        if (command.produtos() != null && !command.produtos().isEmpty()) {
-            command.produtos().forEach(itemProdutoCommand -> {
-                BigDecimal precoVenda = catalogoProdutoGateway.buscarPrecoVendaAtual(itemProdutoCommand.produtoId());
-                if (precoVenda == null) {
-                    log.warn(
-                            "Falha ao abrir ordem de serviço. Produto não encontrado. produtoId={}, clienteId={}, veiculoId={}",
-                            itemProdutoCommand.produtoId(),
-                            command.clienteId(),
-                            command.veiculoId()
-                    );
-                    throw new RecursoNaoEncontradoException("Produto com ID " + itemProdutoCommand.produtoId() + " não encontrado.");
-                }
-                ItemOSProduto itemOSProduto = new ItemOSProduto(itemProdutoCommand.produtoId(), itemProdutoCommand.quantidade(), precoVenda);
-                novaOs.adicionarProduto(itemOSProduto);
-            });
+            if (command.produtos() != null && !command.produtos().isEmpty()) {
+                command.produtos().forEach(itemProdutoCommand -> {
+                    BigDecimal precoVenda = catalogoProdutoGateway.buscarPrecoVendaAtual(itemProdutoCommand.produtoId());
+                    if (precoVenda == null) {
+                        log.warn(
+                                "Falha ao abrir ordem de serviço. Produto não encontrado. produtoId={}, clienteId={}, veiculoId={}",
+                                itemProdutoCommand.produtoId(),
+                                command.clienteId(),
+                                command.veiculoId()
+                        );
+                        throw new RecursoNaoEncontradoException("Produto com ID " + itemProdutoCommand.produtoId() + " não encontrado.");
+                    }
+                    ItemOSProduto itemOSProduto = new ItemOSProduto(itemProdutoCommand.produtoId(), itemProdutoCommand.quantidade(), precoVenda);
+                    novaOs.adicionarProduto(itemOSProduto);
+                });
+            }
+
+            if (command.servicos() != null && !command.servicos().isEmpty()) {
+                command.servicos().forEach(itemServicoCommand -> {
+                    Optional<BigDecimal> precoPadraoOptional = catalogoServicoGateway.buscarPrecoPadrao(itemServicoCommand.servicoId());
+
+                    BigDecimal precoPadrao =
+                            precoPadraoOptional.orElseThrow(() -> {
+                                log.warn(
+                                        "Falha ao abrir ordem de serviço. Serviço não encontrado. servicoId={}, clienteId={}, veiculoId={}",
+                                        itemServicoCommand.servicoId(), command.clienteId(), command.veiculoId()
+                                );
+                                return new RecursoNaoEncontradoException("Serviço com ID " + itemServicoCommand.servicoId() + " não encontrado.");
+                            });
+
+                    ItemOSServico itemOSServico = new ItemOSServico(itemServicoCommand.servicoId(), itemServicoCommand.mecanicoId(), precoPadrao);
+                    novaOs.adicionarServico(itemOSServico);
+                });
+            }
+
+            OrdemServico osSalva = ordemServicoCommandGateway.salvar(novaOs);
+
+            log.info(
+                    "evento=os_criacao_sucesso osId={} codigoRastreio={} clienteId={} veiculoId={} status={}",
+                    osSalva.getId(),
+                    osSalva.getCodigoRastreio(),
+                    osSalva.getClienteId(),
+                    osSalva.getVeiculoId(),
+                    osSalva.getStatus()
+            );
+
+            return new AbrirOrdemServicoOutput(
+                    osSalva.getId(),
+                    osSalva.getCodigoRastreio(),
+                    osSalva.getClienteId(),
+                    osSalva.getVeiculoId(),
+                    osSalva.getStatus(),
+                    osSalva.getReclamacaoCliente(),
+                    osSalva.getQuilometragemEntrada(),
+                    osSalva.getValorTotalServicos(),
+                    osSalva.getValorTotalProdutos(),
+                    osSalva.getValorTotalOS(),
+                    osSalva.getValorDesconto()
+            );
+        } catch (Exception ex) {
+            log.error("evento=os_criacao_falha clienteId={} veiculoId={} tipoErro={} mensagem={}",
+                    command.clienteId(), command.veiculoId(), ex.getClass().getSimpleName(), ex.getMessage());
+            throw ex;
         }
-
-        if (command.servicos() != null && !command.servicos().isEmpty()) {
-            command.servicos().forEach(itemServicoCommand -> {
-                Optional<BigDecimal> precoPadraoOptional = catalogoServicoGateway.buscarPrecoPadrao(itemServicoCommand.servicoId());
-
-                BigDecimal precoPadrao =
-                        precoPadraoOptional.orElseThrow(() -> {
-                            log.warn(
-                                    "Falha ao abrir ordem de serviço. Serviço não encontrado. servicoId={}, clienteId={}, veiculoId={}",
-                                    itemServicoCommand.servicoId(), command.clienteId(), command.veiculoId()
-                            );
-                            return new RecursoNaoEncontradoException("Serviço com ID " + itemServicoCommand.servicoId() + " não encontrado.");
-                        });
-
-                ItemOSServico itemOSServico = new ItemOSServico(itemServicoCommand.servicoId(), itemServicoCommand.mecanicoId(), precoPadrao);
-                novaOs.adicionarServico(itemOSServico);
-            });
-        }
-
-        OrdemServico osSalva = ordemServicoCommandGateway.salvar(novaOs);
-
-        log.info("Ordem de serviço criada com sucesso. osId={}, codigoRastreio={}, clienteId={}, veiculoId={}, status={}",
-                osSalva.getId(), osSalva.getCodigoRastreio(), osSalva.getClienteId(), osSalva.getVeiculoId(), osSalva.getStatus());
-
-        return new AbrirOrdemServicoOutput(
-                osSalva.getId(),
-                osSalva.getCodigoRastreio(),
-                osSalva.getClienteId(),
-                osSalva.getVeiculoId(),
-                osSalva.getStatus(),
-                osSalva.getReclamacaoCliente(),
-                osSalva.getQuilometragemEntrada(),
-                osSalva.getValorTotalServicos(),
-                osSalva.getValorTotalProdutos(),
-                osSalva.getValorTotalOS(),
-                osSalva.getValorDesconto()
-        );
     }
 }
