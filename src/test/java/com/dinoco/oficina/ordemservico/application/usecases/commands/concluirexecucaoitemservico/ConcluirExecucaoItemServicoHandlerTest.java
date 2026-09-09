@@ -63,6 +63,10 @@ class ConcluirExecucaoItemServicoHandlerTest {
                 java.math.BigDecimal.valueOf(100),
                 java.time.LocalDateTime.now(),
                 null,
+                null,
+                null,
+                null,
+                null,
                 null
         );
         osExistente.setItensServico(itensServico);

@@ -71,6 +71,10 @@ class VerificarEstoqueHandlerTest {
                 java.math.BigDecimal.valueOf(200),
                 java.time.LocalDateTime.now(),
                 null,
+                null,
+                null,
+                null,
+                null,
                 null
         );
         osExistente.setItensProduto(itensProduto);
@@ -122,6 +126,10 @@ class VerificarEstoqueHandlerTest {
                 java.math.BigDecimal.valueOf(100),
                 java.math.BigDecimal.valueOf(200),
                 java.time.LocalDateTime.now(),
+                null,
+                null,
+                null,
+                null,
                 null,
                 null
         );
@@ -184,6 +192,10 @@ class VerificarEstoqueHandlerTest {
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.ZERO,
                 java.time.LocalDateTime.now(),
+                null,
+                null,
+                null,
+                null,
                 null,
                 null
         );

@@ -63,6 +63,10 @@ class OrdemServicoTest {
                     RECLAMACAO, "Laudo técnico", QUILOMETRAGEM, BigDecimal.ZERO,
                     BigDecimal.valueOf(100), BigDecimal.valueOf(50), BigDecimal.valueOf(150),
                     dataEntrada,null,
+                    null,
+                    null,
+                    null,
+                    null,
                     null
             );
 

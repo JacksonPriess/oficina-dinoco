@@ -95,7 +95,8 @@ public class DataSeedRunner implements CommandLineRunner {
             CriarProdutoUseCase criarProdutoUseCase,
             AbrirOrdemServicoUseCase abrirOrdemServicoUseCase,
             IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase,
-            AdicionarItemProdutoUseCase adicionarItemProdutoUseCase, AlterarItemProdutoUseCase alterarItemProdutoUseCase,
+            AdicionarItemProdutoUseCase adicionarItemProdutoUseCase,
+            AlterarItemProdutoUseCase alterarItemProdutoUseCase,
             AdicionarItemServicoUseCase adicionarItemServicoUseCase,
             ConcluirDiagnosticoUseCase concluirDiagnosticoUseCase,
             EnviarOrcamentoUseCase enviarOrcamentoUseCase,
@@ -104,7 +105,9 @@ public class DataSeedRunner implements CommandLineRunner {
             IniciarExecucaoItemServicoUseCase iniciarExecucaoItemServicoUseCase,
             ConcluirExecucaoItemServicoUseCase concluirExecucaoItemServicoUseCase,
             FinalizarExecucaoUseCase finalizarExecucaoUseCase,
-            ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase, RegistrarEntradaUseCase registrarEntradaUseCase, VerificarEstoqueUseCase verificarEstoqueUseCase) {
+            ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase,
+            RegistrarEntradaUseCase registrarEntradaUseCase,
+            VerificarEstoqueUseCase verificarEstoqueUseCase) {
         this.clienteGateway = clienteGateway;
         this.clienteQueryGateway = clienteQueryGateway;
         this.veiculoGateway = veiculoGateway;

@@ -32,6 +32,11 @@ public class OrdemServico {
     private LocalDateTime dataSaida;
     private LocalDateTime dataReprovacao;
 
+    private LocalDateTime dataInicioDiagnostico;
+    private LocalDateTime dataFinalDiagnostico;
+    private LocalDateTime dataInicioExecucao;
+    private LocalDateTime dataFinalExecucao;
+
     private List<ItemOSServico> itensServico;
     private List<ItemOSProduto> itensProduto;
 
@@ -54,7 +59,8 @@ public class OrdemServico {
 
     public OrdemServico(Long id, String codigoRastreio, Long clienteId, Long veiculoId, StatusOS status,
                         String reclamacaoCliente, String laudoTecnico, Integer quilometragemEntrada, BigDecimal valorDesconto,
-                        BigDecimal valorTotalServicos, BigDecimal valorTotalProdutos, BigDecimal valorTotalOS, LocalDateTime dataEntrada, LocalDateTime dataSaida, LocalDateTime dataReprovacao) {
+                        BigDecimal valorTotalServicos, BigDecimal valorTotalProdutos, BigDecimal valorTotalOS, LocalDateTime dataEntrada, LocalDateTime dataSaida, LocalDateTime dataReprovacao,
+                        LocalDateTime dataInicioDiagnostico, LocalDateTime dataFinalDiagnostico, LocalDateTime dataInicioExecucao, LocalDateTime dataFinalExecucao ) {
         this.id = id;
         this.codigoRastreio = codigoRastreio;
         this.clienteId = clienteId;
@@ -70,6 +76,10 @@ public class OrdemServico {
         this.dataEntrada = dataEntrada;
         this.dataSaida = dataSaida;
         this.dataReprovacao = dataReprovacao;
+        this.dataInicioDiagnostico = dataInicioDiagnostico;
+        this.dataFinalDiagnostico = dataFinalDiagnostico;
+        this.dataInicioExecucao = dataInicioExecucao;
+        this.dataFinalExecucao = dataFinalExecucao;
         this.itensServico = new ArrayList<>();
         this.itensProduto = new ArrayList<>();
     }
@@ -79,6 +89,7 @@ public class OrdemServico {
             throw new TransicaoStatusInvalidaException("Para iniciar o diagnóstico, a OS deve estar RECEBIDA.");
         }
         this.status = StatusOS.EM_DIAGNOSTICO;
+        this.dataInicioDiagnostico = LocalDateTime.now();
     }
 
     public void adicionarProduto(ItemOSProduto novoProduto) {
@@ -131,6 +142,7 @@ public class OrdemServico {
         }
         this.laudoTecnico = laudoTecnico;
         this.status = StatusOS.AGUARDANDO_ORCAMENTO;
+        this.dataFinalDiagnostico = LocalDateTime.now();
     }
 
     /**
@@ -233,6 +245,7 @@ public class OrdemServico {
     public void iniciarExecucao() {
         validarStatusAtual(StatusOS.AGUARDANDO_EXECUCAO);
         this.status = StatusOS.EM_EXECUCAO;
+        this.dataInicioExecucao = LocalDateTime.now();
     }
 
     public void finalizarExecucao() {
@@ -245,6 +258,7 @@ public class OrdemServico {
             throw new RegraNegocioOSException("Existem serviços pendentes. Conclua todos antes de finalizar a OS.");
         }
         this.status = StatusOS.FINALIZADA;
+        this.dataFinalExecucao = LocalDateTime.now();
     }
 
     public void concluir() {

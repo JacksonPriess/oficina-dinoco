@@ -64,6 +64,10 @@ class AlterarItemServicoHandlerTest {
                 java.math.BigDecimal.ZERO,
                 java.time.LocalDateTime.now(),
                 null,
+                null,
+                null,
+                null,
+                null,
                 null
         );
         osExistente.setItensServico(itensServico);
@@ -108,6 +112,10 @@ class AlterarItemServicoHandlerTest {
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.ZERO,
                 java.time.LocalDateTime.now(),
+                null,
+                null,
+                null,
+                null,
                 null,
                 null
         );

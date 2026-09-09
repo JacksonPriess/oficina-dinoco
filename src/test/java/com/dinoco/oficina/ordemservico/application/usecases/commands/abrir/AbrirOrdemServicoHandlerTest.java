@@ -60,6 +60,10 @@ class AbrirOrdemServicoHandlerTest {
                 BigDecimal.ZERO,
                 LocalDateTime.now(),
                 null,
+                null,
+                null,
+                null,
+                null,
                 null
         );
 

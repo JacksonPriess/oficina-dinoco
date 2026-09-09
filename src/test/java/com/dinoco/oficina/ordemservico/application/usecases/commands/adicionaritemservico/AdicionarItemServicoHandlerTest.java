@@ -57,6 +57,10 @@ class AdicionarItemServicoHandlerTest {
                 java.math.BigDecimal.ZERO,
                 java.time.LocalDateTime.now(),
                 null,
+                null,
+                null,
+                null,
+                null,
                 null
         );
         osExistente.setItensServico(new java.util.ArrayList<>());
@@ -117,6 +121,10 @@ class AdicionarItemServicoHandlerTest {
                 java.math.BigDecimal.ZERO,
                 java.math.BigDecimal.ZERO,
                 java.time.LocalDateTime.now(),
+                null,
+                null,
+                null,
+                null,
                 null,
                 null
         );

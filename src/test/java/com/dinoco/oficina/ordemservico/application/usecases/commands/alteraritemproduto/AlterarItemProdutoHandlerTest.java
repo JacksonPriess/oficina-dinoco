@@ -59,6 +59,10 @@ class AlterarItemProdutoHandlerTest {
                 java.math.BigDecimal.ZERO,
                 java.time.LocalDateTime.now(),
                 null,
+                null,
+                null,
+                null,
+                null,
                 null
         );
         osExistente.setItensProduto(itensProduto);
