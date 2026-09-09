@@ -64,6 +64,18 @@ public class OrdemServicoEntity {
     @Column(name = "data_reprovacao")
     private LocalDateTime dataReprovacao;
 
+    @Column(name = "data_inicio_diagnostico")
+    private LocalDateTime dataInicioDiagnostico;
+
+    @Column(name = "data_final_diagnostico")
+    private LocalDateTime dataFinalDiagnostico;
+
+    @Column(name = "data_inicio_execucao")
+    private LocalDateTime dataInicioExecucao;
+
+    @Column(name = "data_final_execucao")
+    private LocalDateTime dataFinalExecucao;
+
     @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemOSServicoEntity> itensServico = new ArrayList<>();
 

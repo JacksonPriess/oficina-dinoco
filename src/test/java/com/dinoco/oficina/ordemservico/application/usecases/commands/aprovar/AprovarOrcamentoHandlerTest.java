@@ -76,6 +76,10 @@ class AprovarOrcamentoHandlerTest {
                 BigDecimal.valueOf(200),
                 java.time.LocalDateTime.now(),
                 null,
+                null,
+                null,
+                null,
+                null,
                 null
         );
         osExistente.setItensProduto(itensProduto);
@@ -130,6 +134,10 @@ class AprovarOrcamentoHandlerTest {
                 BigDecimal.valueOf(100),
                 BigDecimal.valueOf(200),
                 java.time.LocalDateTime.now(),
+                null,
+                null,
+                null,
+                null,
                 null,
                 null
         );

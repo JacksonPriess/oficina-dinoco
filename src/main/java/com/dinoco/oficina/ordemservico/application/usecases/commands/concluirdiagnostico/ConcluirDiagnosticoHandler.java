@@ -3,7 +3,11 @@ package com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdi
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoCommandGateway;
 import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.ordemservico.domain.models.OrdemServico;
+import lombok.extern.slf4j.Slf4j;
 
+import java.time.Duration;
+
+@Slf4j
 public class ConcluirDiagnosticoHandler implements ConcluirDiagnosticoUseCase {
 
     private final OrdemServicoCommandGateway ordemServicoCommandGateway;
@@ -14,9 +18,14 @@ public class ConcluirDiagnosticoHandler implements ConcluirDiagnosticoUseCase {
 
     @Override
     public void executar(ConcluirDiagnosticoCommand command) {
-        OrdemServico os = ordemServicoCommandGateway.buscarParaAlteracao(command.osId())
+        OrdemServico ordemServico = ordemServicoCommandGateway.buscarParaAlteracao(command.osId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("OS não encontrada."));
-        os.concluirDiagnostico(command.laudo());
-        ordemServicoCommandGateway.salvar(os);
+
+        ordemServico.concluirDiagnostico(command.laudo());
+
+        ordemServicoCommandGateway.salvar(ordemServico);
+
+        Duration duracao = Duration.between(ordemServico.getDataInicioDiagnostico(), ordemServico.getDataFinalDiagnostico());
+        log.info("evento=os_diagnostico_concluido osId={} duracaoMs={}", ordemServico.getId(), duracao.toMillis());
     }
 }

@@ -58,6 +58,10 @@ class AdicionarItemProdutoHandlerTest {
                 BigDecimal.ZERO,
                 LocalDateTime.now(),
                 null,
+                null,
+                null,
+                null,
+                null,
                 null
         );
         osExistente.setItensProduto(new java.util.ArrayList<>());

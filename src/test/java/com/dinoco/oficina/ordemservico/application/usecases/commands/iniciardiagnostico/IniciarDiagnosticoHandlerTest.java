@@ -52,6 +52,10 @@ class IniciarDiagnosticoHandlerTest {
                 java.math.BigDecimal.ZERO,
                 java.time.LocalDateTime.now(),
                 null,
+                null,
+                null,
+                null,
+                null,
                 null
         );
 

@@ -67,6 +67,10 @@ class EnviarOrcamentoHandlerTest {
                 BigDecimal.valueOf(200),
                 java.time.LocalDateTime.now(),
                 null,
+                null,
+                null,
+                null,
+                null,
                 null
         );
         osExistente.setItensServico(itensServico);

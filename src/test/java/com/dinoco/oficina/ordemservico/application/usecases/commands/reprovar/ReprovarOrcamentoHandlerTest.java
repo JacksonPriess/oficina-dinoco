@@ -52,7 +52,11 @@ class ReprovarOrcamentoHandlerTest {
                 java.math.BigDecimal.valueOf(200),
                 java.time.LocalDateTime.now(),
                 null,
-                java.time.LocalDateTime.now()
+                java.time.LocalDateTime.now(),
+                null,
+                null,
+                null,
+                null
         );
 
         when(ordemServicoCommandGateway.buscarParaAlteracao(1L))
