@@ -54,10 +54,13 @@ public class OrdemServicoCommandGatewayImpl implements OrdemServicoCommandGatewa
         entity.setReclamacaoCliente(dominio.getReclamacaoCliente());
         entity.setLaudoTecnico(dominio.getLaudoTecnico());
         entity.setQuilometragemEntrada(dominio.getQuilometragemEntrada());
-        entity.setValorDesconto(dominio.getValorDesconto());
+
         entity.setValorTotalServicos(dominio.getValorTotalServicos());
         entity.setValorTotalProdutos(dominio.getValorTotalProdutos());
+        entity.setValorDesconto(dominio.getValorDesconto());
         entity.setValorTotalOS(dominio.getValorTotalOS());
+
+        entity.setDataEntrada(dominio.getDataEntrada());
         entity.setDataSaida(dominio.getDataSaida());
         entity.setDataReprovacao(dominio.getDataReprovacao());
         entity.setDataInicioDiagnostico(dominio.getDataInicioDiagnostico());
