@@ -31,7 +31,6 @@ public class OrdemServico {
     private LocalDateTime dataEntrada;
     private LocalDateTime dataSaida;
     private LocalDateTime dataReprovacao;
-
     private LocalDateTime dataInicioDiagnostico;
     private LocalDateTime dataFinalDiagnostico;
     private LocalDateTime dataInicioExecucao;
