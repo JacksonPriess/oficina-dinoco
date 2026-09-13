@@ -1,10 +1,10 @@
 type: collection.insomnia.rest/5.0
 schema_version: "5.1"
-name: Oficina dinoco 14/07
+name: Oficina dinoco 12/09
 meta:
   id: wrk_e56bb46c56ea4557ac97b2930ea18058
   created: 1778636136119
-  modified: 1784073711829
+  modified: 1789264472589
   description: ""
 collection:
   - name: Serviço
@@ -15,12 +15,12 @@ collection:
       sortKey: -1776294974731.875
       description: ""
     children:
-      - url: http://localhost:8080/api/servicos/2
+      - url: "{{ _.URL_API_GTW }}/api/servicos/2"
         name: Buscar por Id
         meta:
           id: req_864cbc770388484b9b50781b506b6632
           created: 1776294529355
-          modified: 1781745680411
+          modified: 1789173301293
           isPrivate: false
           description: ""
           sortKey: -1776294763923
@@ -41,12 +41,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/servicos"
+      - url: "{{ _.URL_API_GTW }}/api/servicos"
         name: Create
         meta:
           id: req_d240c39a2ae6440b8a21e6d6d4c49d6e
           created: 1776295795020
-          modified: 1783788611921
+          modified: 1788696581586
           isPrivate: false
           description: ""
           sortKey: -1776294764023
@@ -143,16 +143,50 @@ collection:
     meta:
       id: fld_de0e04871345408d86d63780d81c8618
       created: 1776295081364
-      modified: 1784073690825
+      modified: 1789264560535
       sortKey: -1776295106829
       description: ""
     children:
-      - url: "{{ _.URLAPI }}/api/auth/login"
-        name: Login
+      - url: "{{ _.URL_API_GTW }}/api/auth/trocar-senha"
+        name: Reset senha
         meta:
-          id: req_212c49b1838d4e868ec8d0d4e98da8ff
-          created: 1775843100934
-          modified: 1783948801587
+          id: req_6a1a35ef64fa491288eee5c3f3d9fb3b
+          created: 1778636794873
+          modified: 1789264688374
+          isPrivate: false
+          description: ""
+          sortKey: -1789264682202
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            { 
+            	"novaSenha" : "MinhaSenhaNova@"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: "{{token}}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.URL_API_GTW }}/api/auth/login"
+        name: Auth Funcionarios
+        meta:
+          id: req_4d27aa1657de4e67bfbe1ee0f36a3962
+          created: 1786284426725
+          modified: 1789264685179
           isPrivate: false
           description: >-
             Input do ADMIN
@@ -188,15 +222,11 @@ collection:
             		"Acesso negado. É obrigatório redefinir a senha provisória antes de continuar."
             	]
             }
-          sortKey: -1776295085079
+          sortKey: -1789264682302
         method: POST
         body:
           mimeType: application/json
-          text: |-
-            {
-            	"username": "admin",
-            	"password": "123456"
-            }
+          text: '{ "username": "admin", "password": "123456" }'
         headers:
           - name: Content-Type
             value: application/json
@@ -219,32 +249,44 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: http://localhost:8080/api/auth/trocar-senha
-        name: Reset senha
+      - url: "{{URL_API_GTW}}/auth/cliente"
+        name: Auth Cliente
         meta:
-          id: req_6a1a35ef64fa491288eee5c3f3d9fb3b
-          created: 1778636794873
-          modified: 1783470825357
+          id: req_3b1f784d1e4642e8bf1cd65bcc755a82
+          created: 1788128246410
+          modified: 1789264682456
           isPrivate: false
-          description: ""
-          sortKey: -1776295004815
-        method: PUT
+          description: >
+            Esse endpoint /auth/cliente , está configurado para acionar a Lambda
+            que fará 
+
+
+            Validação do CPF;
+
+            Consultar se cliente existe como ativo no banco;
+
+            E gerar e retornar um token válido para que o cliente possa acessar
+            outras rotas destinadas ao cliente.
+
+
+
+            "cpf": "00018563082", do cliente id - 1
+          sortKey: -1789264682402
+        method: POST
         body:
           mimeType: application/json
           text: |-
-            { 
-            	"novaSenha" : "MinhaSenhaNova@"
+            {
+              "cpf": "00018563082"
             }
         headers:
           - name: Content-Type
             value: application/json
-          - name: User-Agent
-            value: insomnia/12.5.0
-            description: ""
-            disabled: false
-        authentication:
-          type: bearer
-          token: "{{token}}"
+        scripts:
+          afterResponse: |-
+            const response = insomnia.response.json();
+            const token = response.token;
+            insomnia.environment.set("token", token);
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -261,12 +303,12 @@ collection:
       sortKey: -1776295062796.625
       description: ""
     children:
-      - url: "{{ _.URLAPI }}/api/clientes"
+      - url: "{{URL_API_GTW}}/api/clientes"
         name: Create
         meta:
           id: req_084877a4bd97457ab5486d6bbe3f502d
           created: 1776296344559
-          modified: 1783472250549
+          modified: 1788141102637
           isPrivate: false
           description: |-
             { 
@@ -399,12 +441,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/clientes/10"
+      - url: "{{ _.URL_API_GTW }}/api/clientes/1"
         name: Buscar por Id
         meta:
           id: req_a14bca86743a43769780aa8cfc2be8b1
           created: 1776296344559
-          modified: 1783948932862
+          modified: 1789264532393
           isPrivate: false
           description: ""
           sortKey: -1776294763923
@@ -416,7 +458,7 @@ collection:
             disabled: false
         authentication:
           type: bearer
-          token: "{{token}}"
+          token: "{{ _.token }}"
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -526,12 +568,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/veiculos"
+      - url: "{{ _.URL_API_GTW }}/api/veiculos"
         name: Create
         meta:
           id: req_4a59e441bbda492bbb822a916861382f
           created: 1776296619434
-          modified: 1783473949966
+          modified: 1788696601454
           isPrivate: false
           description: ""
           sortKey: -1776294764023
@@ -540,7 +582,7 @@ collection:
           mimeType: application/json
           text: |-
             {
-              "placa": "MDC2224",
+              "placa": "AWO1909",
               "marca": "Renault",
               "modelo": "Clio",
               "anoFabricacao": 2012,
@@ -593,12 +635,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/veiculos/1"
+      - url: "{{ _.URL_API_GTW }}/api/veiculos/1"
         name: Buscar por Id
         meta:
           id: req_ff39f4895c934bc9a5d997a8f40c37c8
           created: 1776296619434
-          modified: 1783473984563
+          modified: 1788617203997
           isPrivate: false
           description: ""
           sortKey: -1776294763923
@@ -627,12 +669,12 @@ collection:
       sortKey: -1776294754470
       description: ""
     children:
-      - url: "{{ _.URLAPI }}/api/funcionarios"
+      - url: "{{ _.URL_API_GTW }}/api/funcionarios"
         name: Create
         meta:
           id: req_1aae997b9e3c4eac9ae4728de0e39034
           created: 1776571995549
-          modified: 1783474086211
+          modified: 1788617241406
           isPrivate: false
           description: ""
           sortKey: -1776294764023
@@ -641,12 +683,12 @@ collection:
           mimeType: application/json
           text: |-
             { 
-            	"nome" : "João da Silva",	
-            	"cpf" : "41280173025",	
+            	"nome" : "Jackson Priess",	
+            	"cpf" : "00958424977",	
             	"cargo" : "MECANICO",	
             	"criarAcesso" : true,
-              "login" : "joao.silva",
-              "senha" : "joao2026"
+              "login" : "jackson.priess",
+              "senha" : "123456"
             }
         headers:
           - name: Content-Type
@@ -666,12 +708,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: http://localhost:8080/api/funcionarios/1
+      - url: "{{ _.URL_API_GTW }}/api/funcionarios/1"
         name: Buscar por Id
         meta:
           id: req_904e14cf09dd499899722cc04bfeab3b
           created: 1776571995549
-          modified: 1778639440336
+          modified: 1788576395817
           isPrivate: false
           description: ""
           sortKey: -1776294763923
@@ -761,7 +803,7 @@ collection:
     meta:
       id: fld_150de821226d4a03a50b6e740e8b539b
       created: 1776575995862
-      modified: 1784072238266
+      modified: 1789264756655
       sortKey: -1776295084812.8125
       description: ""
     children:
@@ -801,12 +843,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id }}"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id }}"
         name: Buscar por Id
         meta:
           id: req_6d4aa5d534d94719bf246f761059a5d5
           created: 1776575995862
-          modified: 1783995157599
+          modified: 1789164991865
           isPrivate: false
           description: ""
           sortKey: -1776294764019.875
@@ -853,57 +895,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico"
-        name: Abrir OS
-        meta:
-          id: req_c84981a3df1840fcacf44e6438ef0736
-          created: 1776575995862
-          modified: 1783788654548
-          isPrivate: false
-          description: ""
-          sortKey: -1776294764023
-        method: POST
-        body:
-          mimeType: application/json
-          text: |-
-            {
-              "clienteId": 1,
-              "veiculoId": 1,
-              "quilometragemEntrada": 200000,
-              "reclamacaoCliente": "Barulho no freio revisao filtro ar"
-            }
-        headers:
-          - name: Content-Type
-            value: application/json
-          - name: User-Agent
-            value: insomnia/12.5.0
-            description: ""
-            disabled: false
-        authentication:
-          type: bearer
-          token: "{{token}}"
-        scripts:
-          afterResponse: >-
-            const responseData = insomnia.response.json();
-
-            insomnia.environment.set("os_rastreio",
-            responseData.codigoRastreio);
-
-            insomnia.environment.set("os_id", responseData.id); 
-        settings:
-          renderRequestBody: true
-          encodeUrl: true
-          followRedirects: global
-          cookies:
-            send: true
-            store: true
-          rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id }}/servicos"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id }}/servicos"
         name: Adicionar Item de Serviço na OS
         meta:
           id: req_af58d3c366c742a7bf685a7feab8d900
           created: 1776577445768
-          modified: 1783871181831
+          modified: 1789160933082
           isPrivate: false
           description: ""
           sortKey: -1776294764010.5
@@ -912,7 +909,7 @@ collection:
           mimeType: application/json
           text: |-
             {
-              "servicoId": 6
+              "servicoId": 1
             }
         headers:
           - name: Content-Type
@@ -965,12 +962,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id }}/produtos"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id }}/produtos"
         name: Adicionar Item de Produto na OS
         meta:
           id: req_67a936bde8ca41bcb071f11655c2d11c
           created: 1776577579308
-          modified: 1783871173285
+          modified: 1789160924455
           isPrivate: false
           description: ""
           sortKey: -1776294764013.625
@@ -979,7 +976,7 @@ collection:
           mimeType: application/json
           text: |
             {
-              "produtoId": 6, 
+              "produtoId": 1, 
               "quantidade": 1 
             }
         headers:
@@ -1000,12 +997,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id }}/iniciar-diagnostico"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id }}/iniciar-diagnostico"
         name: Iniciar diagnóstico OS
         meta:
           id: req_f31ec5386d4c4a8694901403e70d4c74
           created: 1776577931338
-          modified: 1783651562396
+          modified: 1789160916843
           isPrivate: false
           description: ""
           sortKey: -1776294764016.75
@@ -1026,46 +1023,21 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/rastreio/{{ _.os_rastreio }}"
-        name: Buscar por Código de Rastreio
-        meta:
-          id: req_882e28d58fca4078979489267b0eb0fb
-          created: 1777142840978
-          modified: 1783995322457
-          isPrivate: false
-          description: ""
-          sortKey: -1776294764018.3125
-        method: GET
-        headers:
-          - name: User-Agent
-            value: insomnia/12.5.0
-            description: ""
-            disabled: false
-        authentication:
-          type: none
-        settings:
-          renderRequestBody: true
-          encodeUrl: true
-          followRedirects: global
-          cookies:
-            send: true
-            store: true
-          rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id }}/concluir-diagnostico"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id }}/concluir-diagnostico"
         name: Concluir diagnóstico OS
         meta:
           id: req_e7d1b8141cd74f83b337122c3736b6d9
           created: 1777163202118
-          modified: 1783871207112
+          modified: 1789160947245
           isPrivate: false
           description: ""
           sortKey: -1776294763999.5625
         method: POST
         body:
           mimeType: application/json
-          text: |-
+          text: >-
             {
-            	"laudo" : "Realizado análise e precisa de revisão em X Y Z"
+            	"laudo" : "Realizado análise da OS e precisa de revisão em X Y ZZZZ"
             }
         headers:
           - name: Content-Type
@@ -1085,12 +1057,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id }}/enviar-orcamento"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id }}/enviar-orcamento"
         name: Enviar orçamento
         meta:
           id: req_3698cb976a274b10a32e8e30ecf8b825
           created: 1777170424202
-          modified: 1783771027289
+          modified: 1789169906355
           isPrivate: false
           description: ""
           sortKey: -1776294763998.7812
@@ -1111,12 +1083,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id }}/aprovar"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id }}/aprovar"
         name: Aprovar orçamento
         meta:
           id: req_113e6efa8ee144b39d219261db76830a
           created: 1777230132019
-          modified: 1783794062685
+          modified: 1789161142592
           isPrivate: false
           description: ""
           sortKey: -1776294763998.3906
@@ -1182,12 +1154,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id }}/iniciar-execucao"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id }}/iniciar-execucao"
         name: Iniciar Execucao da OS
         meta:
           id: req_4f7b4e1651b248d09bcdbab474225158
           created: 1777231383929
-          modified: 1783772515626
+          modified: 1789161152806
           isPrivate: false
           description: ""
           sortKey: -1776294763998.0977
@@ -1208,12 +1180,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id }}/finalizar-execucao"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id }}/finalizar-execucao"
         name: Finalizar Execucao da OS
         meta:
           id: req_a1604b81dc2a4304867287fbb69cf532
           created: 1777231516746
-          modified: 1783773715942
+          modified: 1789161201743
           isPrivate: false
           description: ""
           sortKey: -1776294763998.064
@@ -1234,13 +1206,13 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id
-          }}/servicos/5/iniciar-execucao"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id
+          }}/servicos/7/iniciar-execucao"
         name: Iniciar Execucao Item de Serviço da OS
         meta:
           id: req_8f6f1d2c3c87466ba51ea0c7cc4c46b5
           created: 1777231560033
-          modified: 1783794885275
+          modified: 1789165532679
           isPrivate: false
           description: >-
             Esse endpoint deve ser acionado para todos os itens de servico da
@@ -1276,13 +1248,13 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id
-          }}/servicos/5/concluir-execucao"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id
+          }}/servicos/7/concluir-execucao"
         name: Concluir Execucao Item de Serviço da OS
         meta:
           id: req_a58842933e424d8a8649d123f5018649
           created: 1777231665627
-          modified: 1783794894170
+          modified: 1789165540226
           isPrivate: false
           description: >
             Esse endpoint deve ser acionado para todos os itens de servico da
@@ -1296,7 +1268,7 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"dataxxxHoraFim": "2026-07-11T11:00:00"
+            	
             }
         headers:
           - name: Content-Type
@@ -1316,12 +1288,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id }}/concluir"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id }}/concluir"
         name: Concluir Execucao da OS
         meta:
           id: req_457552cbe2804fcb9895db19105b158b
           created: 1777231782579
-          modified: 1783774963340
+          modified: 1789161470565
           isPrivate: false
           description: ""
           sortKey: -1776294763998.0244
@@ -1342,12 +1314,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/detalhes/OS-C8358718"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/detalhes/{{ _.os_rastreio }}"
         name: Buscar Detalhes da OS por Código de Rastreio
         meta:
           id: req_db8f8057be1146119a7561a993c1da7e
           created: 1777339527186
-          modified: 1783653292393
+          modified: 1789169869350
           isPrivate: false
           description: ""
           sortKey: -1776294764017.5312
@@ -1368,12 +1340,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico"
         name: Buscar todas
         meta:
           id: req_b00e944f98c34fc282e63034633b9c8e
           created: 1778209408504
-          modified: 1783472166782
+          modified: 1788700060369
           isPrivate: false
           description: ""
           sortKey: -1776294764021.4375
@@ -1394,12 +1366,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico"
         name: Abrir OS - Com Produtos e Serviços
         meta:
           id: req_0cedcc414dda43ef8add8dae0fca23b2
           created: 1783802618944
-          modified: 1784066570689
+          modified: 1788745897489
           isPrivate: false
           description: ""
           sortKey: -1776294764022.6094
@@ -1451,11 +1423,11 @@ collection:
             store: true
           rebuildPath: true
       - url: "{{ _.URLAPI }}/api/ordens-servico/webhooks/orcamentos/{{ _.os_rastreio }}"
-        name: "Web Hook Orçamento "
+        name: Decisão Orçamento por Web Hook (simulado)
         meta:
           id: req_ed0245fa5ca642919615a51b28ec715b
           created: 1783871233081
-          modified: 1784072342976
+          modified: 1788480998845
           isPrivate: false
           description: |-
             {
@@ -1572,12 +1544,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/listagem"
-        name: Listagem OS - Ordenada - Fase 2
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/listagem"
+        name: Listagem OS - Ordenada
         meta:
           id: req_e02f1e80a5164c5ba11f0709bb364bb2
           created: 1783889653423
-          modified: 1783889664020
+          modified: 1789264771909
           isPrivate: false
           description: ""
           sortKey: -1776294764020.6562
@@ -1598,6 +1570,128 @@ collection:
             send: true
             store: true
           rebuildPath: true
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico"
+        name: Abrir OS - Simples
+        meta:
+          id: req_6dbaf81ee4774a3db5b900c78b5b04ae
+          created: 1788131911942
+          modified: 1789264747920
+          isPrivate: false
+          description: ""
+          sortKey: -1776294764022.9023
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "clienteId": 1,
+              "veiculoId": 1,
+              "quilometragemEntrada": 200000,
+              "reclamacaoCliente": "Barulho no freio revisao filtro ar"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: "{{token}}"
+        scripts:
+          afterResponse: >-
+            const responseData = insomnia.response.json();
+
+            insomnia.environment.set("os_rastreio",
+            responseData.codigoRastreio);
+
+            insomnia.environment.set("os_id", responseData.id); 
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/rastreio/{{ _.os_rastreio }}"
+        name: Buscar por Código de Rastreio - Com JWT - Fase3
+        meta:
+          id: req_d176a9e8fc06410ca4017280aff42156
+          created: 1788311681190
+          modified: 1789264787457
+          isPrivate: false
+          description: ""
+          sortKey: -1776294764017.9219
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          prefix: ""
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/rastreio/{{ _.os_rastreio
+          }}/decisao"
+        name: Decisão orçamento por cliente autenticado
+        meta:
+          id: req_f3efd4f32fc54e67aeb44870a95e32ee
+          created: 1788480962955
+          modified: 1788700325308
+          isPrivate: false
+          description: |-
+            {
+            	"statusDecisao" : "APROVADO",
+            	"observacao" : "Pode fazer o serviço por favor."
+            }
+
+            {
+            	"statusDecisao" : "RECUSADO",
+            	"observacao" : "Barbaridade que caro, não quero fazer o serviço."
+            }
+          sortKey: -1776294763998.2686
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            {
+            	"statusDecisao" : "APROVADO",
+            	"observacao" : "Pode fazer o serviço da OS 13 por favor - OS-40FB17F2."
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+          - name: X-Dinoco-Secret
+            value: dinoco_webhook_secret_2026
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          disabled: false
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
   - name: Produto
     meta:
       id: fld_f75a2f91a24d4f7e85c42a61285baa20
@@ -1606,12 +1700,12 @@ collection:
       sortKey: -1776294952715.6875
       description: ""
     children:
-      - url: http://localhost:8080/api/produtos?busca=
+      - url: "{{ _.URL_API_GTW }}/api/produtos?busca="
         name: Buscar por termo
         meta:
           id: req_4928c5d25c614a40b777e3137fd7db3c
           created: 1776577631932
-          modified: 1781236802845
+          modified: 1788696500861
           isPrivate: false
           description: ""
           sortKey: -1776294763923
@@ -1788,12 +1882,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/produtos/1"
+      - url: "{{ _.URL_API_GTW }}/api/produtos/5"
         name: Buscar por Id
         meta:
           id: req_ef5167b694b5462d8fd21676f7f935ee
           created: 1780172165255
-          modified: 1783474042331
+          modified: 1788696774081
           isPrivate: false
           description: ""
           sortKey: -1776294763948
@@ -1805,7 +1899,7 @@ collection:
             disabled: false
         authentication:
           type: bearer
-          token: "{{token}}"
+          token: "{{ _.token }}"
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -1822,14 +1916,14 @@ collection:
       sortKey: -1777331805668
       description: ""
     children:
-      - url: "{{ _.URLAPI
+      - url: "{{ _.URL_API_GTW
           }}/api/metricas/tempo-execucao?dataInicio=2026-04-01&dataFinal=2026-0\
-          8-30"
+          9-30"
         name: Média de execução dos serviços
         meta:
           id: req_89df1510bb23496ab2c6cd11a4a1f6d0
           created: 1777331830128
-          modified: 1783778479868
+          modified: 1789173359001
           isPrivate: false
           description: ""
           sortKey: -1777943953501
@@ -1898,12 +1992,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/ordens-servico/{{ _.os_id }}/servicos/10"
+      - url: "{{ _.URL_API_GTW }}/api/ordens-servico/{{ _.os_id }}/servicos/1"
         name: Alterar Item de Serviço na OS
         meta:
           id: req_57c1a3e3879b48c8a6ac5cb2394ccbee
           created: 1777161319987
-          modified: 1783789298906
+          modified: 1788700667793
           isPrivate: false
           description: ""
           sortKey: -1777941838650
@@ -1992,12 +2086,12 @@ collection:
       sortKey: -1776294853592.8438
       description: ""
     children:
-      - url: "{{ _.URLAPI }}/api/produtos/10/estoque/entrada-compra"
+      - url: "{{ _.URL_API_GTW }}/api/produtos/2/estoque/entrada-compra"
         name: Compra de Fornecedor
         meta:
           id: req_49861d5387174b7cb55e25114dab453d
           created: 1781234843179
-          modified: 1783794754536
+          modified: 1788699721047
           isPrivate: false
           description: ""
           sortKey: -1776294764023
@@ -2006,8 +2100,8 @@ collection:
           mimeType: application/json
           text: |
             {
-              "observacao": "Realizado compra de 4 motor de arranque para OS 4",
-              "quantidadeEntrada": 4
+              "observacao": "Realizado compra de 6 itens - Reserva",
+              "quantidadeEntrada": 6
             }
         headers:
           - name: Content-Type
@@ -2027,12 +2121,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.URLAPI }}/api/produtos/1/estoque/ajuste"
+      - url: "{{ _.URL_API_GTW }}/api/produtos/5/estoque/ajuste"
         name: Ajuste inventário manual
         meta:
           id: req_e527577caee94adcbd071606fff06a19
           created: 1783796580708
-          modified: 1783796745024
+          modified: 1788696866459
           isPrivate: false
           description: ""
           sortKey: -1776294764022.2188
@@ -2041,8 +2135,8 @@ collection:
           mimeType: application/json
           text: |
             {  
-              "quantidade": 35,
-            	"versao" : 3,
+              "quantidade": 10,
+            	"versao" : 1,
             	"observacao" : "Ajuste de inventário "
             }
         headers:
@@ -2063,12 +2157,45 @@ collection:
             send: true
             store: true
           rebuildPath: true
+  - name: Health Check
+    meta:
+      id: fld_3291116bc2464800a86efd5be85bbab9
+      created: 1788128241944
+      modified: 1789264712303
+      sortKey: -1788128241944
+      description: ""
+    children:
+      - url: "{{ _.URL_API_GTW }}/actuator/health"
+        name: Actuator Health
+        meta:
+          id: req_daab3ee8a68c489594d83f17a1e606f0
+          created: 1788742818069
+          modified: 1788743568775
+          isPrivate: false
+          description: ""
+          sortKey: -1788128246510
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        authentication:
+          type: none
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
 cookieJar:
   name: Default Jar
   meta:
     id: jar_3f7032a884154d66981a35ac18e55db1
     created: 1775838824338
-    modified: 1784072238253
+    modified: 1789264756641
   cookies:
     - id: c6d107d5-e5ef-4148-b645-c967e75d0fb0
       key: JSESSIONID
@@ -2083,11 +2210,13 @@ environments:
   meta:
     id: env_b7443c2737f34ce2a2c5cae67d2208e9
     created: 1775838824324
-    modified: 1784072238257
+    modified: 1789264756644
     isPrivate: false
   data:
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJvZmljaW5hLWFwaSIsInN1YiI6ImFkbWluIiwiZXhwIjoxNzg0MDc5MzQxfQ.4AFycKYi4x49JTVAmC8JI5g2mBXpM75CoZjo2-AHXAo
-    URLAPI: http://a5c355aaf27b44b02af91b06b2e24464-399174240.us-east-1.elb.amazonaws.com
-    URLAPI_OLD: http://localhost:8080
-    os_rastreio: OS-ADA024D6
-    os_id: 12
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJvZmljaW5hLWFwaSIsInN1YiI6ImFkbWluIiwiZXhwIjoxNzg5MjcxODYxfQ.iQ__8c_IgaEf3A_MetLgNaEztwm6nP7PG-_ERnhE1e4
+    URLAPI: http://a02cb92a3bc1d44f59b7db4a7f2941b8-1489917345.us-east-1.elb.amazonaws.com
+    URLAPI_LOCAL: http://localhost:8080
+    URL_API_GTW: https://fwdlfkgwyd.execute-api.us-east-1.amazonaws.com
+    "": ""
+    os_rastreio: OS-DC05AFC5
+    os_id: 89
