@@ -43,7 +43,7 @@ Uma API RESTful desenvolvida para gerenciar o fluxo principal de uma oficina mec
 *  **Diagrama Banco ER** [Visualizar](docs/database/database-er-diagram.png)
 
 *  **Arquitetura interna aplicação:** [Visualizar](docs/diagramas-fase2/DiagramaComponentesArquitetura.png)
-* ️ **Fluxo de deploy:** [Visualizar](docs/diagramas-fase2/FluxoDeployCICD.png)
+* ️ **Fluxo de deploy:** [Visualizar](docs/diagramas-fase2/oficina-dinoco-fluxo-deploy-geral.drawio.png)
 
 ## Tecnologias Utilizadas
 
