@@ -1,0 +1,207 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Diagrama de Componentes" id="xmHAFI5VtBo7v2D0Uk_j">
+    <mxGraphModel dx="2175" dy="2295" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="vz1tdjjsqoZnSy3od00e-1" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;fontStyle=1;" value="Oficina Dinoco — Diagrama de Componentes / Visão de Nuvem" vertex="1">
+          <mxGeometry height="40" width="760" x="425" y="-50" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" value="Usuário / Cliente / Funcionário" vertex="1">
+          <mxGeometry height="70" width="190" x="20" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" value="New Relic SaaS&lt;br/&gt;APM • Logs • Traces • Kubernetes • Synthetics" vertex="1">
+          <mxGeometry height="95" width="240" x="1280" y="135" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="GitHub Actions&lt;br/&gt;CI/CD" vertex="1">
+          <mxGeometry height="70" width="190" x="20" y="920" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-5" parent="1" style="swimlane;html=1;startSize=32;rounded=1;fillColor=#fffaf0;strokeColor=#d6b656;fontStyle=1;fontSize=16;" value="AWS Cloud" vertex="1">
+          <mxGeometry height="960" width="1000" x="260" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-6" parent="vz1tdjjsqoZnSy3od00e-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" value="AWS - API Gateway&lt;br&gt;Entrada pública da API" vertex="1">
+          <mxGeometry height="70" width="180" x="95" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-7" parent="vz1tdjjsqoZnSy3od00e-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" value="AWS - Lambda&lt;br&gt;Autenticação por CPF&lt;br&gt;Geração do JWT" vertex="1">
+          <mxGeometry height="75" width="160" x="340" y="67.5" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-8" parent="vz1tdjjsqoZnSy3od00e-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="AWS Secrets Manager&lt;br/&gt;Credenciais DB / Segredo JWT" vertex="1">
+          <mxGeometry height="75" width="220" x="710" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-9" parent="vz1tdjjsqoZnSy3od00e-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" value="Amazon ECR&lt;br/&gt;Imagens Docker da API" vertex="1">
+          <mxGeometry height="75" width="220" x="480" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-10" parent="vz1tdjjsqoZnSy3od00e-5" style="swimlane;html=1;startSize=30;rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" value="VPC — Oficina Dinoco" vertex="1">
+          <mxGeometry height="570" width="890" x="30" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-11" parent="vz1tdjjsqoZnSy3od00e-10" style="swimlane;html=1;startSize=26;rounded=1;fillColor=#f8f9fa;strokeColor=#999999;fontStyle=1;" value="Subnets Públicas — us-east-1a / us-east-1b" vertex="1">
+          <mxGeometry height="500" width="535" x="15" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-12" parent="vz1tdjjsqoZnSy3od00e-11" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" value="Load Balancer Público&lt;br/&gt;(Service type LoadBalancer)" vertex="1">
+          <mxGeometry height="70" width="210" x="30" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-13" parent="vz1tdjjsqoZnSy3od00e-11" style="swimlane;html=1;startSize=28;rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" value="Amazon EKS" vertex="1">
+          <mxGeometry height="290" width="455" x="25" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-14" parent="vz1tdjjsqoZnSy3od00e-13" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" value="EC2 Node Group" vertex="1">
+          <mxGeometry height="55" width="180" x="20" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-15" parent="vz1tdjjsqoZnSy3od00e-13" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" value="Spring Boot API&lt;br/&gt;Java 21&lt;br/&gt;Deployment + Pods" vertex="1">
+          <mxGeometry height="75" width="200" x="225" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-16" parent="vz1tdjjsqoZnSy3od00e-13" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="HPA&lt;br/&gt;1–3 réplicas&lt;br/&gt;CPU target 70%" vertex="1">
+          <mxGeometry height="55" width="180" x="20" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-17" parent="vz1tdjjsqoZnSy3od00e-13" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" value="New Relic Kubernetes Integration&lt;br/&gt;nri-bundle" vertex="1">
+          <mxGeometry height="55" width="135" x="55" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-21" edge="1" parent="vz1tdjjsqoZnSy3od00e-11" source="vz1tdjjsqoZnSy3od00e-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="vz1tdjjsqoZnSy3od00e-15" value="HTTP interno">
+          <mxGeometry relative="1" x="-0.08" y="14" as="geometry">
+            <mxPoint x="-4" y="-10" as="offset" />
+            <Array as="points">
+              <mxPoint x="355" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-18" parent="vz1tdjjsqoZnSy3od00e-10" style="swimlane;html=1;startSize=26;rounded=1;fillColor=#f8f9fa;strokeColor=#999999;fontStyle=1;" value="DB Subnets / Camada de Dados" vertex="1">
+          <mxGeometry height="500" width="275" x="585" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-19" parent="vz1tdjjsqoZnSy3od00e-18" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" value="Amazon RDS&lt;br/&gt;PostgreSQL 16&lt;br/&gt;oficina_db" vertex="1">
+          <mxGeometry height="110" width="185" x="45" y="135" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-20" parent="vz1tdjjsqoZnSy3od00e-18" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="Security Group&lt;br/&gt;Porta 5432 somente pela VPC" vertex="1">
+          <mxGeometry height="75" width="185" x="45" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-22" edge="1" parent="vz1tdjjsqoZnSy3od00e-10" source="vz1tdjjsqoZnSy3od00e-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="vz1tdjjsqoZnSy3od00e-19" value="JPA / JDBC PostgreSQL">
+          <mxGeometry relative="1" x="0.008" y="10" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="722.47" y="330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-23" parent="vz1tdjjsqoZnSy3od00e-5" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Rotas principais:&lt;br/&gt;POST /auth/cliente → Lambda&lt;br/&gt;ANY /{proxy+} → Spring Boot" vertex="1">
+          <mxGeometry height="85" width="340" x="60" y="820" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-24" edge="1" parent="vz1tdjjsqoZnSy3od00e-5" source="vz1tdjjsqoZnSy3od00e-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="vz1tdjjsqoZnSy3od00e-7" value="POST /auth/cliente">
+          <mxGeometry relative="1" x="0.3846" y="15" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-25" edge="1" parent="vz1tdjjsqoZnSy3od00e-5" source="vz1tdjjsqoZnSy3od00e-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="vz1tdjjsqoZnSy3od00e-12" value="Demais rotas HTTP Proxy">
+          <mxGeometry relative="1" x="-0.6571" as="geometry">
+            <mxPoint y="-1" as="offset" />
+            <Array as="points">
+              <mxPoint x="185" y="230" />
+              <mxPoint x="185" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-26" edge="1" parent="vz1tdjjsqoZnSy3od00e-5" source="vz1tdjjsqoZnSy3od00e-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=default;exitX=1;exitY=1;exitDx=0;exitDy=0;" target="vz1tdjjsqoZnSy3od00e-19" value="Consulta cliente / status">
+          <mxGeometry relative="1" x="-0.6364" y="12" as="geometry">
+            <mxPoint x="1" as="offset" />
+            <Array as="points">
+              <mxPoint x="660" y="142.47" />
+              <mxPoint x="660" y="320" />
+              <mxPoint x="752.47" y="320" />
+            </Array>
+            <mxPoint x="720" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-27" edge="1" parent="vz1tdjjsqoZnSy3od00e-5" source="vz1tdjjsqoZnSy3od00e-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;dashed=1;strokeWidth=1.5;" target="vz1tdjjsqoZnSy3od00e-8" value="Lê credenciais / segredo JWT">
+          <mxGeometry relative="1" x="-0.0476" y="15" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="660" y="105.06" />
+              <mxPoint x="660" y="105.06" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-28" edge="1" parent="vz1tdjjsqoZnSy3od00e-5" source="vz1tdjjsqoZnSy3od00e-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;dashed=1;strokeWidth=1.5;" target="vz1tdjjsqoZnSy3od00e-8" value="Configuração segura">
+          <mxGeometry relative="1" x="-0.0863" y="10" as="geometry">
+            <mxPoint x="1" as="offset" />
+            <Array as="points">
+              <mxPoint x="870" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-29" edge="1" parent="vz1tdjjsqoZnSy3od00e-5" source="vz1tdjjsqoZnSy3od00e-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;dashed=1;strokeWidth=1.5;" target="vz1tdjjsqoZnSy3od00e-15" value="Imagem Docker">
+          <mxGeometry relative="1" x="-0.1725" y="-18" as="geometry">
+            <mxPoint x="-1" as="offset" />
+            <Array as="points">
+              <mxPoint x="460" y="817.53" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-38" parent="vz1tdjjsqoZnSy3od00e-5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" value="Amazon S3&lt;br/&gt;Terraform State&amp;nbsp;" vertex="1">
+          <mxGeometry height="75" width="220" x="770" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-30" edge="1" parent="1" source="vz1tdjjsqoZnSy3od00e-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="vz1tdjjsqoZnSy3od00e-6" value="HTTPS">
+          <mxGeometry relative="1" x="-0.0345" y="15" as="geometry">
+            <mxPoint x="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-31" edge="1" parent="1" source="vz1tdjjsqoZnSy3od00e-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;dashed=1;strokeWidth=1.5;strokeColor=#9673a6;" target="vz1tdjjsqoZnSy3od00e-3" value="APM • Logs • Traces">
+          <mxGeometry relative="1" x="0.2066" y="10" as="geometry">
+            <mxPoint x="1" as="offset" />
+            <Array as="points">
+              <mxPoint x="640" y="650" />
+              <mxPoint x="1370" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-32" edge="1" parent="1" source="vz1tdjjsqoZnSy3od00e-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;dashed=1;strokeWidth=1.5;strokeColor=#9673a6;" target="vz1tdjjsqoZnSy3od00e-3" value="Métricas Kubernetes">
+          <mxGeometry relative="1" x="0.4211" y="10" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1440" y="675.06" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-33" edge="1" parent="1" source="vz1tdjjsqoZnSy3od00e-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;dashed=1;strokeWidth=1.5;strokeColor=#9673a6;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="vz1tdjjsqoZnSy3od00e-6" value="Synthetic Monitor / Healthcheck">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1400" y="80" />
+              <mxPoint x="445.06" y="80" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-34" edge="1" parent="1" source="vz1tdjjsqoZnSy3od00e-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;dashed=1;strokeWidth=1.5;" target="vz1tdjjsqoZnSy3od00e-9" value="Build &amp; Push">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="114.94" y="1030" />
+              <mxPoint x="850" y="1030" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-35" edge="1" parent="1" source="vz1tdjjsqoZnSy3od00e-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;dashed=1;strokeWidth=1.5;" target="vz1tdjjsqoZnSy3od00e-13" value="Deploy manifests / Terraform">
+          <mxGeometry relative="1" x="0.2647" y="12" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="120" y="595.06" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-36" edge="1" parent="1" source="vz1tdjjsqoZnSy3od00e-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;dashed=1;strokeWidth=1.5;" target="vz1tdjjsqoZnSy3od00e-7" value="Build &amp; Deploy">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="190" y="220" />
+              <mxPoint x="680" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vz1tdjjsqoZnSy3od00e-39" edge="1" parent="1" source="vz1tdjjsqoZnSy3od00e-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;dashed=1;strokeWidth=1.5;" target="vz1tdjjsqoZnSy3od00e-38" value="">
+          <mxGeometry relative="1" x="0.0128" y="10" as="geometry">
+            <mxPoint x="1" as="offset" />
+            <Array as="points">
+              <mxPoint x="90" y="1070" />
+              <mxPoint x="1150" y="1070" />
+            </Array>
+            <mxPoint x="300.06" y="1085" as="sourcePoint" />
+            <mxPoint x="1035.06" y="1030" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

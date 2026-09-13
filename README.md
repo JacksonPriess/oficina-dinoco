@@ -28,8 +28,21 @@ Uma API RESTful desenvolvida para gerenciar o fluxo principal de uma oficina mec
 
 ## Documentações / Diagramas
 
-*  **Componentes da aplicação:** [Visualizar](docs/diagramas-fase2/DiagramaComponentesArquitetura.png)
-* ️ **Infraestrutura provisionada:** [Visualizar](docs/diagramas-fase2/InfraestruturaProvisionada.png)
+*  **Diagrama de Componentes:** [Visualizar](docs/architecture/component-diagram.png)
+*  **Diagrama de Sequência de Autenticação** [Visualizar](docs/architecture/authentication-sequence.png)
+*  **Diagrama de Sequência de Abertura de OS** [Visualizar](docs/architecture/service-order-sequence.png)
+*  **RFC-001 - Provedor nuvem** [Visualizar](docs/rfc/RFC-001-cloud-provider.md)
+*  **RFC-002 - Banco de dados** [Visualizar](docs/rfc/RFC-002-database.md)
+*  **RFC-003 - Estratégia autenticação** [Visualizar](docs/rfc/RFC-003-authentication.md) 
+*  **ADR-001 - API Gateway** [Visualizar](docs/adr/ADR-001-api-gateway.md)
+*  **ADR-002 - Amazon EKS** [Visualizar](docs/adr/ADR-002-eks.md)
+*  **ADR-003 - Escalabidade HPA** [Visualizar](docs/adr/ADR-003-hpa.md)
+*  **ADR-004 - JWT** [Visualizar](docs/adr/ADR-004-jwt-stateless.md)
+*  **ADR-005 - Observabilidade** [Visualizar](docs/adr/ADR-005-new-relic.md)
+*  **Justificativa do Banco** [Visualizar](docs/database/database-justification.md)
+*  **Diagrama Banco ER** [Visualizar](docs/database/database-er-diagram.png)
+
+*  **Arquitetura interna aplicação:** [Visualizar](docs/diagramas-fase2/DiagramaComponentesArquitetura.png)
 * ️ **Fluxo de deploy:** [Visualizar](docs/diagramas-fase2/FluxoDeployCICD.png)
 
 ## Tecnologias Utilizadas
@@ -374,16 +387,29 @@ A Lambda é acionada apenas quando a rota exige o fluxo serverless de autentica�
 
 ## Fluxo de Provisionamento
 
-Após iniciar ou resetar o AWS LAB, a ordem recomendada é:
+Após iniciar ou resetar o AWS LAB, a infraestrutura pode ser provisionada na seguinte ordem:
 
-1. `oficina-infra-k8s` — VPC, Subnets, EKS e ECR.
-2. `oficina-infra-db` — PostgreSQL RDS e Secrets Manager.
-3. `oficina-auth-lambda` — Lambda, integração com VPC e autenticação do cliente.
-4. `oficina-dinoco` — build, ECR e deploy no EKS.
-5. Workflow do **API Gateway** no `oficina-infra-k8s`.
+1. **`oficina-infra-k8s`**  
+   Provisiona VPC, Subnets, Internet Gateway, EKS, Node Group e ECR.
+
+2. **`oficina-infra-db`**  
+   Provisiona PostgreSQL no RDS, DB Subnet Group, Security Group e recursos relacionados aos segredos do banco.
+
+3. **`oficina-auth-lambda`**  
+   Provisiona a Lambda responsável pela autenticação de clientes por CPF e sua integração com a VPC.
+
+4. **`oficina-dinoco`**  
+   Executa build e testes, publica a imagem Docker no ECR e realiza o deploy da aplicação no EKS.
+
+5. **API Gateway (`oficina-infra-k8s`)**  
+   Workflow separado responsável por criar as rotas públicas e integrar:
+  - `/auth/cliente` → AWS Lambda;
+  - demais rotas → Load Balancer da aplicação no EKS.
+
+6. **Observabilidade (`oficina-infra-k8s`)**  
+   Instala a integração Kubernetes do New Relic no EKS para coleta de métricas e eventos do cluster.
 
 O API Gateway é aplicado após a aplicação porque sua integração HTTP utiliza o Load Balancer criado pelo Service Kubernetes.
-
 ---
 
 ## Fluxo da Aplicação
@@ -411,7 +437,7 @@ Os manifestos Kubernetes permanecem no repositório da aplicação:
   Define a execução da aplicação, imagem Docker, recursos de CPU e memória.
 
 - **Service (`service.yaml`)**  
-  Expõe temporariamente a aplicação através de um Load Balancer AWS.
+  Expõe a aplicação através de um Load Balancer AWS, utilizado como destino da integração HTTP do API Gateway.
 
 - **ConfigMap (`configmap.yaml`)**  
   Armazena configurações não sensíveis, como profile Spring e endereço do banco.
