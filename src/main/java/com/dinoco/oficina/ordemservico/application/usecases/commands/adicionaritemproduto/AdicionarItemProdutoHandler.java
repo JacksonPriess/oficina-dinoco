@@ -23,11 +23,21 @@ public class AdicionarItemProdutoHandler implements AdicionarItemProdutoUseCase{
         OrdemServico os = ordemServicoCommandGateway.buscarParaAlteracao(command.osId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("OS não encontrada."));
 
-        // 2. Consulta o preço atual do produto no outro módulo
-        BigDecimal precoVenda = catalogoProdutoGateway.buscarPrecoVendaAtual(command.produtoId());
+        BigDecimal precoVenda =
+                catalogoProdutoGateway.buscarPrecoVendaAtual(command.produtoId());
+
+        if (precoVenda == null) {
+            throw new RecursoNaoEncontradoException(
+                    "Produto com ID " + command.produtoId() + " não encontrado."
+            );
+        }
 
         // 3. Cria a entidade filha
-        ItemOSProduto novoItem = new ItemOSProduto(command.produtoId(), command.quantidade(), precoVenda);
+        ItemOSProduto novoItem = new ItemOSProduto(
+                command.produtoId(),
+                command.quantidade(),
+                precoVenda
+        );
 
         // 4. Aplica a inteligência do negócio
         os.adicionarProduto(novoItem);
