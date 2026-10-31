@@ -47,8 +47,7 @@ class OrdemServicoControllerIT extends BaseIT {
         .when()
                 .post("/api/ordens-servico/{id}/iniciar-diagnostico")
         .then()
-                .statusCode(200)
-                .body("status", equalTo("EM_DIAGNOSTICO"));
+                .statusCode(204);
     }
 
     @Test
@@ -66,8 +65,7 @@ class OrdemServicoControllerIT extends BaseIT {
         .when()
                 .post("/api/ordens-servico/{id}/concluir-diagnostico")
         .then()
-                .statusCode(200)
-                .body("status", equalTo("AGUARDANDO_ORCAMENTO"));
+                .statusCode(204);
     }
 
     @Test
@@ -78,9 +76,9 @@ class OrdemServicoControllerIT extends BaseIT {
         .when()
                 .post("/api/ordens-servico/{id}/enviar-orcamento")
         .then()
-                .statusCode(200) // Este método retorna ResponseEntity.ok()
-                .body("urlWhatsApp", notNullValue())
-                .body("urlWhatsApp", containsString("wa.me/5547999990001"));
+                .statusCode(200)
+                .body("linkWhatsApp", notNullValue())
+                .body("linkWhatsApp", containsString("wa.me/5547999990001"));
     }
 
     @Test
@@ -91,8 +89,7 @@ class OrdemServicoControllerIT extends BaseIT {
         .when()
                 .post("/api/ordens-servico/{id}/reprovar")
         .then()
-                .statusCode(200)
-                .body("status", equalTo("REPROVADA"));
+                .statusCode(204);
     }
 
     @Test
@@ -103,10 +100,8 @@ class OrdemServicoControllerIT extends BaseIT {
         .when()
                 .post("/api/ordens-servico/{id}/aprovar")
         .then()
-                .statusCode(200)
-                .body("status", equalTo("AGUARDANDO_EXECUCAO"));
+                .statusCode(204);
     }
-
 
     @Test
     @DisplayName("Erro 03 - Não deve concluir diagnóstico de uma OS sem itens de serviço (Cenário A - OS 100)")

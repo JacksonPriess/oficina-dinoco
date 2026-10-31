@@ -35,8 +35,8 @@ INSERT INTO ordem_servico (id, cliente_id, veiculo_id, quilometragem_entrada, re
 VALUES (100, 999, 888, 50000, 'O veículo está com algum problema','RECEBIDA', 'OS-100');
 
 -- Cenário B (Para Concluir Diagnóstico): Status EM_DIAGNOSTICO + Possui Item de Serviço (obrigatório)
-INSERT INTO ordem_servico (id, cliente_id, veiculo_id, quilometragem_entrada, reclamacao_cliente, status, codigo_rastreio)
-VALUES (101, 999, 888, 50000, 'O veículo está com algum problema', 'EM_DIAGNOSTICO', 'OS-101');
+INSERT INTO ordem_servico (id, cliente_id, veiculo_id, quilometragem_entrada, reclamacao_cliente, status, codigo_rastreio, data_inicio_diagnostico)
+VALUES (101, 999, 888, 50000, 'O veículo está com algum problema', 'EM_DIAGNOSTICO', 'OS-101', current_date);
 INSERT INTO item_os_servico (id, os_id, servico_id, valor_cobrado, status_item)
 VALUES (1, 101, 666, 0.00, 'PENDENTE');
 

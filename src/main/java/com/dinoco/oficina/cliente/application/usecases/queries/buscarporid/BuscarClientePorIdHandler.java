@@ -1,6 +1,7 @@
 package com.dinoco.oficina.cliente.application.usecases.queries.buscarporid;
 
 import com.dinoco.oficina.cliente.application.gateways.ClienteQueryGateway;
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 
 public class BuscarClientePorIdHandler implements BuscarClientePorIdUseCase {
 
@@ -14,6 +15,6 @@ public class BuscarClientePorIdHandler implements BuscarClientePorIdUseCase {
     public BuscarClientePorIdOutput executar(BuscarClientePorIdQuery query) {
 
         return clienteQueryGateway.buscarDetalhesPorId(query.id())
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado com ID: " + query.id()));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado com ID: " + query.id()));
     }
 }
