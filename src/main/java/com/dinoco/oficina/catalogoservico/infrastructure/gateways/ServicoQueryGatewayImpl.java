@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Component
 public class ServicoQueryGatewayImpl implements ServicoQueryGateway {
+
     private final ServicoJpaRepository jpaRepository;
 
     public ServicoQueryGatewayImpl(ServicoJpaRepository jpaRepository) {
