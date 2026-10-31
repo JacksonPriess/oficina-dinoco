@@ -18,8 +18,14 @@ VALUES (888, 'BRA2E45', 'Volkswagen', 'Gol', '2018', '2019', 'Branco', '9BWZZZ',
 INSERT INTO servico (id, descricao, preco_padrao, tempo_estimado_minutos, ativo, data_criacao)
 VALUES (666, 'Troca de Pastilha de Freio', 120.00, 60, true, current_timestamp);
 
-INSERT INTO produto (id,nome,tipo,marca,codigo_fabricante,aplicacao,preco_custo,preco_venda,ativo,version
-) VALUES (777, 'Filtro de Óleo','PECA', 'Fram','PH10060','Ford Focus',40.00,150.00,TRUE,0);
+-- Estoque local para o produto externo usado nos cenários da OS.
+INSERT INTO saldo_estoque (
+    produto_id,
+    quantidade_real,
+    quantidade_reservada,
+    versao
+)
+VALUES (777, 10.000, 0.000, 0);
 -- ====================================================================================
 -- 3. CENÁRIOS DE ORDENS DE SERVIÇO PARA CADA TESTE
 -- ====================================================================================
