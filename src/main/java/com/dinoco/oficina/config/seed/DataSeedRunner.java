@@ -1,8 +1,5 @@
 package com.dinoco.oficina.config.seed;
 
-import com.dinoco.oficina.catalogoproduto.application.usecases.commands.criar.CriarProdutoCommand;
-import com.dinoco.oficina.catalogoproduto.application.usecases.commands.criar.CriarProdutoUseCase;
-import com.dinoco.oficina.catalogoproduto.domain.TipoProduto;
 import com.dinoco.oficina.catalogoservico.application.gateways.ServicoCommandGateway;
 import com.dinoco.oficina.catalogoservico.domain.Servico;
 import com.dinoco.oficina.cliente.application.gateways.ClienteCommandGateway;
@@ -68,7 +65,6 @@ public class DataSeedRunner implements CommandLineRunner {
     private final ServicoCommandGateway servicoGateway;
     private final FuncionarioCommandGateway funcionarioGateway;
 
-    private final CriarProdutoUseCase criarProdutoUseCase;
     private final AbrirOrdemServicoUseCase abrirOrdemServicoUseCase;
     private final IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase;
     private final AdicionarItemProdutoUseCase adicionarItemProdutoUseCase;
@@ -92,7 +88,6 @@ public class DataSeedRunner implements CommandLineRunner {
             VeiculoCommandGateway veiculoGateway,
             ServicoCommandGateway servicoGateway,
             FuncionarioCommandGateway funcionarioGateway,
-            CriarProdutoUseCase criarProdutoUseCase,
             AbrirOrdemServicoUseCase abrirOrdemServicoUseCase,
             IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase,
             AdicionarItemProdutoUseCase adicionarItemProdutoUseCase,
@@ -113,7 +108,6 @@ public class DataSeedRunner implements CommandLineRunner {
         this.veiculoGateway = veiculoGateway;
         this.servicoGateway = servicoGateway;
         this.funcionarioGateway = funcionarioGateway;
-        this.criarProdutoUseCase = criarProdutoUseCase;
         this.abrirOrdemServicoUseCase = abrirOrdemServicoUseCase;
         this.iniciarDiagnosticoUseCase = iniciarDiagnosticoUseCase;
         this.adicionarItemProdutoUseCase = adicionarItemProdutoUseCase;
@@ -143,11 +137,11 @@ public class DataSeedRunner implements CommandLineRunner {
         // 1. Dicionários de IDs para reaproveitamento nos cenários
         List<Long> clientes = popularClientes();
         List<Long> veiculos = popularVeiculos();
-        List<Long> produtos = popularProdutos();
+
         List<Long> servicos = popularServicos();
 
         // 2. Criação das Ordens de Serviço ricas em detalhes
-        popularOrdensDeServico(clientes, veiculos, produtos, servicos);
+        //popularOrdensDeServico(clientes, veiculos, produtos, servicos);
 
         log.info("[SUCESSO] Ambiente DEV pronto para avaliação!");
     }
@@ -188,7 +182,7 @@ public class DataSeedRunner implements CommandLineRunner {
         ids.add(salvarVeiculo("BMW3I30", "BMW", "320i", 2021, 2022, "Branco M", "9BM111", "2.0 B48"));
         return ids;
     }
-
+/*
     private List<Long> popularProdutos() {
         log.info("-> Cadastrando Produtos e Insumos no Estoque...");
         List<Long> ids = new ArrayList<>();
@@ -205,7 +199,7 @@ public class DataSeedRunner implements CommandLineRunner {
         ids.add(salvarProduto("Bico Injetor Cleaner", TipoProduto.INSUMO, "Car80", "C80", "Universal", 20.0, 15.0, 35.0)); // 8
         return ids;
     }
-
+*/
     private List<Long> popularServicos() {
         log.info("-> Cadastrando Serviços e Mão de Obra...");
         List<Long> ids = new ArrayList<>();
@@ -339,11 +333,6 @@ public class DataSeedRunner implements CommandLineRunner {
     private Long salvarVeiculo(String placa, String marca, String modelo, Integer fab, Integer mod, String cor, String chassi, String motor) {
         var veiculo = new Veiculo(placa, marca, modelo, fab, mod, cor, chassi, motor);
         return veiculoGateway.salvar(veiculo).getId();
-    }
-
-    private Long salvarProduto(String nome, TipoProduto tipo, String marca, String cod, String app, Double qtd, Double custo, Double venda) {
-        var cmd = new CriarProdutoCommand(nome, tipo, marca, cod, app, BigDecimal.valueOf(custo), BigDecimal.valueOf(venda), BigDecimal.valueOf(qtd));
-        return criarProdutoUseCase.executar(cmd).id();
     }
 
     private Long salvarServico(String desc, Double preco, int tempo) {

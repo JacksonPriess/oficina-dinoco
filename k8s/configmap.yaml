@@ -5,11 +5,13 @@ metadata:
   labels:
     app: oficina-api
 data:
-  SPRING_PROFILES_ACTIVE: "dev"
-  OPENAPI_SERVER_URL: "https://fwdlfkgwyd.execute-api.us-east-1.amazonaws.com"
+  SPRING_PROFILES_ACTIVE: "k8s,rabbit"
+  OPENAPI_SERVER_URL: "${OPENAPI_SERVER_URL}"
   NEW_RELIC_APP_NAME: "oficina-api"
 
-  # DB_ENDPOINT será substituído pela pipeline durante o deploy
-  SPRING_DATASOURCE_URL: "jdbc:postgresql://${DB_ENDPOINT}:5432/oficina_db"
+  RABBITMQ_HOST: "rabbitmq"
+  RABBITMQ_PORT: "5672"
+  CATALOGO_PRODUTO_URL: "http://catalogo-produto-api-service:80"
+  JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=60.0"
 
   TZ: "America/Sao_Paulo"

@@ -4,7 +4,6 @@ DELETE FROM movimentacao_estoque;
 DELETE FROM item_os_produto;
 DELETE FROM item_os_servico;
 DELETE FROM ordem_servico;
-DELETE FROM produto;
 DELETE FROM servico;
 DELETE FROM veiculo;
 DELETE FROM cliente;
@@ -19,8 +18,14 @@ VALUES (888, 'BRA2E45', 'Volkswagen', 'Gol', '2018', '2019', 'Branco', '9BWZZZ',
 INSERT INTO servico (id, descricao, preco_padrao, tempo_estimado_minutos, ativo, data_criacao)
 VALUES (666, 'Troca de Pastilha de Freio', 120.00, 60, true, current_timestamp);
 
-INSERT INTO produto (id,nome,tipo,marca,codigo_fabricante,aplicacao,preco_custo,preco_venda,ativo,version
-) VALUES (777, 'Filtro de Óleo','PECA', 'Fram','PH10060','Ford Focus',40.00,150.00,TRUE,0);
+-- Estoque local para o produto externo usado nos cenários da OS.
+INSERT INTO saldo_estoque (
+    produto_id,
+    quantidade_real,
+    quantidade_reservada,
+    versao
+)
+VALUES (777, 10.000, 0.000, 0);
 -- ====================================================================================
 -- 3. CENÁRIOS DE ORDENS DE SERVIÇO PARA CADA TESTE
 -- ====================================================================================
@@ -30,8 +35,8 @@ INSERT INTO ordem_servico (id, cliente_id, veiculo_id, quilometragem_entrada, re
 VALUES (100, 999, 888, 50000, 'O veículo está com algum problema','RECEBIDA', 'OS-100');
 
 -- Cenário B (Para Concluir Diagnóstico): Status EM_DIAGNOSTICO + Possui Item de Serviço (obrigatório)
-INSERT INTO ordem_servico (id, cliente_id, veiculo_id, quilometragem_entrada, reclamacao_cliente, status, codigo_rastreio)
-VALUES (101, 999, 888, 50000, 'O veículo está com algum problema', 'EM_DIAGNOSTICO', 'OS-101');
+INSERT INTO ordem_servico (id, cliente_id, veiculo_id, quilometragem_entrada, reclamacao_cliente, status, codigo_rastreio, data_inicio_diagnostico)
+VALUES (101, 999, 888, 50000, 'O veículo está com algum problema', 'EM_DIAGNOSTICO', 'OS-101', current_date);
 INSERT INTO item_os_servico (id, os_id, servico_id, valor_cobrado, status_item)
 VALUES (1, 101, 666, 0.00, 'PENDENTE');
 

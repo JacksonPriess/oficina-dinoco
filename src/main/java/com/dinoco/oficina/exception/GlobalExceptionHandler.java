@@ -156,5 +156,28 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroPadrao);
     }
 
+    @ExceptionHandler(CatalogoProdutoIntegracaoException.class)
+    public ResponseEntity<ErroPadraoDto> handleCatalogoProdutoIntegracao(CatalogoProdutoIntegracaoException ex) {
+        log.error(
+                "evento=catalogo_produto_integracao_falha mensagem={}",
+                ex.getMessage(),
+                ex
+        );
+
+        ErroPadraoDto erro = new ErroPadraoDto(
+                LocalDateTime.now(),
+                HttpStatus.BAD_GATEWAY.value(),
+                "Falha na integração com o Catálogo de Produtos",
+                List.of(
+                        "Não foi possível consultar os dados do produto. "
+                                + "Tente novamente mais tarde."
+                )
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_GATEWAY)
+                .body(erro);
+    }
+
 
 }

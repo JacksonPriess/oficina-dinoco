@@ -1,5 +1,6 @@
 package com.dinoco.oficina.veiculo.application.usecases.queries.buscarporid;
 
+import com.dinoco.oficina.exception.RecursoNaoEncontradoException;
 import com.dinoco.oficina.veiculo.application.gateways.VeiculoQueryGateway;
 
 public class BuscarVeiculoPorIdHandler implements BuscarVeiculoPorIdUseCase {
@@ -13,6 +14,6 @@ public class BuscarVeiculoPorIdHandler implements BuscarVeiculoPorIdUseCase {
     @Override
     public BuscarVeiculoPorIdOutput executar(BuscarVeiculoPorIdQuery query) {
         return veiculoQueryGateway.buscarDetalhesPorId(query.id())
-                .orElseThrow(() -> new IllegalArgumentException("Veiculo não encontrado com ID: " + query.id()));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Veiculo não encontrado com ID: " + query.id()));
     }
 }

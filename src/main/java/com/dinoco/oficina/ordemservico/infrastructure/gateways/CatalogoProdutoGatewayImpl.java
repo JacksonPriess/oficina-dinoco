@@ -1,42 +1,79 @@
 package com.dinoco.oficina.ordemservico.infrastructure.gateways;
 
+import com.dinoco.oficina.exception.CatalogoProdutoIntegracaoException;
 import com.dinoco.oficina.ordemservico.application.gateways.CatalogoProdutoGateway;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
+
 import java.math.BigDecimal;
+import java.net.http.HttpClient;
+import java.time.Duration;
 
 @Component
 public class CatalogoProdutoGatewayImpl implements CatalogoProdutoGateway {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final RestClient restClient;
 
-    public CatalogoProdutoGatewayImpl(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public CatalogoProdutoGatewayImpl( RestClient.Builder builder,
+            @Value("${integracoes.catalogo-produto.base-url}") String baseUrl,
+            @Value("${integracoes.catalogo-produto.api-key}") String apiKey
+    ) {
+        var httpClient = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(3))
+                .build();
+
+        var requestFactory =
+                new JdkClientHttpRequestFactory(httpClient);
+
+        requestFactory.setReadTimeout(Duration.ofSeconds(5));
+
+        this.restClient = builder
+                .baseUrl(baseUrl)
+                .defaultHeader("X-API-Key", apiKey)
+                .requestFactory(requestFactory)
+                .build();
     }
 
     @Override
     public BigDecimal buscarPrecoVendaAtual(Long produtoId) {
-            String sql = """
-            SELECT preco_venda
-            FROM produto
-            WHERE id = :produtoId
-        """;
-
-        MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("produtoId", produtoId);
+        ProdutoResponse response;
 
         try {
-            BigDecimal precoVenda = jdbcTemplate.queryForObject(
-                    sql,
-                    params,
-                    BigDecimal.class
-            );
+            response = restClient.get()
+                    .uri("/api/produtos/{id}", produtoId)
+                    .retrieve()
+                    .body(ProdutoResponse.class);
 
-            return precoVenda != null ? precoVenda : BigDecimal.ZERO;
-        } catch (EmptyResultDataAccessException e) {
-            return BigDecimal.ZERO;
+        } catch (RestClientResponseException ex) {
+            if (ex.getStatusCode().value() == 404) {
+                return null;
+            }
+            throw new CatalogoProdutoIntegracaoException("Falha ao consultar o Catálogo de Produtos. HTTP " + ex.getStatusCode().value(), ex);
+
+        } catch (RestClientException ex) {
+            throw new CatalogoProdutoIntegracaoException("Não foi possível consultar o Catálogo de Produtos.", ex);
         }
+
+        if (response == null
+                || !produtoId.equals(response.id())
+                || response.precoVenda() == null
+                || response.precoVenda().signum() < 0) {
+
+            throw new CatalogoProdutoIntegracaoException("Resposta inválida do Catálogo para o produto " + produtoId);
+        }
+
+        return response.precoVenda();
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private record ProdutoResponse(
+            Long id,
+            BigDecimal precoVenda
+    ) {
     }
 }

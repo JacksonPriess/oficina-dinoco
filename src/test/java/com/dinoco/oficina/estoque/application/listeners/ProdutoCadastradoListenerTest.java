@@ -1,75 +1,148 @@
 package com.dinoco.oficina.estoque.application.listeners;
 
-import com.dinoco.oficina.estoque.application.gateways.EstoqueCommandGateway;
-import com.dinoco.oficina.estoque.domain.MovimentacaoEstoque;
-import com.dinoco.oficina.estoque.domain.SaldoEstoque;
-import com.dinoco.oficina.estoque.domain.TipoMovimentacao;
+import com.dinoco.oficina.estoque.application.usecases.commands.inicializar.InicializarEstoqueUseCase;
+import com.dinoco.oficina.estoque.infrastructure.events.ProdutoCadastradoListener;
 import com.dinoco.oficina.shared.events.ProdutoCadastradoEvent;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ProdutoCadastradoListenerTest {
 
-	@Test
-	void quandoProdutoCadastrado_comQuantidade_deveCriarSaldoERegistrarMovimentacao() {
-		// Arrange
-		var gateway = mock(EstoqueCommandGateway.class);
-		var listener = new ProdutoCadastradoListener(gateway);
+    private static final UUID EVENT_ID =
+            UUID.fromString("802de405-d459-476c-8260-7008560bc630");
 
-		class Holder { SaldoEstoque saldo; MovimentacaoEstoque mov; }
-		var h = new Holder();
+    @Mock
+    private InicializarEstoqueUseCase useCase;
 
-		doAnswer(invocation -> {
-			h.saldo = invocation.getArgument(0);
-			h.mov = invocation.getArgument(1);
-			return null;
-		}).when(gateway).salvar(any(), any());
+    private ProdutoCadastradoListener listener;
 
-		var produtoId = 10L;
-		var quantidade = BigDecimal.valueOf(7);
+    @BeforeEach
+    void configurar() {
+        // Mapper real: o teste verifica a conversão do JSON recebido.
+        listener = new ProdutoCadastradoListener(useCase, JsonMapper.builder().build());
+    }
 
-		// Act
-		listener.criarPrateleiraAoCadastrarProduto(new ProdutoCadastradoEvent(produtoId, quantidade));
+    @Test
+    void deveDesserializarEventoEPreservarIdentificadoresEQuantidadeDecimal() {
+        Message mensagem = mensagem("""
+                {
+                  "eventId": "802de405-d459-476c-8260-7008560bc630",
+                  "produtoId": 123,
+                  "quantidade": 10.125
+                }
+                """);
 
-		// Assert
-		assertNotNull(h.saldo);
-		assertEquals(produtoId, h.saldo.getProdutoId());
-		assertEquals(quantidade, h.saldo.getQuantidadeReal());
+        listener.receber(mensagem);
 
-		assertNotNull(h.mov);
-		assertEquals(TipoMovimentacao.ENTRADA, h.mov.getTipo());
-		assertEquals(quantidade, h.mov.getQuantidade());
-	}
+        var captor = ArgumentCaptor.forClass(ProdutoCadastradoEvent.class);
+        verify(useCase).executar(captor.capture());
+        ProdutoCadastradoEvent evento = captor.getValue();
+        assertAll(
+                () -> assertEquals(EVENT_ID, evento.eventId()),
+                () -> assertEquals(Long.valueOf(123L), evento.produtoId()),
+                () -> assertEquals(new BigDecimal("10.125"), evento.quantidade())
+        );
+        verifyNoMoreInteractions(useCase);
+    }
 
-	@Test
-	void quandoProdutoCadastrado_semQuantidade_deveCriarSaldoSemMovimentacao() {
-		// Arrange
-		var gateway = mock(EstoqueCommandGateway.class);
-		var listener = new ProdutoCadastradoListener(gateway);
+    @Test
+    void deveEncaminharQuantidadeNulaSemConverterParaZero() {
+        Message mensagem = mensagem("""
+                {
+                  "eventId": "802de405-d459-476c-8260-7008560bc630",
+                  "produtoId": 123,
+                  "quantidade": null
+                }
+                """);
 
-		class Holder { SaldoEstoque saldo; MovimentacaoEstoque mov; }
-		var h = new Holder();
+        listener.receber(mensagem);
 
-		doAnswer(invocation -> {
-			h.saldo = invocation.getArgument(0);
-			h.mov = invocation.getArgument(1);
-			return null;
-		}).when(gateway).salvar(any(), any());
+        var captor = ArgumentCaptor.forClass(ProdutoCadastradoEvent.class);
+        verify(useCase).executar(captor.capture());
+        assertNull(captor.getValue().quantidade());
+        verifyNoMoreInteractions(useCase);
+    }
 
-		var produtoId = 11L;
+    @Test
+    void deveEncaminharQuantidadeZeroAoCasoDeUso() {
+        Message mensagem = mensagem("""
+                {
+                  "eventId": "802de405-d459-476c-8260-7008560bc630",
+                  "produtoId": 123,
+                  "quantidade": 0
+                }
+                """);
 
-		// Act: quantidade nula
-		listener.criarPrateleiraAoCadastrarProduto(new ProdutoCadastradoEvent(produtoId, null));
+        listener.receber(mensagem);
 
-		// Assert
-		assertNotNull(h.saldo);
-		assertEquals(produtoId, h.saldo.getProdutoId());
-		assertEquals(BigDecimal.ZERO, h.saldo.getQuantidadeReal());
+        verify(useCase).executar(new ProdutoCadastradoEvent(EVENT_ID, 123L, BigDecimal.ZERO));
+        verifyNoMoreInteractions(useCase);
+    }
 
-		assertNull(h.mov);
-	}
+    @Test
+    void devePropagarErroDeJsonMalformadoSemExecutarCasoDeUso() {
+        Message mensagem = mensagem("{ json-invalido");
 
+        assertThrows(JacksonException.class, () -> listener.receber(mensagem));
+
+        verifyNoInteractions(useCase);
+    }
+
+    @Test
+    void deveRejeitarTipoIncompativelSemExecutarCasoDeUso() {
+        Message mensagem = mensagem("""
+                {
+                  "eventId": "802de405-d459-476c-8260-7008560bc630",
+                  "produtoId": "nao-e-um-numero",
+                  "quantidade": 10
+                }
+                """);
+
+        assertThrows(JacksonException.class, () -> listener.receber(mensagem));
+
+        verifyNoInteractions(useCase);
+    }
+
+    @Test
+    void devePropagarMesmaExcecaoDoCasoDeUsoParaOContainer() {
+        Message mensagem = mensagem("""
+                {
+                  "eventId": "802de405-d459-476c-8260-7008560bc630",
+                  "produtoId": 123,
+                  "quantidade": 10
+                }
+                """);
+        var falha = new IllegalStateException("Banco indisponível");
+        doThrow(falha).when(useCase).executar(any(ProdutoCadastradoEvent.class));
+
+        IllegalStateException recebida = assertThrows(
+                IllegalStateException.class, () -> listener.receber(mensagem)
+        );
+
+        assertSame(falha, recebida);
+        verify(useCase).executar(new ProdutoCadastradoEvent(EVENT_ID, 123L, BigDecimal.TEN));
+        verifyNoMoreInteractions(useCase);
+    }
+
+    private Message mensagem(String json) {
+        var properties = new MessageProperties();
+        properties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
+        properties.setContentEncoding(StandardCharsets.UTF_8.name());
+        return new Message(json.getBytes(StandardCharsets.UTF_8), properties);
+    }
 }

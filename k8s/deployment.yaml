@@ -6,6 +6,12 @@ metadata:
     app: oficina-api
 spec:
   replicas: 1 # Iniciamos com 1 pod; o HPA controlará o resto
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  progressDeadlineSeconds: 900
   selector:
     matchLabels:
       app: oficina-api
@@ -14,6 +20,8 @@ spec:
       labels:
         app: oficina-api
     spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 45
       containers:
       - name: oficina-api
         # Substituído pela pipeline durante o deploy
@@ -28,7 +36,44 @@ spec:
             name: oficina-api-config
         - secretRef:
             name: oficina-api-secret
+        - secretRef:
+            name: nucleo-database-secret
+        - secretRef:
+            name: catalogo-integration-secret
+        env:
+        - name: RABBITMQ_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-secret
+              key: username
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-secret
+              key: password
             
+        startupProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8080
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 60
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8080
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+
         # CRUCIAL PARA O HPA: Sem estas definições, o Kubernetes não consegue calcular o escalonamento
         resources:
           requests:

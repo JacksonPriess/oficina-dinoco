@@ -46,7 +46,9 @@ public class SecurityConfig {
                 "/v3/api-docs/**",
                 "/swagger-ui/**",
                 "/swagger-ui.html",
-                "/actuator/health"
+                "/actuator/health",
+                "/actuator/health/liveness",
+                "/actuator/health/readiness"
                 ).permitAll()
                 .anyRequest().hasAnyRole(
                             "ADMIN",
