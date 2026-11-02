@@ -40,3 +40,7 @@ build/
 .vscode/
 
 .aiexclude
+
+### Python (scripts de deploy) ###
+__pycache__/
+*.pyc
