@@ -3,8 +3,11 @@ package com.dinoco.oficina.estoque.infrastructure.web;
 import com.dinoco.oficina.estoque.adapters.controllers.EstoqueControllerClean;
 import com.dinoco.oficina.estoque.application.usecases.commands.ajustarinventario.AjustarInventarioCommand;
 import com.dinoco.oficina.estoque.application.usecases.commands.registrarentrada.RegistrarEntradaCommand;
+import com.dinoco.oficina.estoque.application.usecases.queries.buscarporid.BuscarEstoquePorIdOuput;
+import com.dinoco.oficina.estoque.application.usecases.queries.buscarporid.BuscarEstoquePorIdQuery;
 import com.dinoco.oficina.estoque.infrastructure.web.dto.EntradaSaldoEstoqueRequestDto;
 import com.dinoco.oficina.estoque.infrastructure.web.dto.SaldoEstoqueRequestDto;
+import com.dinoco.oficina.estoque.infrastructure.web.dto.BuscarEstoquePorProdutoIdResponseDto;
 import com.dinoco.oficina.estoque.infrastructure.web.mapper.EstoqueWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,4 +44,13 @@ public class EstoqueSpringWebController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "Buscar estoque por IS de produto")
+    @GetMapping("/{produtoId}")
+    public ResponseEntity<BuscarEstoquePorProdutoIdResponseDto> buscarEstoquePorIdProdutoRespondeDtoResponseEntity(@PathVariable Long produtoId) {
+        BuscarEstoquePorIdQuery query = mapper.toBuscarEstoquePorIdQuery(produtoId);
+        BuscarEstoquePorIdOuput output = controllerClean.buscarEstoquePorIdOuput(query);
+        BuscarEstoquePorProdutoIdResponseDto response = mapper.toBuscarEstoquePorProdutoIdResponseDto(output);
+        return ResponseEntity.ok(response);
+
+    }
 }

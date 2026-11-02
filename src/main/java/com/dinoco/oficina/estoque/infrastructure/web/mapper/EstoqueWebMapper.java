@@ -2,6 +2,9 @@ package com.dinoco.oficina.estoque.infrastructure.web.mapper;
 
 import com.dinoco.oficina.estoque.application.usecases.commands.ajustarinventario.AjustarInventarioCommand;
 import com.dinoco.oficina.estoque.application.usecases.commands.registrarentrada.RegistrarEntradaCommand;
+import com.dinoco.oficina.estoque.application.usecases.queries.buscarporid.BuscarEstoquePorIdOuput;
+import com.dinoco.oficina.estoque.application.usecases.queries.buscarporid.BuscarEstoquePorIdQuery;
+import com.dinoco.oficina.estoque.infrastructure.web.dto.BuscarEstoquePorProdutoIdResponseDto;
 import com.dinoco.oficina.estoque.infrastructure.web.dto.EntradaSaldoEstoqueRequestDto;
 import com.dinoco.oficina.estoque.infrastructure.web.dto.SaldoEstoqueRequestDto;
 import jakarta.validation.Valid;
@@ -18,4 +21,8 @@ public interface EstoqueWebMapper {
     @Mapping(source = "request.quantidadeEntrada",
             target = "quantidade")
     RegistrarEntradaCommand toInputEntradaCompra(Long produtoId, @Valid EntradaSaldoEstoqueRequestDto request);
+
+    BuscarEstoquePorIdQuery toBuscarEstoquePorIdQuery(Long produtoId);
+
+    BuscarEstoquePorProdutoIdResponseDto toBuscarEstoquePorProdutoIdResponseDto(BuscarEstoquePorIdOuput output);
 }

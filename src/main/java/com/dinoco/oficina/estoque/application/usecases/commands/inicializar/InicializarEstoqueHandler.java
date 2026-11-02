@@ -4,7 +4,9 @@ import com.dinoco.oficina.estoque.application.gateways.EstoqueCommandGateway;
 import com.dinoco.oficina.estoque.application.gateways.InicializacaoEstoqueGateway;
 import com.dinoco.oficina.estoque.domain.*;
 import com.dinoco.oficina.shared.events.ProdutoCadastradoEvent;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class InicializarEstoqueHandler implements InicializarEstoqueUseCase {
 
     private final EstoqueCommandGateway estoque;
@@ -17,8 +19,14 @@ public class InicializarEstoqueHandler implements InicializarEstoqueUseCase {
 
     @Override
     public void executar(ProdutoCadastradoEvent evento) {
-        if (!inicializacao.registrarSeNovo(evento))
+        if (!inicializacao.registrarSeNovo(evento)) {
+            log.debug(
+                    "evento=estoque_inicial_duplicidade_ignorada eventoId={} produtoId={}",
+                    evento.eventId(),
+                    evento.produtoId()
+            );
             return;
+        }
 
         if (estoque.buscarSaldoPorProdutoIdParaAlteracao(evento.produtoId()).isPresent())
             throw new IllegalStateException("Produto já possui saldo; reconciliar a inicialização antes de reprocessar.");
@@ -33,5 +41,12 @@ public class InicializarEstoqueHandler implements InicializarEstoqueUseCase {
         }
 
         estoque.salvar(saldo, movimentacao);
+
+        log.debug(
+                "evento=estoque_inicial_gravacao_preparada eventoId={} produtoId={} quantidadeReal={}",
+                evento.eventId(),
+                evento.produtoId(),
+                saldo.getQuantidadeReal()
+        );
     }
 }
