@@ -4,16 +4,22 @@ import com.dinoco.oficina.estoque.application.usecases.commands.ajustarinventari
 import com.dinoco.oficina.estoque.application.usecases.commands.ajustarinventario.AjustarInventarioUseCase;
 import com.dinoco.oficina.estoque.application.usecases.commands.registrarentrada.RegistrarEntradaCommand;
 import com.dinoco.oficina.estoque.application.usecases.commands.registrarentrada.RegistrarEntradaUseCase;
+import com.dinoco.oficina.estoque.application.usecases.queries.buscarporid.BuscarEstoquePorIdOuput;
+import com.dinoco.oficina.estoque.application.usecases.queries.buscarporid.BuscarEstoquePorIdQuery;
+import com.dinoco.oficina.estoque.application.usecases.queries.buscarporid.BuscarEstoquePorIdUseCase;
 
 public class EstoqueControllerClean {
 
     private final AjustarInventarioUseCase ajustarInventarioUseCase;
     private final RegistrarEntradaUseCase registrarEntradaUseCase;
+    private final BuscarEstoquePorIdUseCase buscarEstoquePorIdUseCase;
 
     public EstoqueControllerClean(AjustarInventarioUseCase ajustarInventarioUseCase,
-                                  RegistrarEntradaUseCase registrarEntradaUseCase) {
+                                  RegistrarEntradaUseCase registrarEntradaUseCase,
+                                  BuscarEstoquePorIdUseCase buscarEstoquePorIdUseCase) {
         this.ajustarInventarioUseCase = ajustarInventarioUseCase;
         this.registrarEntradaUseCase = registrarEntradaUseCase;
+        this.buscarEstoquePorIdUseCase = buscarEstoquePorIdUseCase;
     }
 
     public void ajustarInventario(AjustarInventarioCommand command) {
@@ -24,4 +30,7 @@ public class EstoqueControllerClean {
         registrarEntradaUseCase.executar(command);
     }
 
+    public BuscarEstoquePorIdOuput buscarEstoquePorIdOuput(BuscarEstoquePorIdQuery query) {
+        return buscarEstoquePorIdUseCase.executar(query);
+    }
 }
