@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/ordens-servico/webhooks/orcamentos/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/ordens-servico/webhooks/status/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/ordens-servico/*/pagamento/estorno").hasAnyRole("ADMIN", "ATENDENTE")
                 .requestMatchers("/api/funcionarios/**").hasRole("ADMIN")
                 .requestMatchers(
                 "/v3/api-docs/**",

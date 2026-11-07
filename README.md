@@ -28,6 +28,8 @@ Uma API RESTful desenvolvida para gerenciar o fluxo principal de uma oficina mec
 
 ## Documentações / Diagramas
 
+- [Saga de pagamento da OS](docs/saga-pagamento.md)
+
 *  **Diagrama de Componentes:** [Visualizar](docs/architecture/component-diagram.png)
 *  **Diagrama de Sequência de Autenticação** [Visualizar](docs/architecture/authentication-sequence.png)
 *  **Diagrama de Sequência de Abertura de OS** [Visualizar](docs/architecture/service-order-sequence.png)
@@ -336,6 +338,11 @@ cd oficina-dinoco
 * Inicie todo o ecossistema utilizando o Docker Compose:
 ``` bash
 docker compose up --build -d
+```
+
+Apenas Banco
+``` bash
+docker compose up -d postgres 
 ```
 ------------------------------------------------------------------------
 

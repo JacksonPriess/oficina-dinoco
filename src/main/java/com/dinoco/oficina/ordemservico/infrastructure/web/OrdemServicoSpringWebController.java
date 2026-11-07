@@ -31,6 +31,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -128,10 +129,18 @@ public class OrdemServicoSpringWebController {
     public ResponseEntity<Void> atualizarStatusExterna(
             @PathVariable String codigoRastreio,
             @RequestHeader(value = "X-Dinoco-Secret", required = false) String secret,
-            @RequestBody @Valid AtualizarStatusDto request) {
+            @RequestBody @Valid AtualizarStatusDto request, Authentication authentication) {
 
         if (!"dinoco_webhook_secret_2026".equals(secret)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if ((request.acao() == AcaoStatus.FINALIZAR_EXECUCAO || request.acao() == AcaoStatus.CONCLUIR)
+                && (authentication == null || authentication.getAuthorities().stream()
+                        .noneMatch(role -> switch (role.getAuthority()) {
+                            case "ROLE_ADMIN", "ROLE_ATENDENTE", "ROLE_MECANICO" -> true;
+                            default -> false;
+                        }))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         AtualizarStatusCommand input = mapper.toAtualizarStatusCommand(codigoRastreio, request);
         controllerClean.atualizarStatus(input);

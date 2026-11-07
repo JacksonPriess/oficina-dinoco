@@ -36,6 +36,9 @@ import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornum
 import com.dinoco.oficina.cliente.application.gateways.ClienteQueryGateway;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.listarfilatrabalho.ListarFilaTrabalhoHandler;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.listarfilatrabalho.ListarFilaTrabalhoUseCase;
+import com.dinoco.oficina.ordemservico.application.saga.OrquestradorPagamento;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -112,13 +115,19 @@ public class OrdemServicoConfig {
     }
 
     @Bean
-    public FinalizarExecucaoUseCase finalizarExecucaoUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway) {
-        return new FinalizarExecucaoHandler(ordemServicoCommandGateway);
+    public FinalizarExecucaoUseCase finalizarExecucaoUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway,
+            OrquestradorPagamento orquestradorPagamento, PlatformTransactionManager manager) {
+        var handler = new FinalizarExecucaoHandler(ordemServicoCommandGateway, orquestradorPagamento);
+        var tx = new TransactionTemplate(manager);
+        return command -> tx.executeWithoutResult(status -> handler.executar(command));
     }
 
     @Bean
-    public ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway) {
-        return new ConcluirOrdemServicoHandler(ordemServicoCommandGateway);
+    public ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase(OrdemServicoCommandGateway ordemServicoCommandGateway,
+            OrquestradorPagamento orquestradorPagamento, PlatformTransactionManager manager) {
+        var handler = new ConcluirOrdemServicoHandler(ordemServicoCommandGateway, orquestradorPagamento);
+        var tx = new TransactionTemplate(manager);
+        return command -> tx.executeWithoutResult(status -> handler.executar(command));
     }
 
     @Bean

@@ -27,6 +27,9 @@ class ConcluirOrdemServicoHandlerTest {
     @Mock
     private OrdemServicoCommandGateway ordemServicoCommandGateway;
 
+    @Mock
+    private com.dinoco.oficina.ordemservico.application.saga.OrquestradorPagamento orquestradorPagamento;
+
     @InjectMocks
     private ConcluirOrdemServicoHandler handler;
 
@@ -59,7 +62,7 @@ class ConcluirOrdemServicoHandlerTest {
                 null
         );
 
-        when(ordemServicoCommandGateway.buscarParaAlteracao(1L))
+        when(ordemServicoCommandGateway.bloquearParaAlteracao(1L))
                 .thenReturn(Optional.of(osExistente));
 
         var command = new ConcluirOrdemServicoCommand(1L);
@@ -68,7 +71,7 @@ class ConcluirOrdemServicoHandlerTest {
         handler.executar(command);
 
         // Assert
-        verify(ordemServicoCommandGateway).buscarParaAlteracao(1L);
+        verify(ordemServicoCommandGateway).bloquearParaAlteracao(1L);
         verify(ordemServicoCommandGateway).salvar(ordemServicoCaptor.capture());
 
         OrdemServico osAlterada = ordemServicoCaptor.getValue();
@@ -80,7 +83,7 @@ class ConcluirOrdemServicoHandlerTest {
     @DisplayName("Deve lançar exceção quando OS não encontrada")
     void deveLancarExcecaoQuandoOSNaoEncontrada() {
         // Arrange
-        when(ordemServicoCommandGateway.buscarParaAlteracao(anyLong()))
+        when(ordemServicoCommandGateway.bloquearParaAlteracao(anyLong()))
                 .thenReturn(Optional.empty());
 
         var command = new ConcluirOrdemServicoCommand(999L);

@@ -27,6 +27,11 @@ public class OrdemServicoCommandGatewayImpl implements OrdemServicoCommandGatewa
     }
 
     @Override
+    public Optional<OrdemServico> bloquearParaAlteracao(Long id) {
+        return jpaRepository.bloquearPorId(id).map(this::mapearParaDominio);
+    }
+
+    @Override
     public Optional<OrdemServico> buscarPorCodigoRastreioParaAlteracao(String codigoRastreio) {
         return jpaRepository.findByCodigoRastreio(codigoRastreio).map(this::mapearParaDominio);
     }
