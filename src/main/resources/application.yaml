@@ -43,6 +43,9 @@ api:
       secret: ${JWT_SECRET:minha-chave-secreta-de-desenvolvimento-local-1234567890}
 
 integracoes:
+  catalogo-servico:
+    base-url: ${CATALOGO_SERVICO_URL:http://localhost:8083}
+    api-key: ${CATALOGO_SERVICO_API_KEY:servico-local-key}
   catalogo-produto:
     base-url: ${CATALOGO_PRODUTO_URL:http://localhost:8081}
     api-key: ${CATALOGO_API_KEY:chave-secreta-api-catalogo}

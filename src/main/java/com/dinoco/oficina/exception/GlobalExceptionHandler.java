@@ -180,4 +180,14 @@ public class GlobalExceptionHandler {
     }
 
 
+
+    @ExceptionHandler(CatalogoServicoIntegracaoException.class)
+    public ResponseEntity<ErroPadraoDto> handleCatalogoServicoIntegracao(CatalogoServicoIntegracaoException ex) {
+        log.warn("evento=catalogo_servico_integracao_falha detalhe={}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ErroPadraoDto(
+                LocalDateTime.now(), HttpStatus.BAD_GATEWAY.value(),
+                "Falha na integração com o Catálogo de Serviços",
+                List.of("Não foi possível consultar o catálogo de serviços.")
+        ));
+    }
 }
