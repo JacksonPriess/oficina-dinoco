@@ -21,8 +21,6 @@ import com.dinoco.oficina.ordemservico.application.usecases.commands.alteraritem
 import com.dinoco.oficina.ordemservico.application.usecases.commands.alteraritemproduto.AlterarItemProdutoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.AprovarOrcamentoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.aprovar.AprovarOrcamentoUseCase;
-import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoCommand;
-import com.dinoco.oficina.ordemservico.application.usecases.commands.concluir.ConcluirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirdiagnostico.ConcluirDiagnosticoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.concluirexecucaoitemservico.ConcluirExecucaoItemServicoCommand;
@@ -77,7 +75,6 @@ public class DataSeedRunner implements CommandLineRunner {
     private final IniciarExecucaoItemServicoUseCase iniciarExecucaoItemServicoUseCase;
     private final ConcluirExecucaoItemServicoUseCase concluirExecucaoItemServicoUseCase;
     private final FinalizarExecucaoUseCase finalizarExecucaoUseCase;
-    private final ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase;
 
     private final RegistrarEntradaUseCase registrarEntradaUseCase;
     private final VerificarEstoqueUseCase verificarEstoqueUseCase;
@@ -100,7 +97,6 @@ public class DataSeedRunner implements CommandLineRunner {
             IniciarExecucaoItemServicoUseCase iniciarExecucaoItemServicoUseCase,
             ConcluirExecucaoItemServicoUseCase concluirExecucaoItemServicoUseCase,
             FinalizarExecucaoUseCase finalizarExecucaoUseCase,
-            ConcluirOrdemServicoUseCase concluirOrdemServicoUseCase,
             RegistrarEntradaUseCase registrarEntradaUseCase,
             VerificarEstoqueUseCase verificarEstoqueUseCase) {
         this.clienteGateway = clienteGateway;
@@ -120,7 +116,6 @@ public class DataSeedRunner implements CommandLineRunner {
         this.iniciarExecucaoItemServicoUseCase = iniciarExecucaoItemServicoUseCase;
         this.concluirExecucaoItemServicoUseCase = concluirExecucaoItemServicoUseCase;
         this.finalizarExecucaoUseCase = finalizarExecucaoUseCase;
-        this.concluirOrdemServicoUseCase = concluirOrdemServicoUseCase;
         this.registrarEntradaUseCase = registrarEntradaUseCase;
         this.verificarEstoqueUseCase = verificarEstoqueUseCase;
     }
@@ -260,9 +255,7 @@ public class DataSeedRunner implements CommandLineRunner {
         finalizarExecucaoOS(ordemServicoA);
         log.info("-> Ciclo OS - Finalizado execução.");
 
-        // Passo 10: Concluir execução da OS
-        concluirExecucaoOS(ordemServicoA);
-        log.info("-> Ciclo OS - Concluído.");
+        log.info("-> Ciclo OS - Aguardando confirmação financeira para entrega.");
 
         /**
          * Cenário 2 : Cenário onde os produtos não tem valor (precisa de cotação) e não tem saldo no estoque (vai precisar de pedido de compra);
@@ -319,9 +312,7 @@ public class DataSeedRunner implements CommandLineRunner {
         finalizarExecucaoOS(ordemServicoB);
         log.info("-> Ciclo OS 2 - Finalizado execução.");
 
-        // Passo 10: Concluir execução da OS
-        concluirExecucaoOS(ordemServicoB);
-        log.info("-> Ciclo OS 2 - Concluído.");
+        log.info("-> Ciclo OS 2 - Aguardando confirmação financeira para entrega.");
     }
 
     private Long salvarCliente(String tipo, String doc, String ie, String nome, String fantasia, String email) {
@@ -403,10 +394,6 @@ public class DataSeedRunner implements CommandLineRunner {
 
     private void finalizarExecucaoOS(Long osId) {
         finalizarExecucaoUseCase.executar(new FinalizarExecucaoCommand(osId));
-    }
-
-    private void concluirExecucaoOS(Long osId) {
-        concluirOrdemServicoUseCase.executar(new ConcluirOrdemServicoCommand(osId));
     }
 
     private void atualizarValorDoItemDeProduto(Long ordemServicoB, long idItemProdutoNaOs, BigDecimal valorProduto, BigDecimal quantidade) {
