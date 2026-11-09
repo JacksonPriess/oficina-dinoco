@@ -37,7 +37,8 @@ class DeployTest(unittest.TestCase):
             return json.dumps({"data": {key: base64.b64encode(value.encode()).decode()
                 for key, value in {"SPRING_DATASOURCE_URL": "jdbc:test",
                     "SPRING_DATASOURCE_USERNAME": "app", "SPRING_DATASOURCE_PASSWORD": "pwd",
-                    "username": "rabbit", "password": "pwd", "CATALOGO_API_KEY": "test-key"}.items()}})
+                    "username": "rabbit", "password": "pwd", "CATALOGO_API_KEY": "test-key",
+                    "CATALOGO_SERVICO_API_KEY": "servico-test-key"}.items()}})
         return ""
 
     def test_no_ready_node_changes_nothing(self):
@@ -101,6 +102,13 @@ class DeployTest(unittest.TestCase):
         self.assertIn("catalogo-integration-secret", secret_names)
         self.assertEqual("k8s,rabbit", objects["ConfigMap"]["data"]["SPRING_PROFILES_ACTIVE"])
         self.assertNotIn("SPRING_DATASOURCE_URL", objects["ConfigMap"]["data"])
+        if not deploy.CATALOG:
+            self.assertEqual("http://catalogo-servico-api-service:80",
+                             objects["ConfigMap"]["data"]["CATALOGO_SERVICO_URL"])
+            env = {item["name"]: item for item in container["env"]}
+            self.assertEqual({"name": "catalogo-servico-integration-secret",
+                              "key": "CATALOGO_SERVICO_API_KEY"},
+                             env["CATALOGO_SERVICO_API_KEY"]["valueFrom"]["secretKeyRef"])
         profile = yaml.safe_load((ROOT / "src/main/resources/application-k8s.yaml").read_text())
         self.assertEqual("readinessState,db", profile["management"]["endpoint"]["health"]["group"]["readiness"]["include"])
         for probe in ("startupProbe", "readinessProbe", "livenessProbe"):

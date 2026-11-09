@@ -94,6 +94,8 @@ def main():
     else:
         read_secret("catalogo-integration-secret", ["CATALOGO_API_KEY"])
         kubectl("rollout", "status", "deployment/catalogo-produto-api-deployment", "--timeout=180s")
+        read_secret("catalogo-servico-integration-secret", ["CATALOGO_SERVICO_API_KEY"])
+        kubectl("rollout", "status", "deployment/catalogo-servico-api-deployment", "--timeout=180s")
         # Mesmo Secret AWS usado pelo Lambda; nao criar uma segunda chave JWT.
         jwt = subprocess.check_output([
             "aws", "secretsmanager", "get-secret-value", "--region", required("AWS_REGION"),
