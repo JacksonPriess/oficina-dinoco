@@ -41,6 +41,11 @@ spec:
         - secretRef:
             name: catalogo-integration-secret
         env:
+        - name: CATALOGO_SERVICO_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: catalogo-servico-integration-secret
+              key: CATALOGO_SERVICO_API_KEY
         - name: RABBITMQ_USERNAME
           valueFrom:
             secretKeyRef:

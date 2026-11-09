@@ -1,7 +1,5 @@
 package com.dinoco.oficina.config.seed;
 
-import com.dinoco.oficina.catalogoservico.application.gateways.ServicoCommandGateway;
-import com.dinoco.oficina.catalogoservico.domain.Servico;
 import com.dinoco.oficina.cliente.application.gateways.ClienteCommandGateway;
 import com.dinoco.oficina.cliente.application.gateways.ClienteQueryGateway;
 import com.dinoco.oficina.cliente.domain.Cliente;
@@ -60,7 +58,6 @@ public class DataSeedRunner implements CommandLineRunner {
     private final ClienteCommandGateway clienteGateway;
     private final ClienteQueryGateway clienteQueryGateway;
     private final VeiculoCommandGateway veiculoGateway;
-    private final ServicoCommandGateway servicoGateway;
     private final FuncionarioCommandGateway funcionarioGateway;
 
     private final AbrirOrdemServicoUseCase abrirOrdemServicoUseCase;
@@ -83,7 +80,6 @@ public class DataSeedRunner implements CommandLineRunner {
             ClienteCommandGateway clienteGateway,
             ClienteQueryGateway clienteQueryGateway,
             VeiculoCommandGateway veiculoGateway,
-            ServicoCommandGateway servicoGateway,
             FuncionarioCommandGateway funcionarioGateway,
             AbrirOrdemServicoUseCase abrirOrdemServicoUseCase,
             IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase,
@@ -102,7 +98,6 @@ public class DataSeedRunner implements CommandLineRunner {
         this.clienteGateway = clienteGateway;
         this.clienteQueryGateway = clienteQueryGateway;
         this.veiculoGateway = veiculoGateway;
-        this.servicoGateway = servicoGateway;
         this.funcionarioGateway = funcionarioGateway;
         this.abrirOrdemServicoUseCase = abrirOrdemServicoUseCase;
         this.iniciarDiagnosticoUseCase = iniciarDiagnosticoUseCase;
@@ -129,14 +124,8 @@ public class DataSeedRunner implements CommandLineRunner {
         }
         log.info("[INICIO] Executando Fábrica de Dados da Oficina Dinoco...");
 
-        // 1. Dicionários de IDs para reaproveitamento nos cenários
-        List<Long> clientes = popularClientes();
-        List<Long> veiculos = popularVeiculos();
-
-        List<Long> servicos = popularServicos();
-
-        // 2. Criação das Ordens de Serviço ricas em detalhes
-        //popularOrdensDeServico(clientes, veiculos, produtos, servicos);
+        popularClientes();
+        popularVeiculos();
 
         log.info("[SUCESSO] Ambiente DEV pronto para avaliação!");
     }
@@ -195,21 +184,6 @@ public class DataSeedRunner implements CommandLineRunner {
         return ids;
     }
 */
-    private List<Long> popularServicos() {
-        log.info("-> Cadastrando Serviços e Mão de Obra...");
-        List<Long> ids = new ArrayList<>();
-        ids.add(salvarServico("Mão de obra - troca de filtro de óleo", 40.00, 20)); // 0
-        ids.add(salvarServico("Mão de obra - troca de óleo", 50.00, 30)); // 1
-        ids.add(salvarServico("Mão de obra - troca de pastilhas de freio", 120.00, 60)); // 2
-        ids.add(salvarServico("Mão de obra - troca de filtro de ar", 35.00, 20)); // 3
-        ids.add(salvarServico("Mão de obra - troca de velas", 80.00, 50)); // 4
-        ids.add(salvarServico("Mão de obra - troca de correia dentada", 300.00, 180)); // 5
-        ids.add(salvarServico("Mão de obra - sangria / troca de fluido de freio", 90.00, 45)); // 6
-        ids.add(salvarServico("Mão de obra - troca de fluido do radiador", 100.00, 60)); // 7
-        ids.add(salvarServico("Mão de obra - limpeza de bico injetor", 180.00, 90)); // 8
-        return ids;
-    }
-
     private void popularOrdensDeServico(List<Long> clientes, List<Long> veiculos, List<Long> produtos, List<Long> servicos) {
         log.info("-> Gerando Ordens de Serviço (Estados Variados)...");
 
@@ -324,29 +298,6 @@ public class DataSeedRunner implements CommandLineRunner {
     private Long salvarVeiculo(String placa, String marca, String modelo, Integer fab, Integer mod, String cor, String chassi, String motor) {
         var veiculo = new Veiculo(placa, marca, modelo, fab, mod, cor, chassi, motor);
         return veiculoGateway.salvar(veiculo).getId();
-    }
-
-    private Long salvarServico(String desc, Double preco, int tempo) {
-        return servicoGateway.salvar(new Servico(desc, BigDecimal.valueOf(preco), tempo)).getId();
-    }
-
-    private Long abrirOsComItens(Long clienteId, Long veiculoId, int km, String defeito, List<Long> produtos, List<Long> servicos) {
-        List<AbrirOrdemServicoItemProdutoCommand> produtoCommands = produtos != null ?
-                produtos.stream()
-                        .map(produtoId -> new AbrirOrdemServicoItemProdutoCommand(produtoId, BigDecimal.ONE))
-                        .collect(Collectors.toList()) :
-                new ArrayList<>();
-
-        List<AbrirOrdemServicoItemServicoCommand> servicoCommands = servicos != null ?
-                servicos.stream()
-                        .map(servicoId -> new AbrirOrdemServicoItemServicoCommand(servicoId, null))
-                        .collect(Collectors.toList()) :
-                new ArrayList<>();
-
-        var osCmd = new AbrirOrdemServicoCommand(clienteId, veiculoId, km, defeito, produtoCommands, servicoCommands);
-        Long osId = abrirOrdemServicoUseCase.executar(osCmd).osId();
-
-        return osId;
     }
 
     private Long abrirOsSemItens(Long clienteId, Long veiculoId, int km, String defeito) {

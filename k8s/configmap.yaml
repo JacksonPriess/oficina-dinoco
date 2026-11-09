@@ -12,6 +12,7 @@ data:
   RABBITMQ_HOST: "rabbitmq"
   RABBITMQ_PORT: "5672"
   CATALOGO_PRODUTO_URL: "http://catalogo-produto-api-service:80"
+  CATALOGO_SERVICO_URL: "http://catalogo-servico-api-service:80"
   JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=60.0"
 
   TZ: "America/Sao_Paulo"
