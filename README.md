@@ -109,6 +109,16 @@ Configure `CATALOGO_API_KEY` e `CATALOGO_SERVICO_API_KEY` com os valores usados 
 * [Linguagem Ubíqua e Dicionário de Dados](./docs/negocio/linguagem_ubiqua.md)
 * [Swagger UI - Oficina Dinoco](http://localhost:8080/swagger-ui/index.html) *(Disponível após subir a aplicação)*
 
+### Cobertura de Testes — Melhoria Futura
+
+Foi criado no `pom.xml` o perfil Maven `cobertura-80`, que permite validar uma cobertura mínima de **80% das linhas de código**, utilizando o JaCoCo.
+
+O perfil pode ser executado manualmente com o comando:
+
+```bash
+./mvnw clean verify -Pcobertura-80
+```
+
 ### 🚀 Insomnia Collection
 
 Para facilitar os testes e a avaliação do fluxo completo da aplicação, disponibilizamos uma collection do Insomnia com todas as requisições organizadas na ordem lógica de execução:
