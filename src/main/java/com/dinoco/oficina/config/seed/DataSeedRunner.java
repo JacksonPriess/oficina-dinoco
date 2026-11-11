@@ -166,24 +166,7 @@ public class DataSeedRunner implements CommandLineRunner {
         ids.add(salvarVeiculo("BMW3I30", "BMW", "320i", 2021, 2022, "Branco M", "9BM111", "2.0 B48"));
         return ids;
     }
-/*
-    private List<Long> popularProdutos() {
-        log.info("-> Cadastrando Produtos e Insumos no Estoque...");
-        List<Long> ids = new ArrayList<>();
-        ids.add(salvarProduto("Filtro de Óleo", TipoProduto.PECA, "Fram", "PH10060", "Ford Focus", 20.0, 25.0, 45.0)); // 0
-        ids.add(salvarProduto("Óleo Motor 5W30 1L", TipoProduto.INSUMO, "Castrol", "5W30", "Motores gasolina", 50.0, 30.0, 55.0)); // 1
 
-        ids.add(salvarProduto("Pastilha de Freio Dianteira", TipoProduto.PECA, "Bosch", "BP1234", "Ford Focus", 0.0, 0.0, 0.0)); // 2
-        ids.add(salvarProduto("Filtro de Ar", TipoProduto.PECA, "Tecfil", "ARL1234", "Ford Focus", 0.0, 0.0, 0.0)); // 3
-
-        ids.add(salvarProduto("Vela de Ignição", TipoProduto.PECA, "NGK", "TR6B-13", "Motores flex", 2.0, 25.0, 60.0)); // 4
-        ids.add(salvarProduto("Correia Dentada", TipoProduto.PECA, "Continental", "CT1074", "Motor 1.6", 10.0, 120.0, 220.0)); // 5
-        ids.add(salvarProduto("Fluido de Freio DOT 4", TipoProduto.INSUMO, "Varga", "DOT4", "Universal", 25.0, 20.0, 40.0)); // 6
-        ids.add(salvarProduto("Aditivo Radiador", TipoProduto.INSUMO, "Paraflu", "RAD123", "Universal", 30.0, 18.0, 35.0)); // 7
-        ids.add(salvarProduto("Bico Injetor Cleaner", TipoProduto.INSUMO, "Car80", "C80", "Universal", 20.0, 15.0, 35.0)); // 8
-        return ids;
-    }
-*/
     private void popularOrdensDeServico(List<Long> clientes, List<Long> veiculos, List<Long> produtos, List<Long> servicos) {
         log.info("-> Gerando Ordens de Serviço (Estados Variados)...");
 

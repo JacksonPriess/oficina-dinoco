@@ -1,5 +1,8 @@
 package com.dinoco.oficina.cliente.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.val;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
@@ -83,4 +86,75 @@ class ClienteTest {
                 "47987654322");
     }
 
+
+    @Test
+    void deveAtualizarContatoSemAlterarDocumentoTipoDataOuAtivacao() {
+        var cliente = criarClientePF("52998224725");
+        cliente.setId(1L);
+        cliente.desativar();
+        var dataCriacao = cliente.getDataCriacao();
+
+        cliente.atualizarDados("Novo Nome", "123", "Fantasia", "novo@email.com", "47999999999");
+
+        assertEquals("Novo Nome", cliente.getNome());
+        assertEquals("123", cliente.getInscricaoEstadual());
+        assertEquals("Fantasia", cliente.getNomeFantasia());
+        assertEquals("novo@email.com", cliente.getEmail());
+        assertEquals("47999999999", cliente.getTelefone());
+        assertEquals(1L, cliente.getId());
+        assertEquals("52998224725", cliente.getDocumento());
+        assertEquals("F", cliente.getTipoPessoa());
+        assertEquals(dataCriacao, cliente.getDataCriacao());
+        assertFalse(cliente.getAtivo());
+    }
+
+    @Test
+    void deveSubstituirEnderecosSemAcumularOsAnteriores() {
+        var cliente = criarClientePF("52998224725");
+        cliente.adicionarEndereco(endereco("Rua Antiga"));
+        var novo = endereco("Rua Nova");
+        var enderecos = new ArrayList<>(List.of(novo));
+
+        cliente.substituirEnderecos(enderecos);
+        enderecos.clear();
+
+        assertEquals(List.of(novo), cliente.getEnderecos());
+    }
+
+    @Test
+    void deveLimparEnderecosAoSubstituirPorNull() {
+        var cliente = criarClientePF("52998224725");
+        cliente.adicionarEndereco(endereco("Rua A"));
+
+        cliente.substituirEnderecos(null);
+
+        assertTrue(cliente.getEnderecos().isEmpty());
+    }
+
+    @Test
+    void deveIgnorarEnderecoNuloSemRemoverExistentes() {
+        var cliente = criarClientePF("52998224725");
+        var endereco = endereco("Rua A");
+        cliente.adicionarEndereco(endereco);
+
+        cliente.adicionarEndereco(null);
+
+        assertEquals(List.of(endereco), cliente.getEnderecos());
+    }
+
+    @Test
+    void devePermitirDesativacaoRepetidaSemAlterarIdentidade() {
+        var cliente = criarClientePF("52998224725");
+
+        cliente.desativar();
+        cliente.desativar();
+
+        assertFalse(cliente.getAtivo());
+        assertEquals("52998224725", cliente.getDocumento());
+        assertEquals("João Silva", cliente.getNome());
+    }
+
+    private Endereco endereco(String logradouro) {
+        return new Endereco("89201000", logradouro, "10", null, "Centro", "Joinville", "SC");
+    }
 }

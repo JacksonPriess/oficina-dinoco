@@ -81,4 +81,77 @@ class SaldoEstoqueTest {
         assertEquals(Long.valueOf(0), saldo.getVersao());
     }
 
+
+    @Test
+    void deveRejeitarEntradaERetiradaNaoPositivasSemAlterarSaldo() {
+        for (var quantidade : new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ONE.negate()}) {
+            var saldo = new SaldoEstoque(1L, 2L, BigDecimal.TEN, BigDecimal.ONE, 0L);
+            assertThrows(IllegalArgumentException.class, () -> saldo.adicionarEntrada(quantidade));
+            assertThrows(IllegalArgumentException.class, () -> saldo.retirar(quantidade));
+            assertEquals(BigDecimal.TEN, saldo.getQuantidadeReal());
+            assertEquals(BigDecimal.ONE, saldo.getQuantidadeReservada());
+        }
+    }
+
+    @Test
+    void deveProtegerQuantidadeReservadaNaRetirada() {
+        var saldo = new SaldoEstoque(1L, 2L, BigDecimal.TEN, new BigDecimal("8"), 0L);
+
+        assertThrows(com.dinoco.oficina.estoque.domain.exception.SaldoInsuficienteException.class,
+                () -> saldo.retirar(new BigDecimal("3")));
+
+        assertEquals(BigDecimal.TEN, saldo.getQuantidadeReal());
+        assertEquals(new BigDecimal("8"), saldo.getQuantidadeReservada());
+    }
+
+    @Test
+    void devePermitirRetiradaExataDoDisponivel() {
+        var saldo = new SaldoEstoque(1L, 2L, new BigDecimal("10.5"), new BigDecimal("8.0"), 0L);
+
+        saldo.retirar(new BigDecimal("2.5"));
+
+        assertEquals(new BigDecimal("8.0"), saldo.getQuantidadeReal());
+        assertEquals(new BigDecimal("8.0"), saldo.getQuantidadeReservada());
+    }
+
+    @Test
+    void deveRejeitarReservaEConsumoInvalidosSemAlterarSaldo() {
+        for (var quantidade : new BigDecimal[]{null, BigDecimal.ZERO, BigDecimal.ONE.negate()}) {
+            var saldo = new SaldoEstoque(1L, 2L, BigDecimal.TEN, BigDecimal.ONE, 0L);
+            assertThrows(IllegalArgumentException.class, () -> saldo.adicionarQuantidadeReservada(quantidade));
+            assertThrows(IllegalArgumentException.class, () -> saldo.consumirQuantidadeReservadaEFisica(quantidade));
+            assertEquals(BigDecimal.TEN, saldo.getQuantidadeReal());
+            assertEquals(BigDecimal.ONE, saldo.getQuantidadeReservada());
+        }
+    }
+
+    @Test
+    void deveRejeitarConsumoSuperiorAReservaSemAlterarSaldo() {
+        var saldo = new SaldoEstoque(1L, 2L, BigDecimal.TEN, BigDecimal.ONE, 0L);
+
+        assertThrows(IllegalStateException.class, () -> saldo.consumirQuantidadeReservadaEFisica(new BigDecimal("2")));
+
+        assertEquals(BigDecimal.TEN, saldo.getQuantidadeReal());
+        assertEquals(BigDecimal.ONE, saldo.getQuantidadeReservada());
+    }
+
+    @Test
+    void deveConsumirReservaFracionadaIntegralmente() {
+        var saldo = new SaldoEstoque(1L, 2L, new BigDecimal("2.50"), new BigDecimal("2.50"), 0L);
+
+        saldo.consumirQuantidadeReservadaEFisica(new BigDecimal("2.50"));
+
+        assertEquals(0, saldo.getQuantidadeReal().signum());
+        assertEquals(0, saldo.getQuantidadeReservada().signum());
+    }
+
+    @Test
+    void deveAcumularReservaSemBaixarEstoqueFisico() {
+        var saldo = new SaldoEstoque(1L, 2L, BigDecimal.TEN, BigDecimal.ONE, 0L);
+
+        saldo.adicionarQuantidadeReservada(new BigDecimal("1.25"));
+
+        assertEquals(new BigDecimal("2.25"), saldo.getQuantidadeReservada());
+        assertEquals(BigDecimal.TEN, saldo.getQuantidadeReal());
+    }
 }
