@@ -83,7 +83,7 @@ Após a finalização técnica de uma OS com valor a cobrar, o núcleo solicita 
 1. Provisione a infraestrutura do cluster e o RabbitMQ pelo [repositório de infraestrutura Kubernetes](https://github.com/JacksonPriess/oficina-infra-k8s).
 2. Provisione o RDS e prepare os bancos e usuários no [repositório de infraestrutura de banco](https://github.com/JacksonPriess/oficina-infra-db).
 3. Publique a [Lambda de autenticação](https://github.com/JacksonPriess/oficina-auth-lambda) para disponibilizar a chave JWT compartilhada.
-4. Publique o catálogo de produtos, o financeiro e o núcleo. Use o [guia de deploy do núcleo e do catálogo de produtos](docs/DEPLOY-K8S.md) e o guia do financeiro para configurar os segredos e validar a prontidão de cada aplicação.
+4. Publique o catálogo de produtos, o financeiro e o núcleo.
 5. Execute o workflow do API Gateway depois que o Service do núcleo criar o Load Balancer. Instale a integração do New Relic pelo repositório de infraestrutura Kubernetes.
 
 ## 🚀 Como Executar Local (Desenvolvimento)
@@ -320,11 +320,10 @@ Exemplo:
 
 Os diagramas das fases anteriores registram a evolução da arquitetura. A seção da Fase 04 descreve a separação atual.
 
-- [Saga de pagamento da OS](docs/saga-pagamento.md)
-
-*  **Diagrama de Componentes:** [Visualizar](docs/architecture/component-diagram.png)
+*  **Saga Pagamentos orquestrado pelo núcleo :** [Saga de pagamento da OS](docs/architecture/saga-pagamentos-fase04.png)
+*  **Diagrama de Componentes :** [Visualizar](docs/architecture/component-diagram-fase04.png)
 *  **Diagrama de Sequência de Autenticação** [Visualizar](docs/architecture/authentication-sequence.png)
-*  **Diagrama de Sequência de Abertura de OS** [Visualizar](docs/architecture/service-order-sequence.png)
+*  **Diagrama de Sequência de Abertura de OS** [Visualizar](docs/architecture/service-order-sequence-fase04.md)
 *  **RFC-001 - Provedor nuvem** [Visualizar](docs/rfc/RFC-001-cloud-provider.md)
 *  **RFC-002 - Banco de dados** [Visualizar](docs/rfc/RFC-002-database.md)
 *  **RFC-003 - Estratégia autenticação** [Visualizar](docs/rfc/RFC-003-authentication.md) 
