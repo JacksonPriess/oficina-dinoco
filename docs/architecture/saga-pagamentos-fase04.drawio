@@ -1,0 +1,146 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="03 • SAGA de pagamento" id="sHHF62aul_oQId001daw">
+    <mxGraphModel dx="3474" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-1" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#e1f2e3;strokeColor=#7795b5;fontFamily=Helvetica;fontSize=14;spacing=8;" value="Mecânico finaliza execução&#xa;OS → FINALIZADA" vertex="1">
+          <mxGeometry height="58.8" width="247.8" x="517.3" y="107" as="geometry" />
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-2" parent="1" style="rhombus;whiteSpace=wrap;html=0;fillColor=#fff0d8;strokeColor=#7795b5;fontFamily=Helvetica;fontSize=14;spacing=8;" value="Valor da OS &gt; 0?" vertex="1">
+          <mxGeometry height="84" width="336" x="473.2" y="237.2" as="geometry" />
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-3" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#edf4fc;strokeColor=#7795b5;fontFamily=Helvetica;fontSize=14;spacing=8;" value="SAGA: SOLICITADA&#xa;Persiste SAGA + comando na outbox" vertex="1">
+          <mxGeometry height="58.8" width="309.4" x="219.1" y="405.2" as="geometry" />
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-4" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#edf4fc;strokeColor=#7795b5;fontFamily=Helvetica;fontSize=14;spacing=8;" value="Financeiro registra PENDENTE&#xa;Worker obtém token e cria cobrança no mock" vertex="1">
+          <mxGeometry height="58.8" width="309.4" x="219.1" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-5" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#edf4fc;strokeColor=#7795b5;fontFamily=Helvetica;fontSize=14;spacing=8;" value="SAGA: PENDENTE&#xa;Cobrança criada; aguarda aprovação" vertex="1">
+          <mxGeometry height="58.8" width="322" x="-10" y="721.6" as="geometry" />
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-6" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#e1f2e3;strokeColor=#7795b5;fontFamily=Helvetica;fontSize=14;spacing=8;" value="SAGA: APROVADA&#xa;Pagamento confirmado" vertex="1">
+          <mxGeometry height="58.8" width="214.2" x="266.7" y="864.4" as="geometry" />
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-7" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#e1f2e3;strokeColor=#7795b5;fontFamily=Helvetica;fontSize=14;spacing=8;" value="Concluir / entregar OS&#xa;Valida pagamento e valor&#xa;OS → ENTREGUE • SAGA → ENTREGUE" vertex="1">
+          <mxGeometry height="75.6" width="266" x="130" y="1024" as="geometry" />
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-8" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#fff0d8;strokeColor=#7795b5;fontFamily=Helvetica;fontSize=14;spacing=8;" value="SAGA: ESTORNO_SOLICITADO&#xa;Persiste comando na outbox&#xa;Entrega bloqueada" vertex="1">
+          <mxGeometry height="75.6" width="266" x="425" y="1024" as="geometry" />
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-9" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#edf4fc;strokeColor=#7795b5;fontFamily=Helvetica;fontSize=14;spacing=8;" value="Financeiro solicita estorno no mock&#xa;Persiste confirmação + evento" vertex="1">
+          <mxGeometry height="58.8" width="309.4" x="438.9" y="1180.8" as="geometry" />
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-10" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#f8e7e7;strokeColor=#7795b5;fontFamily=Helvetica;fontSize=14;spacing=8;" value="SAGA: ESTORNADA&#xa;Entrega permanece bloqueada" vertex="1">
+          <mxGeometry height="58.8" width="309.4" x="438.9" y="1323.6" as="geometry" />
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-11" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#edf4fc;strokeColor=#7795b5;fontFamily=Helvetica;fontSize=14;spacing=8;" value="OS sem valor&#xa;Sem criação de cobrança / SAGA&#xa;Conclusão permitida pelo fluxo atual" vertex="1">
+          <mxGeometry height="58.8" width="319.2" x="662.2" y="405.2" as="geometry" />
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-12" parent="1" style="text;html=0;align=center;verticalAlign=middle;fontSize=24;fontStyle=1;" value="Oficina Dinoco | SAGA de pagamento orquestrada pelo núcleo" vertex="1">
+          <mxGeometry height="40" width="981.4" x="140" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-13" edge="1" parent="1" source="MkcZ4nzS0OJ8iAg5TB3D-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#ffffff;strokeWidth=1.4;strokeColor=#52677d;" target="MkcZ4nzS0OJ8iAg5TB3D-2" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="641.2" y="183.57" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-14" edge="1" parent="1" source="MkcZ4nzS0OJ8iAg5TB3D-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#ffffff;strokeWidth=1.4;strokeColor=#52677d;" target="MkcZ4nzS0OJ8iAg5TB3D-3" value="Sim">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="574.55" y="339.55" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-15" edge="1" parent="1" source="MkcZ4nzS0OJ8iAg5TB3D-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#ffffff;strokeWidth=1.4;strokeColor=#52677d;" target="MkcZ4nzS0OJ8iAg5TB3D-11" value="Não">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="704.37" y="336.91" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-16" edge="1" parent="1" source="MkcZ4nzS0OJ8iAg5TB3D-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#ffffff;strokeWidth=1.4;strokeColor=#52677d;" target="MkcZ4nzS0OJ8iAg5TB3D-4" value="RabbitMQ • pagamento.criar.v1">
+          <mxGeometry relative="1" x="0.0303" y="-93" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="393.4" y="520" />
+              <mxPoint x="393.4" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-17" edge="1" parent="1" source="MkcZ4nzS0OJ8iAg5TB3D-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#ffffff;strokeWidth=1.4;strokeColor=#52677d;dashed=1;" target="MkcZ4nzS0OJ8iAg5TB3D-6" value="Aprovação recebida antes&#xa;do evento de criação">
+          <mxGeometry relative="1" x="-0.4614" y="80" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="580" y="434.6" />
+              <mxPoint x="580" y="800" />
+              <mxPoint x="430" y="800" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-18" edge="1" parent="1" source="MkcZ4nzS0OJ8iAg5TB3D-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#ffffff;strokeWidth=1.4;strokeColor=#52677d;" target="MkcZ4nzS0OJ8iAg5TB3D-5" value="pagamento.criado.v1">
+          <mxGeometry relative="1" x="-0.0033" y="-70" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="250" y="650" />
+              <mxPoint x="250" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-19" edge="1" parent="1" source="MkcZ4nzS0OJ8iAg5TB3D-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#ffffff;strokeWidth=1.4;strokeColor=#52677d;innerLoopWaypoints=1;" target="MkcZ4nzS0OJ8iAg5TB3D-5" value="Provedor ainda PENDENTE&#xa;Worker consulta novamente">
+          <mxGeometry relative="1" x="-0.0698" y="-22" as="geometry">
+            <mxPoint x="22" y="-22" as="offset" />
+            <Array as="points">
+              <mxPoint x="420" y="741.9" />
+              <mxPoint x="420" y="758.1" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-20" edge="1" parent="1" source="MkcZ4nzS0OJ8iAg5TB3D-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#ffffff;strokeWidth=1.4;strokeColor=#52677d;" target="MkcZ4nzS0OJ8iAg5TB3D-6" value="pagamento.aprovado.v1">
+          <mxGeometry relative="1" x="-0.412" y="-17" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="238.35" y="803.29" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-21" edge="1" parent="1" source="MkcZ4nzS0OJ8iAg5TB3D-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#ffffff;strokeWidth=1.4;strokeColor=#52677d;" target="MkcZ4nzS0OJ8iAg5TB3D-7" value="Solicitação de conclusão da OS">
+          <mxGeometry relative="1" x="-0.0449" y="-100" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="320" y="970" />
+              <mxPoint x="320" y="970" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-22" edge="1" parent="1" source="MkcZ4nzS0OJ8iAg5TB3D-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#ffffff;strokeWidth=1.4;strokeColor=#52677d;" target="MkcZ4nzS0OJ8iAg5TB3D-8" value="Solicitação de estorno&#xa;antes da entrega">
+          <mxGeometry relative="1" x="0.127" y="70" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="450" y="930" />
+              <mxPoint x="450" y="930" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-23" edge="1" parent="1" source="MkcZ4nzS0OJ8iAg5TB3D-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#ffffff;strokeWidth=1.4;strokeColor=#52677d;" target="MkcZ4nzS0OJ8iAg5TB3D-9" value="RabbitMQ • pagamento.estornar.v1">
+          <mxGeometry relative="1" x="-0.0049" y="96" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="593.6" y="1119.41" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MkcZ4nzS0OJ8iAg5TB3D-24" edge="1" parent="1" source="MkcZ4nzS0OJ8iAg5TB3D-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#ffffff;strokeWidth=1.4;strokeColor=#52677d;" target="MkcZ4nzS0OJ8iAg5TB3D-10" value="pagamento.estornado.v1">
+          <mxGeometry relative="1" x="-0.0381" y="76" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="593.6" y="1260.99" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

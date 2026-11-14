@@ -37,7 +37,7 @@ public class ItemOSProduto {
         }
 
         if ( quantidadeUtilizada != null ) {
-            if (quantidade.compareTo(BigDecimal.ZERO) <= 0) {
+            if (quantidadeUtilizada.compareTo(BigDecimal.ZERO) <= 0) {
                 throw new IllegalArgumentException("A quantidade deve ser maior que zero.");
             }
             this.quantidade = quantidadeUtilizada;

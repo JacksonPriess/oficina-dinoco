@@ -1,6 +1,8 @@
 package com.dinoco.oficina.ordemservico.infrastructure.gateways;
 
 import com.dinoco.oficina.ordemservico.application.gateways.OrdemServicoQueryGateway;
+import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarporid.BuscarOSPorIdItemProdutoOutput;
+import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarporid.BuscarOSPorIdItemServicoOutput;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarporid.BuscarOSPorIdOuput;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.buscarpornumero.BuscarOSPorCodigoRastreioOuput;
 import com.dinoco.oficina.ordemservico.application.usecases.queries.listarfilatrabalho.ListarFilaTrabalhoDetalhesOutput;
@@ -9,6 +11,7 @@ import com.dinoco.oficina.ordemservico.infrastructure.persistence.OrdemServicoJp
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +29,7 @@ public class OrdemServicoQueryGatewayImpl implements OrdemServicoQueryGateway {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<BuscarOSPorIdOuput> buscarPorId(Long id) {
         return jpaRepository.findById(id).map(this::mapearParaOutput);
     }
@@ -136,7 +140,34 @@ public class OrdemServicoQueryGatewayImpl implements OrdemServicoQueryGateway {
                 entity.getValorTotalProdutos(),
                 entity.getValorDesconto(),
                 entity.getValorTotalOS(),
-                entity.getStatus().toString()
+                entity.getDataEntrada(),
+                entity.getDataSaida(),
+                entity.getDataReprovacao(),
+                entity.getDataInicioDiagnostico(),
+                entity.getDataFinalDiagnostico(),
+                entity.getDataInicioExecucao(),
+                entity.getDataFinalExecucao(),
+                entity.getStatus().toString(),
+                entity.getItensServico().stream()
+                        .map(item -> new BuscarOSPorIdItemServicoOutput(
+                                item.getId(),
+                                item.getServicoId(),
+                                item.getMecanicoId(),
+                                item.getValorCobrado(),
+                                item.getStatusItem().toString(),
+                                item.getDataInicio(),
+                                item.getDataFim()
+                        ))
+                        .toList(),
+                entity.getItensProduto().stream()
+                        .map(item -> new BuscarOSPorIdItemProdutoOutput(
+                                item.getId(),
+                                item.getProdutoId(),
+                                item.getQuantidade(),
+                                item.getValorUnitarioVenda(),
+                                item.getValorTotal()
+                        ))
+                        .toList()
         );
     }
 }

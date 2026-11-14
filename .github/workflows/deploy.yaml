@@ -48,8 +48,19 @@ jobs:
           python3 -m pip install -r scripts/requirements-deploy.txt
           python3 -m unittest discover -s tests/deploy -v
 
-      - name: 3. Compilar e executar testes
-        run: mvn clean package
+      - name: 3. Executar testes, empacotar aplicação e análise SonarQube
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+
+      - name: Publicar relatório de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-oficina-dinoco
+          path: target/site/jacoco/
+          if-no-files-found: warn
 
       # ============================================================
       # CD - somente main

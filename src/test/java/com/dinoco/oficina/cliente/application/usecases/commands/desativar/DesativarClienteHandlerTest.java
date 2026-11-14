@@ -82,4 +82,29 @@ class DesativarClienteHandlerTest {
         // Garante que o método salvar nunca foi chamado
         verify(clienteCommandGateway, never()).salvar(any());
     }
+
+    @Test
+    void deveManterClienteInativoAoRepetirDesativacao() {
+        var cliente = new Cliente("F", "52998224725", "João", null, null, "joao@email.com", "47999999999");
+        cliente.setId(1L);
+        cliente.desativar();
+        when(clienteCommandGateway.buscarParaAlteracao(1L)).thenReturn(Optional.of(cliente));
+
+        handler.executar(new DesativarClienteCommand(1L));
+
+        verify(clienteCommandGateway).salvar(clienteCaptor.capture());
+        assertThat(clienteCaptor.getValue().getAtivo()).isFalse();
+        assertThat(clienteCaptor.getValue().getDocumento()).isEqualTo("52998224725");
+        assertThat(clienteCaptor.getValue().getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void devePropagarFalhaAoPersistirDesativacao() {
+        var cliente = new Cliente("F", "52998224725", "João", null, null, "joao@email.com", "47999999999");
+        when(clienteCommandGateway.buscarParaAlteracao(1L)).thenReturn(Optional.of(cliente));
+        var falha = new IllegalStateException("Persistência indisponível");
+        when(clienteCommandGateway.salvar(any(Cliente.class))).thenThrow(falha);
+
+        assertThatThrownBy(() -> handler.executar(new DesativarClienteCommand(1L))).isSameAs(falha);
+    }
 }
