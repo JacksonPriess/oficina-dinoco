@@ -109,9 +109,9 @@ Configure `CATALOGO_API_KEY` e `CATALOGO_SERVICO_API_KEY` com os valores usados 
 * [Linguagem Ubíqua e Dicionário de Dados](./docs/negocio/linguagem_ubiqua.md)
 * [Swagger UI - Oficina Dinoco](http://localhost:8080/swagger-ui/index.html) *(Disponível após subir a aplicação)*
 
-### Cobertura de Testes — Melhoria Futura
+### Cobertura de Testes
 
-Foi criado no `pom.xml` o perfil Maven `cobertura-80`, que permite validar uma cobertura mínima de **80% das linhas de código**, utilizando o JaCoCo.
+O perfil Maven `cobertura-80` valida uma cobertura mínima de **80% das linhas de código** do núcleo, utilizando o JaCoCo. A suíte inclui testes unitários e testes de componentes para casos de uso, domínio, contratos HTTP, mapeamentos, segurança e mensageria.
 
 O perfil pode ser executado manualmente com o comando:
 
@@ -338,3 +338,11 @@ Os diagramas das fases anteriores registram a evolução da arquitetura. A seç�
 *  **Arquitetura interna aplicação:** [Visualizar](docs/diagramas-fase2/DiagramaComponentesArquitetura.png)
 * ️ **Fluxo de deploy:** [Visualizar](docs/diagramas-fase2/oficina-dinoco-fluxo-deploy-geral.drawio.png)
 
+
+## Teste BDD do fluxo completo
+
+O cenário automatizado cobre o cadastro dos dados, abertura da OS com itens dos catálogos, reserva e baixa de estoque, finalização técnica, pagamento assíncrono e entrega após aprovação. 
+É executado com Cucumber, REST Assured e Awaitility contra as aplicações em execução.
+
+Acessar [BDD — configuração, execução e relatórios](docs/bdd/BDD_README.md) para preparar o ambiente e executar o perfil Maven `bdd`. O BDD é separado dos testes habituais e da verificação JaCoCo do perfil `cobertura-80`.
+* ️ **Evidencia de execução do BDD:** [Visualizar](docs/bdd/EvidenciaBddFluxoCompleto.pdf)
