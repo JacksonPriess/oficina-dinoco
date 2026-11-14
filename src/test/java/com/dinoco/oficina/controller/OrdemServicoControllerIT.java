@@ -40,6 +40,39 @@ class OrdemServicoControllerIT extends BaseIT {
     }
 
     @Test
+    @DisplayName("Deve buscar uma OS por ID incluindo itens de serviço e produto")
+    void deveBuscarOsPorIdComItens() {
+        given()
+                .pathParam("osId", 102)
+        .when()
+                .get("/api/ordens-servico/{osId}")
+        .then()
+                .statusCode(200)
+                .body("itensServico", hasSize(1))
+                .body("itensServico[0].servicoId", equalTo(666))
+                .body("itensServico[0].valorCobrado", equalTo(120.0f))
+                .body("itensProduto", hasSize(1))
+                .body("itensProduto[0].produtoId", equalTo(777))
+                .body("itensProduto[0].quantidade", equalTo(1.0f))
+                .body("itensProduto[0].valorUnitarioVenda", equalTo(150.0f))
+                .body("itensProduto[0].valorTotal", equalTo(150.0f));
+    }
+
+    @Test
+    @DisplayName("Deve buscar uma OS por ID e não encontrar itens de serviço e produto")
+    void deveBuscarOsPorIdSemItens() {
+        given()
+                .pathParam("osId", 100)
+                .when()
+                .get("/api/ordens-servico/{osId}")
+                .then()
+                .statusCode(200)
+                .body("itensServico", hasSize(0))
+                .body("itensProduto", hasSize(0))
+                .body("dataEntrada", notNullValue());
+    }
+
+    @Test
     @DisplayName("02 - Deve iniciar o diagnóstico de uma OS que está com status RECEBIDA (Cenário A - OS 100)")
     void deveIniciarDiagnostico() {
         given()

@@ -1,71 +1,102 @@
 # 🚗 API Oficina Mecânica Dinoco
 
-Este repositório contém o **núcleo da Oficina Mecânica Dinoco**, desenvolvido para o Tech Challenge (TC) de Arquitetura de Software da FIAP. A API coordena o ciclo da ordem de serviço (OS), do atendimento à entrega, e mantém as regras de orçamento, execução, estoque e acompanhamento. Os catálogos de produtos e serviços e o financeiro têm APIs e dados próprios.
+Núcleo da **Oficina Mecânica Dinoco**, desenvolvido para o Tech Challenge de Arquitetura de Software da FIAP. A aplicação coordena o ciclo das ordens de serviço (OS), do atendimento à entrega, incluindo orçamentos, estoque, execução e pagamento. Catálogos e financeiro possuem APIs e dados próprios.
 
-## 🎯 Objetivos Gerais do Projeto
+## Visão geral
 
-- Gerenciar clientes, funcionários, veículos e ordens de serviço.
-- Montar orçamentos com peças e serviços, registrar a decisão do cliente e acompanhar a execução.
-- Controlar o estoque de peças e insumos e acompanhar o tempo médio de execução dos serviços.
-- Coordenar a cobrança e condicionar a entrega à confirmação do pagamento quando houver valor a cobrar.
-- Separar os domínios em componentes com responsabilidades claras, usando Domain-Driven Design (DDD) e Clean Architecture.
+O sistema permite cadastrar clientes, funcionários e veículos; abrir e acompanhar ordens de serviço; diagnosticar problemas; incluir produtos e serviços no orçamento; registrar aprovação ou reprovação; executar o trabalho; e concluir a entrega. Também contempla rastreio pelo cliente, envio de orçamento por WhatsApp, movimentações de estoque e métricas de execução.
 
-## Features adicionadas
+O projeto utiliza **Domain-Driven Design (DDD)** e **Clean Architecture** para separar regras de domínio, casos de uso e adaptadores de infraestrutura.
 
-- Abertura, listagem e rastreio de OS, diagnóstico, envio do orçamento por WhatsApp, aprovação ou reprovação, execução e entrega.
-- Autenticação de funcionários por e-mail e senha e de clientes por CPF via AWS Lambda. O rastreio verifica o vínculo da OS com o cliente autenticado.
-- Catálogos independentes. O núcleo consulta os preços por HTTP com o header `X-API-Key` e registra o valor cobrado no item da OS. Alterar o catálogo afeta novas inclusões, enquanto os itens existentes preservam seus valores.
-- Inicialização de estoque por evento de cadastro de produto no RabbitMQ. O saldo e as movimentações são responsabilidade do núcleo.
-- Consulta em lote ao catálogo de serviços para enriquecer as métricas de execução com descrição e tempo estimado.
-- Saga de pagamento orquestrada pelo núcleo. A finalização técnica solicita a cobrança, a aprovação financeira libera a entrega e o estorno antes da entrega funciona como compensação.
+## Arquitetura da solução
 
-## Tecnologias Utilizadas
+![Diagrama de componentes da Fase 04](docs/architecture/component-diagram-fase04.png)
 
-| Área | Tecnologias e responsabilidades |
-| --- | --- |
-| API e segurança | Java 21, Spring Boot 4.0.6, Spring Web MVC, Spring Security, JWT (JSON Web Token), Springdoc OpenAPI e Swagger UI. |
-| Integração | Spring RestClient para os catálogos e Spring AMQP (Advanced Message Queuing Protocol) com RabbitMQ para eventos de estoque e mensagens da Saga. |
-| Dados | PostgreSQL 16 no núcleo, no catálogo de produtos e no financeiro, com bancos separados. Spring Data JPA e Flyway no núcleo. MongoDB 8 e Spring Data MongoDB no catálogo de serviços. |
-| Build e testes | Maven Wrapper, JUnit 5, Mockito, REST Assured e Testcontainers. |
-| Infraestrutura | Docker e Docker Compose para desenvolvimento. Terraform e GitHub Actions para provisionamento e automação. Kubernetes no Amazon EKS (Elastic Kubernetes Service), imagens no Amazon ECR (Elastic Container Registry) e PostgreSQL no Amazon RDS (Relational Database Service). |
-| Segurança e observabilidade na AWS | AWS Secrets Manager, AWS Lambda, API Gateway, Spring Boot Actuator, logs estruturados e New Relic. |
-
-O núcleo separa regras de domínio, casos de uso e adaptadores. As chamadas HTTP, a publicação e o consumo de mensagens e o acesso a dados ficam nos adaptadores de infraestrutura.
-
-## Separação da Infraestrutura - TC Fase 03
-
-A solução foi separada em repositórios independentes:
-
-- **`oficina-dinoco`**  
-  Aplicação principal Java/Spring Boot, regras de negócio, autenticação dos funcionários, Dockerfile, migrations Flyway e manifestos Kubernetes.
-
-- **`oficina-infra-k8s`**  
-  Provisionamento da VPC, Subnets, Internet Gateway, EKS, Node Groups EC2, ECR e API Gateway.
-
-- **`oficina-infra-db`**  
-  Provisionamento do RDS PostgreSQL, DB Subnet Group, Security Group e integração com AWS Secrets Manager.
-
-- **`oficina-auth-lambda`**  
-  Function Serverless responsável pela autenticação dos clientes via CPF, consulta do cliente na base, verificação de status e emissão do JWT.
-
-A separação permite ciclos de deploy independentes para infraestrutura, banco, autenticação serverless e aplicação. O API Gateway encaminha `POST /auth/cliente` para a Lambda e as rotas do núcleo para o Load Balancer da API no EKS.
-
----
-
-## Separação da Infraestrutura - TC Fase 04
-
-| Componente | Responsabilidade | Dados |
+| Componente | Responsabilidade | Persistência |
 | --- | --- | --- |
-| Núcleo (`oficina-dinoco`) | OS, clientes, veículos, funcionários, estoque, métricas e estado da Saga de pagamento. | PostgreSQL |
-| [Catálogo de produtos](https://github.com/JacksonPriess/oficina-produto-api) | Cadastro e consulta de produtos e publicação do evento de cadastro. | PostgreSQL próprio |
-| [Catálogo de serviços](https://github.com/JacksonPriess/oficina-servico-api) | Cadastro e consulta de serviços, preços e tempos estimados. | MongoDB |
-| [Financeiro](https://github.com/JacksonPriess/oficina-financeiro-api) | Criação, aprovação e estorno de pagamentos. Integração com um provedor simulado. | PostgreSQL próprio |
+| **Núcleo (`oficina-dinoco`)** | OS, clientes, veículos, funcionários, estoque, métricas e orquestração da Saga de pagamento. | PostgreSQL |
+| [**Catálogo de produtos**](https://github.com/JacksonPriess/oficina-produto-api) | Cadastro e consulta de produtos; publicação do evento de cadastro. | PostgreSQL próprio |
+| [**Catálogo de serviços**](https://github.com/JacksonPriess/oficina-servico-api) | Cadastro e consulta de serviços, preços e tempos estimados. | MongoDB |
+| [**Financeiro**](https://github.com/JacksonPriess/oficina-financeiro-api) | Criação, aprovação e estorno de pagamentos; integração com provedor simulado. | PostgreSQL próprio |
 
-Os três bancos PostgreSQL têm credenciais de aplicação separadas no RDS. O catálogo de serviços e o MongoDB foram validados localmente. O deploy desse catálogo no EKS é uma etapa posterior. O ambiente da Fase 04 parte de um MongoDB vazio e recebe os serviços pela API.
+O núcleo consulta os catálogos por HTTP com autenticação por `X-API-Key`. Ao adicionar itens à OS, registra o preço aplicado naquele momento, preservando o valor de itens existentes mesmo quando há alterações posteriores no catálogo.
 
-### Mensageria e Saga de pagamento
+O núcleo, o catálogo de produtos e o financeiro utilizam **RabbitMQ compartilhado**. O catálogo de serviços é consultado por HTTP. O estoque é inicializado a partir do evento de cadastro de produto, processado assincronamente pelo núcleo.
 
-O núcleo, o catálogo de produtos e o financeiro compartilham o RabbitMQ. O catálogo de serviços é consultado por HTTP.
+Os três bancos PostgreSQL utilizam credenciais de aplicação separadas no RDS. O catálogo de serviços com MongoDB foi validado localmente; seu deploy no EKS é uma etapa posterior. O ambiente local dessa aplicação parte de um MongoDB vazio e recebe os cadastros pela API.
+
+## Tecnologias utilizadas
+
+| Área | Tecnologias |
+| --- | --- |
+| API e segurança | Java 21, Spring Boot 4.0.6, Spring Web MVC, Spring Security, JWT, Springdoc OpenAPI e Swagger UI |
+| Comunicação | Spring RestClient, Spring AMQP e RabbitMQ |
+| Dados | PostgreSQL 16, Spring Data JPA, Flyway; MongoDB 8 e Spring Data MongoDB no catálogo de serviços |
+| Testes | Maven Wrapper, JUnit 5, Mockito, REST Assured, Testcontainers, **Cucumber, Gherkin**, Awaitility e JaCoCo |
+| Infraestrutura e entrega | Docker, Docker Compose, Terraform, GitHub Actions, Kubernetes, Amazon EKS, ECR e RDS |
+| Integrações e observabilidade | AWS Lambda, API Gateway, AWS Secrets Manager, Spring Boot Actuator, logs estruturados e New Relic |
+
+## Como executar localmente
+
+### Pré-requisitos
+
+- Docker com Docker Compose.
+- Java 21 para executar o núcleo pelo IntelliJ IDEA ou Maven Wrapper.
+- Repositórios dos serviços necessários ao fluxo que será testado.
+
+Os comandos Docker Compose devem ser executados **na raiz do repositório correspondente**. Para integração entre containers, conecte os serviços à rede Docker compartilhada `dinoco-local`. Confira a configuração de rede, os nomes dos serviços e as credenciais nos arquivos Compose e de ambiente de cada projeto.
+
+### 1. Iniciar as dependências e os microserviços
+
+1. Inicie o RabbitMQ compartilhado na rede `dinoco-local` e suba o [catálogo de produtos](https://github.com/JacksonPriess/oficina-produto-api) conforme as instruções do repositório.
+2. No [catálogo de serviços](https://github.com/JacksonPriess/oficina-servico-api), execute `docker compose up --build -d`. Cadastre os serviços pela API; utilize os IDs retornados ao montar a OS.
+3. Para exercitar pagamento e entrega, no [financeiro](https://github.com/JacksonPriess/oficina-financeiro-api), execute `docker compose up --build -d postgres-financeiro provedor-mock`. Inicie a API financeira com os perfis `local,rabbit`, conectada ao mesmo RabbitMQ. Consulte o [guia da Saga](docs/saga-pagamento.md) para as variáveis e os testes.
+
+### 2. Iniciar o núcleo
+
+**Opção A — Docker:** na raiz do repositório do núcleo, execute:
+
+```bash
+docker compose up --build -d
+```
+
+**Opção B — IntelliJ IDEA:** inicie somente o banco do núcleo:
+
+```bash
+docker compose up -d postgres
+```
+
+Depois execute a API no IntelliJ com os perfis Spring `dev,rabbit`.
+
+### 3. Configurar a comunicação
+
+| Variável no núcleo | API pela IDE ou Maven local | API em container Docker |
+| --- | --- | --- |
+| `CATALOGO_PRODUTO_URL` | `http://localhost:8081` | `http://catalogo-produto-api:8081` |
+| `CATALOGO_SERVICO_URL` | `http://localhost:8083` | `http://catalogo-servico-api:8083` |
+| `RABBITMQ_HOST` | `localhost` | `rabbitmq` |
+
+Configure `CATALOGO_API_KEY` e `CATALOGO_SERVICO_API_KEY` de acordo com os valores usados pelos catálogos. Os serviços de mensageria devem compartilhar broker, credenciais e *virtual host*. **Os nomes de host Docker acima pressupõem que os serviços estejam disponíveis com esses nomes na rede compartilhada.**
+
+### 4. Verificar a inicialização
+
+- [Swagger UI do núcleo](http://localhost:8080/swagger-ui/index.html)
+- Health check: `GET http://localhost:8080/actuator/health/readiness`
+- Logs da API iniciada pelo Compose: `docker compose logs -f api`
+
+## Fluxos de negócio e integrações
+
+### Ordem de serviço
+
+O fluxo principal compreende abertura da OS, diagnóstico, inclusão de produtos e serviços, envio e decisão do orçamento, verificação de estoque, execução dos itens, finalização técnica e conclusão. O cliente pode acompanhar a OS mediante autenticação e vínculo com o recurso.
+
+### Estoque e eventos
+
+O catálogo de produtos publica eventos de cadastro. O núcleo consome esses eventos para criar o saldo inicial e registrar movimentações, sem exigir sincronização HTTP de estoque.
+
+### Saga de pagamento
+
+Quando a OS é finalizada tecnicamente e há valor a cobrar, o núcleo solicita o pagamento de forma assíncrona. A **aprovação financeira** libera a entrega; o estorno antes da entrega funciona como compensação e impede a conclusão.
 
 | Fluxo | Chave de roteamento | Fila |
 | --- | --- | --- |
@@ -74,258 +105,83 @@ O núcleo, o catálogo de produtos e o financeiro compartilham o RabbitMQ. O cat
 | Núcleo → financeiro | `pagamento.estornar.v1` | `financeiro.pagamento.estornar` |
 | Financeiro → núcleo | `pagamento.criado.v1`, `pagamento.aprovado.v1`, `pagamento.estornado.v1` | `nucleo.financeiro.eventos` |
 
-Uma *outbox* é uma tabela de mensagens pendentes. A aplicação grava a mensagem na mesma transação que altera os dados de negócio e tenta publicá-la em segundo plano. O processamento de eventos repetidos protege contra a duplicação de efeitos no estoque e na Saga. As mensagens rejeitadas após as tentativas de consumo seguem para as filas de falha (*dead-letter queues*, DLQs), com sufixo `.dlq`.
+A **outbox** registra mensagens pendentes na mesma transação das mudanças de negócio, permitindo publicação posterior. O processamento de mensagens repetidas evita efeitos duplicados. Após tentativas de processamento malsucedidas, mensagens rejeitadas são encaminhadas a filas de falha (*dead-letter queues*, DLQs), com sufixo `.dlq`.
 
-Após a finalização técnica de uma OS com valor a cobrar, o núcleo solicita o pagamento e aguarda a aprovação antes de permitir a entrega. O estorno solicitado antes da entrega bloqueia a conclusão. Consulte o [fluxo e roteiro de testes da Saga](docs/saga-pagamento.md).
+Para detalhes, consulte o [roteiro da Saga de pagamento](docs/saga-pagamento.md) e o [diagrama de orquestração](docs/architecture/saga-pagamentos-fase04.png).
 
-### Provisionamento na AWS
+## Estratégia de testes
 
-1. Provisione a infraestrutura do cluster e o RabbitMQ pelo [repositório de infraestrutura Kubernetes](https://github.com/JacksonPriess/oficina-infra-k8s).
-2. Provisione o RDS e prepare os bancos e usuários no [repositório de infraestrutura de banco](https://github.com/JacksonPriess/oficina-infra-db).
+A aplicação utiliza testes unitários e de componentes para casos de uso, regras de domínio, contratos HTTP, mapeamentos, segurança e mensageria.
+
+### Testes unitários, integração e cobertura
+
+O projeto possui o perfil Maven `cobertura-80`, que **verifica a meta de 80% de cobertura de linhas** por meio do JaCoCo quando executado explicitamente. A existência desse perfil não significa que a cobertura já tenha atingido o mínimo, nem que essa verificação seja executada automaticamente em todos os builds.
+
+```bash
+./mvnw clean verify -Pcobertura-80
+```
+
+### BDD com Cucumber e Gherkin
+
+O projeto utiliza **BDD (Behavior-Driven Development)** para validar o fluxo principal de sucesso da oficina. O comportamento esperado é descrito em **Gherkin**, usando os termos `Dado`, `Quando` e `Então`. O **Cucumber** executa os cenários automatizados, usando **REST Assured** para as chamadas HTTP e **Awaitility** para aguardar o resultado das operações assíncronas.
+
+O cenário abrange cadastro dos dados, abertura da OS, inclusão de itens dos catálogos, reserva e baixa de estoque, finalização técnica, pagamento assíncrono e entrega após aprovação, com as aplicações em execução.
+
+A execução utiliza o perfil Maven `bdd`, independente do perfil de cobertura `cobertura-80`. Consulte [configuração, execução e relatórios do BDD](docs/bdd/BDD_README.md) e a [evidência de execução](docs/bdd/EvidenciaBddFluxoCompleto.pdf).
+
+### Testes manuais com Insomnia
+
+A [collection do Insomnia](docs/api/oficina-dinoco-insomnia-collection.yaml) reúne as requisições na ordem do fluxo da OS, da autenticação à conclusão. Para importá-la, use **Import/Export > Import Data > From File** no Insomnia.
+
+Nos testes que envolvem cobrança, siga também o [roteiro integrado de aprovação de pagamento](docs/saga-pagamento.md#roteiro-de-teste-integrado) após a finalização técnica da OS.
+## Segurança e autenticação
+
+- **Funcionários:** autenticação por e-mail e senha, com JWT e perfis `ADMIN`, `MECANICO` e `ATENDENTE`.
+- **Clientes:** autenticação por CPF via API Gateway e AWS Lambda; o JWT identifica o cliente por ID interno, sem incluir o CPF.
+- **Rastreio e decisão sobre orçamento:** exigem JWT do tipo `CLIENTE` e validação do vínculo entre o cliente e a OS.
+- **Webhooks simulados:** possuem header de proteção específico, sem a mesma autenticação JWT das rotas de usuário.
+
+Detalhes de fluxos, rotas, perfis, respostas HTTP e credenciais de teste locais estão em [Autenticação e autorização](docs/security/autenticacao.md).
+
+## Infraestrutura e deploy
+
+A infraestrutura da solução utiliza repositórios e pipelines independentes para o núcleo, o banco, os recursos Kubernetes e a autenticação serverless.
+
+1. Provisione o cluster e o RabbitMQ pelo [repositório Kubernetes](https://github.com/JacksonPriess/oficina-infra-k8s).
+2. Provisione o RDS e prepare bancos e usuários pelo [repositório de banco](https://github.com/JacksonPriess/oficina-infra-db).
 3. Publique a [Lambda de autenticação](https://github.com/JacksonPriess/oficina-auth-lambda) para disponibilizar a chave JWT compartilhada.
-4. Publique o catálogo de produtos, o financeiro e o núcleo. Use o [guia de deploy do núcleo e do catálogo de produtos](docs/DEPLOY-K8S.md) e o guia do financeiro para configurar os segredos e validar a prontidão de cada aplicação.
-5. Execute o workflow do API Gateway depois que o Service do núcleo criar o Load Balancer. Instale a integração do New Relic pelo repositório de infraestrutura Kubernetes.
-
-## 🚀 Como Executar Local (Desenvolvimento)
-
-Instale Docker com Compose e Java 21 para executar a aplicação pela IDE ou pelo Maven Wrapper. Cada comando do Compose deve ser executado na raiz do repositório correspondente.
-
-1. Inicie o RabbitMQ compartilhado na rede `dinoco-local` e suba o [catálogo de produtos](https://github.com/JacksonPriess/oficina-produto-api) conforme seu README.
-2. Suba o [catálogo de serviços](https://github.com/JacksonPriess/oficina-servico-api) com `docker compose up --build -d`. Cadastre os serviços pela API e use os IDs retornados ao montar a OS.
-3. Para testar pagamento e entrega, suba o banco e o provedor simulado no repositório financeiro com `docker compose up --build -d postgres-financeiro provedor-mock`. Rode a API financeira com os perfis `local,rabbit` e aponte-a para o mesmo RabbitMQ dos demais serviços. Veja o [guia da Saga](docs/saga-pagamento.md) para as variáveis e o roteiro de teste.
-4. No repositório do núcleo, execute `docker compose up --build -d`. Para executar o núcleo pelo IntelliJ, suba apenas o banco com `docker compose up -d postgres` e use os perfis `dev,rabbit`.
-5. Acesse o [Swagger do núcleo](http://localhost:8080/swagger-ui/index.html) ou consulte `GET http://localhost:8080/actuator/health/readiness`. Use `docker compose logs -f api` para acompanhar a inicialização pelo Compose.
-
-| Configuração do núcleo | IntelliJ ou Maven na máquina | Núcleo em Docker |
-| --- | --- | --- |
-| `CATALOGO_PRODUTO_URL` | `http://localhost:8081` | `http://catalogo-produto-api:8081` |
-| `CATALOGO_SERVICO_URL` | `http://localhost:8083` | `http://catalogo-servico-api:8083` |
-| `RABBITMQ_HOST` | `localhost` | `rabbitmq` |
-
-Configure `CATALOGO_API_KEY` e `CATALOGO_SERVICO_API_KEY` com os valores usados por cada catálogo. Os componentes que usam mensageria devem compartilhar o mesmo broker, credenciais e *virtual host*. Os endereços Docker pressupõem que as aplicações estejam conectadas à rede `dinoco-local`.
-
-## 📚 Documentação e Testes da API
-
-* [Linguagem Ubíqua e Dicionário de Dados](./docs/negocio/linguagem_ubiqua.md)
-* [Swagger UI - Oficina Dinoco](http://localhost:8080/swagger-ui/index.html) *(Disponível após subir a aplicação)*
-
-### 🚀 Insomnia Collection
-
-Para facilitar os testes e a avaliação do fluxo completo da aplicação, disponibilizamos uma collection do Insomnia com todas as requisições organizadas na ordem lógica de execução:
-Autenticação, Abrir OS, Iniciar diagnóstico, Adicionar Itens de Produto na OS, Adicionar Itens de Serviço na OS, Concluir Diagnóstico, Enviar Orçamento, Aprovar Orçamento, Verificar Estoque (Condicional), Iniciar Execução da OS, Iniciar Execução dos Itens de Serviços, Concluir Execução dos Itens de Serviços, Finalizar execução da OS, e por fim, Concluir a OS. 
-
-1. Baixe o arquivo da collection: [`oficina-dinoco-insomnia-collection.yaml`](./docs/api/oficina-dinoco-insomnia-collection.yaml)
-2. No Insomnia, vá em **Import/Export** > **Import Data** > **From File** e selecione o arquivo baixado.
-3. Para concluir uma OS com cobrança, siga também o [roteiro de aprovação de pagamento](docs/saga-pagamento.md#roteiro-de-teste-integrado) após finalizar a execução técnica.
-
----
-
-## 🔐 Autenticação de Funcionários
-
-Funcionários continuam utilizando o fluxo já existente:
-
-```text
-Funcionário
-   ↓
-e-mail + senha
-   ↓
-Spring Boot
-   ↓
-validação no banco
-   ↓
-JWT funcionário
-```
-
-A API utiliza Spring Security e JWT para proteger as rotas administrativas.
-
-Para facilitar testes locais, o seed cria um usuário administrador padrão:
-
-* **Usuário:** `admin`
-* **Senha:** `123456`
-
----
-
-## 🔐 Autenticação de Clientes via CPF
-
-A Fase 3 adicionou um segundo fluxo de autenticação, destinado exclusivamente aos **clientes da oficina**.
-
-```text
-Cliente
-   ↓
-CPF
-   ↓
-API Gateway
-   ↓
-AWS Lambda
-   ↓
-validação do CPF
-   ↓
-consulta no PostgreSQL
-   ↓
-verificação de existência e status
-   ↓
-JWT CLIENTE
-```
-
-O JWT do cliente possui estrutura semelhante a:
-
-```json
-{
-  "iss": "oficina-api",
-  "sub": "11",
-  "tipo": "CLIENTE",
-  "iat": 1788141203,
-  "exp": 1788148403
-}
-```
-
-O campo `sub` contém o **ID interno do cliente**. O CPF não é colocado no token.
-
-Esse desenho permite que a aplicação identifique o cliente autenticado utilizando apenas o `clienteId` confiável presente no JWT.
-
----
-
-## 🔒 Rotas Utilizadas por cliente protegidas por JWT
-
-Um dos requisitos da Fase 3 é proteger as rotas utilizadas pelo cliente. 
-
-A rota:
-
-```http
-GET /api/ordens-servico/rastreio/{codigoRastreio}
-```
-
-antes era pública. Agora exige um JWT válido do tipo `CLIENTE`:
-
-```http
-Authorization: Bearer <JWT_CLIENTE>
-```
-
-### Fluxo de autorização
-
-```text
-JWT CLIENTE
-sub = clienteId
-tipo = CLIENTE
-        ↓
-Spring Security
-        ↓
-ClientePrincipal
-        ↓
-Controller Web
-        ↓
-BuscarOSPorCodigoRastreioQuery
-codigoRastreio + clienteId
-        ↓
-Use Case
-        ↓
-OrdemServicoQueryGateway
-        ↓
-PostgreSQL
-```
-
-A consulta considera simultaneamente o código de rastreio e o cliente autenticado:
-
-Assim, possuir um JWT válido não é suficiente: o cliente precisa ser o proprietário da OS consultada.
-
-### Comportamentos esperados
-
-```text
-Cliente dono da OS
-→ 200 OK
-
-Cliente autenticado tentando consultar OS de outro cliente
-→ 404 Not Found
-
-Funcionário tentando utilizar a rota exclusiva de cliente
-→ 403 Forbidden
-
-Requisição sem JWT válido
-→ acesso negado
-```
-
-Essa estratégia implementa **autorização por propriedade do recurso**, evitando que um cliente consulte informações pertencentes a outro cliente.
-
-Conceitualmente:
-
-```text
-Autenticação
-→ Quem é o cliente?
-
-Autorização
-→ Este cliente pode acessar esta OS?
-```
-
-O CPF é utilizado apenas para o fluxo inicial de autenticação serverless. Após a emissão do token, a aplicação utiliza o `clienteId` presente no JWT.
-
----
-Criado também uma rota nova para aprovação/recusa de orçamento pelo cliente autenticado:
-
-```http
-POST /api/ordens-servico/rastreio/{codigoRastreio}/decisao
-```
-
-Exige um JWT válido do tipo `CLIENTE`:
-
-```http
-Authorization: Bearer <JWT_CLIENTE>
-```
----
-
-## Rotas que simulam um WebHook, não exigirão autenticação, mas são protegidas com header específico 
-
-```http
-POST /api/ordens-servico/webhooks/orcamentos/{codigoRastreio}
-POST /api/ordens-servico/webhooks/status/{codigoRastreio}                        
-```
-
----
-
-## Autorização por Perfil
-
-Após a autenticação do funcionário, o JWT é validado pelo Spring Security e o perfil do usuário é convertido em uma `role`.
-
-Os perfis atualmente suportados são:
-
-- `ADMIN`
-- `MECANICO`
-- `ATENDENTE`
-
-Internamente, o Spring Security trabalha com as authorities:
-
-- `ROLE_ADMIN`
-- `ROLE_MECANICO`
-- `ROLE_ATENDENTE`
-
-### Regras de acesso
-
-As rotas internas da aplicação exigem que o usuário autenticado possua um dos perfis de funcionário.
-
-Exemplo:
-
-"ADMIN", "MECANICO", "ATENDENTE"  
-
----
-## Documentações / Diagramas
-
-Os diagramas das fases anteriores registram a evolução da arquitetura. A seção da Fase 04 descreve a separação atual.
-
-- [Saga de pagamento da OS](docs/saga-pagamento.md)
-
-*  **Diagrama de Componentes:** [Visualizar](docs/architecture/component-diagram.png)
-*  **Diagrama de Sequência de Autenticação** [Visualizar](docs/architecture/authentication-sequence.png)
-*  **Diagrama de Sequência de Abertura de OS** [Visualizar](docs/architecture/service-order-sequence.png)
-*  **RFC-001 - Provedor nuvem** [Visualizar](docs/rfc/RFC-001-cloud-provider.md)
-*  **RFC-002 - Banco de dados** [Visualizar](docs/rfc/RFC-002-database.md)
-*  **RFC-003 - Estratégia autenticação** [Visualizar](docs/rfc/RFC-003-authentication.md) 
-*  **ADR-001 - API Gateway** [Visualizar](docs/adr/ADR-001-api-gateway.md)
-*  **ADR-002 - Amazon EKS** [Visualizar](docs/adr/ADR-002-eks.md)
-*  **ADR-003 - Escalabidade HPA** [Visualizar](docs/adr/ADR-003-hpa.md)
-*  **ADR-004 - JWT** [Visualizar](docs/adr/ADR-004-jwt-stateless.md)
-*  **ADR-005 - Observabilidade** [Visualizar](docs/adr/ADR-005-new-relic.md)
-*  **Justificativa do Banco** [Visualizar](docs/database/database-justification.md)
-*  **Diagrama Banco ER** [Visualizar](docs/database/database-er-diagram.png)
-
-*  **Arquitetura interna aplicação:** [Visualizar](docs/diagramas-fase2/DiagramaComponentesArquitetura.png)
-* ️ **Fluxo de deploy:** [Visualizar](docs/diagramas-fase2/oficina-dinoco-fluxo-deploy-geral.drawio.png)
-
+4. Publique o catálogo de produtos, o financeiro e o núcleo.
+5. Execute o workflow do API Gateway após a criação do Load Balancer do núcleo. Configure a integração New Relic pelo repositório Kubernetes.
+
+Consulte também a [evolução arquitetural do Tech Challenge](docs/architecture/evolucao-tech-challenge.md), incluindo a separação da infraestrutura na Fase 03.
+
+## Documentação complementar
+
+**Negócio e execução**
+
+- [Linguagem ubíqua e dicionário de dados](docs/negocio/linguagem_ubiqua.md)
+- [Guia da Saga de pagamento e roteiro de testes](docs/saga-pagamento.md)
+- [BDD — preparação, execução e relatórios](docs/bdd/BDD_README.md)
+- [Collection do Insomnia](docs/api/oficina-dinoco-insomnia-collection.yaml)
+
+**Arquitetura e diagramas**
+
+- [Diagrama de componentes — Fase 04](docs/architecture/component-diagram-fase04.png)
+- [Saga de pagamentos orquestrada pelo núcleo](docs/architecture/saga-pagamentos-fase04.png)
+- [Sequência de abertura da OS — Fase 04](docs/architecture/service-order-sequence-fase04.md)
+- [Sequência de autenticação](docs/architecture/authentication-sequence.png)
+- [Arquitetura interna da aplicação](docs/diagramas-fase2/DiagramaComponentesArquitetura.png)
+- [Fluxo geral de deploy](docs/diagramas-fase2/oficina-dinoco-fluxo-deploy-geral.drawio.png)
+- [Modelo entidade-relacionamento do banco](docs/database/database-er-diagram.png)
+- [Justificativa de banco de dados](docs/database/database-justification.md)
+
+**Decisões arquiteturais (ADRs) e propostas técnicas (RFCs)**
+
+- [RFC-001 — Provedor de nuvem](docs/rfc/RFC-001-cloud-provider.md)
+- [RFC-002 — Banco de dados](docs/rfc/RFC-002-database.md)
+- [RFC-003 — Estratégia de autenticação](docs/rfc/RFC-003-authentication.md)
+- [ADR-001 — API Gateway](docs/adr/ADR-001-api-gateway.md)
+- [ADR-002 — Amazon EKS](docs/adr/ADR-002-eks.md)
+- [ADR-003 — Escalabilidade HPA](docs/adr/ADR-003-hpa.md)
+- [ADR-004 — JWT](docs/adr/ADR-004-jwt-stateless.md)
+- [ADR-005 — Observabilidade](docs/adr/ADR-005-new-relic.md)

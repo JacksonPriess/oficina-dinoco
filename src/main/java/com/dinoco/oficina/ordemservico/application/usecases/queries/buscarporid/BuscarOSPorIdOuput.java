@@ -1,6 +1,8 @@
 package com.dinoco.oficina.ordemservico.application.usecases.queries.buscarporid;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public record BuscarOSPorIdOuput(
         Long osId,
@@ -14,5 +16,14 @@ public record BuscarOSPorIdOuput(
         BigDecimal valorTotalProdutos,
         BigDecimal valorDesconto,
         BigDecimal valorTotalOS,
-        String status)
+        LocalDateTime dataEntrada,
+        LocalDateTime dataSaida,
+        LocalDateTime dataReprovacao,
+        LocalDateTime dataInicioDiagnostico,
+        LocalDateTime dataFinalDiagnostico,
+        LocalDateTime dataInicioExecucao,
+        LocalDateTime dataFinalExecucao,
+        String status,
+        List<BuscarOSPorIdItemServicoOutput> itensServico,
+        List<BuscarOSPorIdItemProdutoOutput> itensProduto)
 {}

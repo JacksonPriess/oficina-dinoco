@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="Cucumber" time="27.763" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-14T06:44:30.474332200Z">
+<testcase classname="Entrega de veículo após pagamento da ordem de serviço" name="Executar uma OS com produto e serviço e entregá-la após pagamento aprovado" time="27.174">
+<system-out><![CDATA[
+Dado que um funcionário está autenticado na oficina.........................passed
+E existe um cliente com veículo cadastrado..................................passed
+E existe um produto de 50 reais com 10 unidades em estoque..................passed
+E existe um serviço de 150 reais no catálogo................................passed
+Quando abro uma OS com 2 unidades do produto e o serviço....................passed
+Então o orçamento deve totalizar 250 reais..................................passed
+Quando inicio e diagnóstico.................................................passed
+Quando concluo o diagnóstico................................................passed
+E envio e aprovo o orçamento................................................passed
+Então devem estar reservadas 2 unidades do produto..........................passed
+Quando executo o serviço e finalizo a OS....................................passed
+Então o estoque deve conter 8 unidades reais e nenhuma reservada............passed
+E deve existir um pagamento pendente de 250 reais para essa OS..............passed
+Quando aprovo esse pagamento no provedor mock...............................passed
+Então o núcleo deve reconhecer a aprovação na mesma Saga....................passed
+Quando concluo a ordem de serviço...........................................passed
+Então a OS e sua Saga devem estar entregues.................................passed
+]]></system-out>
+</testcase>
+</testsuite>

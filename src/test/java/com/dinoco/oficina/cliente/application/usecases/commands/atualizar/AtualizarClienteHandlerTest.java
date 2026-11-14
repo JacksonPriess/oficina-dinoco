@@ -1,5 +1,7 @@
 package com.dinoco.oficina.cliente.application.usecases.commands.atualizar;
 
+import java.time.LocalDateTime;
+
 import com.dinoco.oficina.cliente.application.gateways.ClienteCommandGateway;
 import com.dinoco.oficina.cliente.domain.Cliente;
 import com.dinoco.oficina.cliente.domain.Endereco;
@@ -147,5 +149,72 @@ class AtualizarClienteHandlerTest {
                 .hasMessage("Não é permitido alterar o tipo de pessoa após o cadastro.");
 
         verify(clienteCommandGateway, never()).salvar(any());
+    }
+
+    @Test
+    void deveSubstituirEnderecosEPreservarIdentidadeEInatividade() {
+        var cliente = clienteComEndereco();
+        cliente.desativar();
+        var criacao = cliente.getDataCriacao();
+        var novoEndereco = new EnderecoCommand("89202000", "Rua Nova", "20", "Casa", "Centro", "Joinville", "SC");
+        var command = comando(List.of(novoEndereco));
+        when(clienteCommandGateway.buscarParaAlteracao(1L)).thenReturn(Optional.of(cliente));
+        when(clienteCommandGateway.salvar(any(Cliente.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var output = handler.executar(command);
+
+        verify(clienteCommandGateway).salvar(clienteCaptor.capture());
+        var salvo = clienteCaptor.getValue();
+        assertThat(salvo.getId()).isEqualTo(1L);
+        assertThat(salvo.getDocumento()).isEqualTo("52998224725");
+        assertThat(salvo.getTipoPessoa()).isEqualTo("F");
+        assertThat(salvo.getDataCriacao()).isEqualTo(criacao);
+        assertThat(salvo.getAtivo()).isFalse();
+        assertThat(salvo.getEnderecos()).hasSize(1);
+        assertThat(salvo.getEnderecos().getFirst()).usingRecursiveComparison().isEqualTo(novoEndereco);
+        assertThat(output).isEqualTo(new AtualizarClienteOutput(1L, "F", "52998224725", "123",
+                "Nome Atualizado", "Fantasia Atualizada", "novo@email.com", "47988888888", false,
+                List.of(new EnderecoOutput("89202000", "Rua Nova", "20", "Casa", "Centro", "Joinville", "SC"))));
+    }
+
+    @Test
+    void deveRemoverEnderecosQuandoListaNula() {
+        verificarRemocaoEnderecos(null);
+    }
+
+    @Test
+    void deveRemoverEnderecosQuandoListaVazia() {
+        verificarRemocaoEnderecos(List.of());
+    }
+
+    @Test
+    void devePropagarFalhaDePersistenciaNaAtualizacao() {
+        when(clienteCommandGateway.buscarParaAlteracao(1L)).thenReturn(Optional.of(clienteComEndereco()));
+        var falha = new IllegalStateException("Persistência indisponível");
+        when(clienteCommandGateway.salvar(any(Cliente.class))).thenThrow(falha);
+
+        assertThatThrownBy(() -> handler.executar(comando(List.of()))).isSameAs(falha);
+    }
+
+    private void verificarRemocaoEnderecos(List<EnderecoCommand> enderecos) {
+        when(clienteCommandGateway.buscarParaAlteracao(1L)).thenReturn(Optional.of(clienteComEndereco()));
+        when(clienteCommandGateway.salvar(any(Cliente.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var output = handler.executar(comando(enderecos));
+
+        verify(clienteCommandGateway).salvar(clienteCaptor.capture());
+        assertThat(clienteCaptor.getValue().getEnderecos()).isEmpty();
+        assertThat(output.enderecos()).isEmpty();
+    }
+
+    private Cliente clienteComEndereco() {
+        return new Cliente(1L, "F", "52998224725", "Nome Antigo", null, null, "antigo@email.com",
+                "47999999999", true, LocalDateTime.of(2026, 1, 1, 10, 0),
+                List.of(new Endereco("89201000", "Rua Antiga", "1", null, "Centro", "Joinville", "SC")));
+    }
+
+    private AtualizarClienteCommand comando(List<EnderecoCommand> enderecos) {
+        return new AtualizarClienteCommand(1L, "F", "52998224725", "123", "Nome Atualizado",
+                "Fantasia Atualizada", "novo@email.com", "47988888888", enderecos);
     }
 }

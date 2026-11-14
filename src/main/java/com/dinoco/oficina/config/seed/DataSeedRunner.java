@@ -8,8 +8,6 @@ import com.dinoco.oficina.estoque.application.usecases.commands.registrarentrada
 import com.dinoco.oficina.estoque.application.usecases.commands.registrarentrada.RegistrarEntradaUseCase;
 import com.dinoco.oficina.funcionario.application.gateways.FuncionarioCommandGateway;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoCommand;
-import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoItemProdutoCommand;
-import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoItemServicoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.abrir.AbrirOrdemServicoUseCase;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.adicionaritemproduto.AdicionarItemProdutoCommand;
 import com.dinoco.oficina.ordemservico.application.usecases.commands.adicionaritemproduto.AdicionarItemProdutoUseCase;
@@ -166,128 +164,8 @@ public class DataSeedRunner implements CommandLineRunner {
         ids.add(salvarVeiculo("BMW3I30", "BMW", "320i", 2021, 2022, "Branco M", "9BM111", "2.0 B48"));
         return ids;
     }
-/*
-    private List<Long> popularProdutos() {
-        log.info("-> Cadastrando Produtos e Insumos no Estoque...");
-        List<Long> ids = new ArrayList<>();
-        ids.add(salvarProduto("Filtro de Óleo", TipoProduto.PECA, "Fram", "PH10060", "Ford Focus", 20.0, 25.0, 45.0)); // 0
-        ids.add(salvarProduto("Óleo Motor 5W30 1L", TipoProduto.INSUMO, "Castrol", "5W30", "Motores gasolina", 50.0, 30.0, 55.0)); // 1
 
-        ids.add(salvarProduto("Pastilha de Freio Dianteira", TipoProduto.PECA, "Bosch", "BP1234", "Ford Focus", 0.0, 0.0, 0.0)); // 2
-        ids.add(salvarProduto("Filtro de Ar", TipoProduto.PECA, "Tecfil", "ARL1234", "Ford Focus", 0.0, 0.0, 0.0)); // 3
 
-        ids.add(salvarProduto("Vela de Ignição", TipoProduto.PECA, "NGK", "TR6B-13", "Motores flex", 2.0, 25.0, 60.0)); // 4
-        ids.add(salvarProduto("Correia Dentada", TipoProduto.PECA, "Continental", "CT1074", "Motor 1.6", 10.0, 120.0, 220.0)); // 5
-        ids.add(salvarProduto("Fluido de Freio DOT 4", TipoProduto.INSUMO, "Varga", "DOT4", "Universal", 25.0, 20.0, 40.0)); // 6
-        ids.add(salvarProduto("Aditivo Radiador", TipoProduto.INSUMO, "Paraflu", "RAD123", "Universal", 30.0, 18.0, 35.0)); // 7
-        ids.add(salvarProduto("Bico Injetor Cleaner", TipoProduto.INSUMO, "Car80", "C80", "Universal", 20.0, 15.0, 35.0)); // 8
-        return ids;
-    }
-*/
-    private void popularOrdensDeServico(List<Long> clientes, List<Long> veiculos, List<Long> produtos, List<Long> servicos) {
-        log.info("-> Gerando Ordens de Serviço (Estados Variados)...");
-
-        /**
-         * Cenário 1 : Cenário principal completo - Todos os produtos contem saldo positivo no estoque.
-         */
-
-        // Passo 1: Abrir OS:
-        Long ordemServicoA = abrirOsSemItens(
-                clientes.get(0),
-                veiculos.get(0),
-                45500, "Preventiva trocar filtro e óleo");
-
-        log.info("-> Ciclo OS - Aberta.");
-        // Passo 2: Iniciar Diagnóstico OS:
-        iniciarDiagnostico(ordemServicoA);
-        log.info("-> Ciclo OS - Diagnóstico iniciado.");
-
-        // Passo 3: Adicionar itens de serviço e itens de produto
-        adicionarPecaEServico(ordemServicoA, List.of(produtos.get(0), produtos.get(1)), List.of(servicos.get(0), servicos.get(1)));
-
-        // Passo 4: Concluir Diagnóstico OS:
-        concluirDiagnostico(ordemServicoA, "Diagnóstico concluído com sucesso. Necessário trocar filtro e óleo.");
-        log.info("-> Ciclo OS - Diagnóstico concluído.");
-
-        // Passo 5: Enviar orçamento para o cliente
-        enviarOrcamento(ordemServicoA);
-        log.info("-> Ciclo OS - Orçamento enviado.");
-
-        // Passo 6: Aprovar orçamento
-        aprovarOrcamento(ordemServicoA);
-        log.info("-> Ciclo OS - Orçamento aprovado.");
-
-        // Passo 7: Iniciar execução da OS
-        iniciarExecucaoOS(ordemServicoA);
-        log.info("-> Ciclo OS - Iniciado execução.");
-
-        // Passo 8: Iniciar execução e concluir itens de serviço.
-        iniciarEConcluirExecucaoItemServico(ordemServicoA, 1L);
-        iniciarEConcluirExecucaoItemServico(ordemServicoA, 2L);
-
-        // Passo 9: Finalizar execução da OS
-        finalizarExecucaoOS(ordemServicoA);
-        log.info("-> Ciclo OS - Finalizado execução.");
-
-        log.info("-> Ciclo OS - Aguardando confirmação financeira para entrega.");
-
-        /**
-         * Cenário 2 : Cenário onde os produtos não tem valor (precisa de cotação) e não tem saldo no estoque (vai precisar de pedido de compra);
-         */
-        // Passo 1: Abrir OS:
-        Long ordemServicoB = abrirOsSemItens(
-                clientes.get(0),
-                veiculos.get(0),
-                50000, "Revisão do freio e filtro de ar");
-
-        log.info("-> Ciclo OS 2 - Aberta.");
-        // Passo 2: Iniciar Diagnóstico OS:
-        iniciarDiagnostico(ordemServicoB);
-        log.info("-> Ciclo OS 2 - Diagnóstico iniciado.");
-
-        // Passo 3: Adicionar itens de serviço e itens de produto ( sem quantidade e sem valor de venda )
-        adicionarPecaEServico(ordemServicoB, List.of(produtos.get(2), produtos.get(3)), List.of(servicos.get(2), servicos.get(3)));
-        //ID dos itens 3 e 4
-
-        // Passo 4: Concluir Diagnóstico OS:
-        concluirDiagnostico(ordemServicoB, "Diagnóstico concluído com sucesso. Necessário revisar freio e trocar filtro ar.");
-        log.info("-> Ciclo OS 2 - Diagnóstico concluído.");
-
-        // Passo 4.1: Como não tem valor do item, é necessário o atendente fazer cotação e em seguida atualizar o valor do item produto da OS, somente o valor.
-        BigDecimal valorProduto3 = new BigDecimal(100.0);
-        BigDecimal valorProduto4 = new BigDecimal(150.0);
-        BigDecimal quantidade = BigDecimal.ONE;
-        atualizarValorDoItemDeProduto(ordemServicoB, 3L, valorProduto3, quantidade);
-        atualizarValorDoItemDeProduto(ordemServicoB, 4L, valorProduto4, quantidade);
-
-        // Passo 5: Enviar orçamento para o cliente
-        enviarOrcamento(ordemServicoB);
-        log.info("-> Ciclo OS 2 - Orçamento enviado.");
-
-        // Passo 6: Aprovar orçamento: Ao aprovar orçamento, é verificado saldo do estoque, e como não tem saldo ( fica aguardando um entrada de produto )
-        aprovarOrcamento(ordemServicoB);
-        log.info("-> Ciclo OS 2 - Orçamento aprovado.");
-
-        // Passo 6.1: Registrar entrada de qtd de produto (saldo estoque) que simula uma Compra Realizada.
-        registrarEntradaDeEstoque(List.of(produtos.get(2), produtos.get(3)));
-
-        // Passo 6.2: Refresh na OS para verificar o saldo dos produtos novamente.
-        verificarEstoqueParaAtualizarStatus(ordemServicoB);
-
-        // Passo 7: Iniciar execução da OS
-        iniciarExecucaoOS(ordemServicoB);
-        log.info("-> Ciclo OS 2 - Iniciado execução.");
-
-        // Passo 8: Iniciar execução e concluir itens de serviço.
-        iniciarEConcluirExecucaoItemServico(ordemServicoB, 3L);
-        iniciarEConcluirExecucaoItemServico(ordemServicoB, 4L);
-
-        // Passo 9: Finalizar execução da OS
-        finalizarExecucaoOS(ordemServicoB);
-        log.info("-> Ciclo OS 2 - Finalizado execução.");
-
-        log.info("-> Ciclo OS 2 - Aguardando confirmação financeira para entrega.");
-    }
 
     private Long salvarCliente(String tipo, String doc, String ie, String nome, String fantasia, String email) {
         var cliente = new Cliente(tipo, doc, nome, ie, fantasia, email, "47999990000");
@@ -300,67 +178,6 @@ public class DataSeedRunner implements CommandLineRunner {
         return veiculoGateway.salvar(veiculo).getId();
     }
 
-    private Long abrirOsSemItens(Long clienteId, Long veiculoId, int km, String defeito) {
-        var osCmd = new AbrirOrdemServicoCommand(clienteId, veiculoId, km, defeito, null,null);
-        Long osId = abrirOrdemServicoUseCase.executar(osCmd).osId();
-        return osId;
-    }
 
-    private void iniciarDiagnostico(Long osId) {
-        var command = new IniciarDiagnosticoCommand(osId);
-        iniciarDiagnosticoUseCase.executar(command);
-    }
-
-    private void adicionarPecaEServico(Long osId, List<Long> produtos, List<Long> servicos) {
-        servicos.forEach(servicoId -> adicionarItemServicoUseCase.executar(new AdicionarItemServicoCommand(osId, servicoId, null)));
-        log.info("-> Ciclo OS - Adicionado items de serviço na OS.");
-        produtos.forEach(produtoId -> adicionarItemProdutoUseCase.executar(new AdicionarItemProdutoCommand(osId, produtoId, BigDecimal.ONE)));
-        log.info("-> Ciclo OS - Adicionado items de produto na OS.");
-    }
-
-    private void concluirDiagnostico(Long osId, String laudo) {
-        var command = new ConcluirDiagnosticoCommand(osId, laudo);
-        concluirDiagnosticoUseCase.executar(command);
-    }
-
-    private void enviarOrcamento(Long osId) {
-        enviarOrcamentoUseCase.executar(new EnviarOrcamentoCommand(osId));
-    }
-
-    private void aprovarOrcamento(Long osId) {
-        aprovarOrcamentoUseCase.executar(new AprovarOrcamentoCommand(osId));
-    }
-
-    private void iniciarExecucaoOS(Long osId) {
-        iniciarExecucaoUseCase.executar(new IniciarExecucaoCommand(osId));
-    }
-
-    private void iniciarEConcluirExecucaoItemServico(Long osId, long itemId) {
-        iniciarExecucaoItemServicoUseCase.executar(new IniciarExecucaoItemServicoCommand(osId, itemId));
-        log.info("-> Ciclo OS - Iniciado execução item ." + itemId);
-
-        concluirExecucaoItemServicoUseCase.executar(new ConcluirExecucaoItemServicoCommand(osId, itemId, LocalDateTime.now().plusHours(1) ));
-        log.info("-> Ciclo OS - Concluido execução item ." + itemId);
-    }
-
-    private void finalizarExecucaoOS(Long osId) {
-        finalizarExecucaoUseCase.executar(new FinalizarExecucaoCommand(osId));
-    }
-
-    private void atualizarValorDoItemDeProduto(Long ordemServicoB, long idItemProdutoNaOs, BigDecimal valorProduto, BigDecimal quantidade) {
-        alterarItemProdutoUseCase.executar(new AlterarItemProdutoCommand(ordemServicoB, idItemProdutoNaOs, valorProduto, quantidade));
-    }
-
-    private void registrarEntradaDeEstoque(List<Long> produtos) {
-        produtos.forEach(produtoId -> {
-            registrarEntradaUseCase.executar(new RegistrarEntradaCommand(produtoId, BigDecimal.ONE, "Entrada por compra de fornecedor"));
-            log.info("-> Ciclo OS - Registro de entrada por compra para o produto ." + produtoId);
-        });
-    }
-
-    private void verificarEstoqueParaAtualizarStatus(Long ordemServicoB) {
-        verificarEstoqueUseCase.executar(new VerificarEstoqueCommand(ordemServicoB));
-        log.info("-> Ciclo OS - Verificando estoque para atualizar status da OS " + ordemServicoB);
-    }
 
 }
