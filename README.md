@@ -26,7 +26,7 @@ Este repositório contém o **núcleo da Oficina Mecânica Dinoco**, desenvolvid
 | API e segurança | Java 21, Spring Boot 4.0.6, Spring Web MVC, Spring Security, JWT (JSON Web Token), Springdoc OpenAPI e Swagger UI. |
 | Integração | Spring RestClient para os catálogos e Spring AMQP (Advanced Message Queuing Protocol) com RabbitMQ para eventos de estoque e mensagens da Saga. |
 | Dados | PostgreSQL 16 no núcleo, no catálogo de produtos e no financeiro, com bancos separados. Spring Data JPA e Flyway no núcleo. MongoDB 8 e Spring Data MongoDB no catálogo de serviços. |
-| Build e testes | Maven Wrapper, JUnit 5, Mockito, REST Assured e Testcontainers. |
+| Build e testes | Maven Wrapper, JUnit 5, Mockito, REST Assured, Testcontainers, Cucumber (BDD), Gherkin (descrição de cenários) e Awaitility. |
 | Infraestrutura | Docker e Docker Compose para desenvolvimento. Terraform e GitHub Actions para provisionamento e automação. Kubernetes no Amazon EKS (Elastic Kubernetes Service), imagens no Amazon ECR (Elastic Container Registry) e PostgreSQL no Amazon RDS (Relational Database Service). |
 | Segurança e observabilidade na AWS | AWS Secrets Manager, AWS Lambda, API Gateway, Spring Boot Actuator, logs estruturados e New Relic. |
 
@@ -341,8 +341,9 @@ Os diagramas das fases anteriores registram a evolução da arquitetura. A seç�
 
 ## Teste BDD do fluxo completo
 
-O cenário automatizado cobre o cadastro dos dados, abertura da OS com itens dos catálogos, reserva e baixa de estoque, finalização técnica, pagamento assíncrono e entrega após aprovação. 
-É executado com Cucumber, REST Assured e Awaitility contra as aplicações em execução.
+O projeto utiliza **BDD (Behavior-Driven Development)** para validar o fluxo principal de sucesso da oficina. Os cenários são descritos em **Gherkin**, utilizando as palavras-chave `Dado`, `Quando` e `Então` para representar o comportamento esperado de forma legível.
+
+A execução automatizada é feita com **Cucumber**, integrado ao **REST Assured** para chamadas HTTP e ao **Awaitility** para aguardar os resultados de operações assíncronas. O cenário cobre o cadastro dos dados, abertura da OS com itens dos catálogos, reserva e baixa de estoque, finalização técnica, pagamento assíncrono e entrega após aprovação. Os testes são executados contra as aplicações em funcionamento.
 
 Acessar [BDD — configuração, execução e relatórios](docs/bdd/BDD_README.md) para preparar o ambiente e executar o perfil Maven `bdd`. O BDD é separado dos testes habituais e da verificação JaCoCo do perfil `cobertura-80`.
 * ️ **Evidencia de execução do BDD:** [Visualizar](docs/bdd/EvidenciaBddFluxoCompleto.pdf)
